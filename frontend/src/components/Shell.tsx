@@ -152,6 +152,7 @@ export function TeamLayout() {
     { to: "/team/nutrition", label: t("Nutrition"), icon: "◍" },
     { to: "/team/mind", label: t("Mental health"), icon: "✿" },
     { to: "/team/vestibular", label: t("Vestibular"), icon: "⊕" },
+    { to: "/team/lsah", label: t("LSAH tests"), icon: "✚" },
     { to: "/team/environment", label: t("Environment"), icon: "☢" },
     { to: "/team/devices", label: t("Devices"), icon: "⌁" },
     { to: "/team/sources", label: t("Data sources"), icon: "ⓘ" },

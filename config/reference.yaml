@@ -157,6 +157,7 @@ simulation:
   preflight_days: 10
   mission_days: 180        # in flight: days 0..179; landing on day 180 (R+0)
   postflight_days: 21      # after landing: R+0..R+20 (vestibular recovery)
+  launch_date: "2027-03-01" # calendar date of mission day 0 (sets ages and annual-exam months)
   start_day: 30            # the demo opens on this mission day, with history before it
   start_hour: 7.5          # 07:30 crew time
   day_seconds_default: 60  # one mission day per 60 real seconds
@@ -165,86 +166,137 @@ simulation:
   source: *sim
   verified: false
 
-# Per-crew traits drive the scripted demo. All are simulation design choices.
+# The five crew members are FICTIONAL people with simulated data. Their medical
+# tests and schedules follow NASA's Lifetime Surveillance of Astronaut Health
+# (LSAH) program (see `lsah:` below). Traits drive the scripted demo; all are
+# simulation design choices.
+#   sex / birth / flights / last_dxa_year: used by the LSAH annual-exam rules (MR089S)
+#   lsah: preflight values for the LSAH tests this app simulates (DXA hip bone
+#         density g/cm2, VO2peak ml/kg/min, serum 25-OH vitamin D ng/mL, hemoglobin g/dL)
 crew:
   - id: c1
-    name: Lena Okafor
+    name: Elif Aydın
     role: Commander
     role_tr: Komutan
-    mass_kg: 64
-    hr_rest: 58
-    water_habit_l: 2.6
-    water_habit_inflight_l: 2.2 # drinks too little in flight -> high stone-risk crew member
-    urine: {calcium: 232, citrate: 520, oxalate: 36, uric_acid: 640, ph: 5.85, creatinine: 1250, sodium: 170, potassium: 65, magnesium: 105}
-    response_factor: 1.0
-    ared_squat_kg: 105
-    t2_speed_kmh: 9.5
-    cevis_watts: 140
-    sleep_h: 7.1
-    pvt_base_ms: 255
+    sex: F
+    birth: "1981-04"
     flights: 2
-    vestibular: {sot_base: 81, tandem_base: 9.3, susceptibility: 0.8, tau_days: 2.5}
-    note: High kidney-stone-risk crew member (low fluid habit, high calcium, low citrate). Second flight, fast vestibular recovery.
+    last_dxa_year: 2025
+    mass_kg: 63
+    hr_rest: 57
+    water_habit_l: 2.5
+    water_habit_inflight_l: 2.1 # drinks too little in flight -> high stone-risk crew member
+    urine: {calcium: 240, citrate: 500, oxalate: 37, uric_acid: 610, ph: 5.80, creatinine: 1180, sodium: 165, potassium: 62, magnesium: 100}
+    response_factor: 1.05
+    ared_squat_kg: 100
+    t2_speed_kmh: 9.8
+    cevis_watts: 135
+    sleep_h: 7.0
+    pvt_base_ms: 250
+    vitd_supplement_adherence: 0.9
+    vestibular: {sot_base: 82, tandem_base: 9.4, susceptibility: 0.8, tau_days: 2.4}
+    lsah: {bmd_hip: 0.98, vo2peak: 42.0, vitd_serum: 36, hemoglobin: 13.4}
+    note: High kidney-stone risk (low fluid habit, high calcium, low citrate). Second flight, fast vestibular recovery.
   - id: c2
-    name: Marco Diaz
+    name: Daniel Mensah
     role: Pilot
     role_tr: Pilot
-    mass_kg: 78
-    hr_rest: 62
-    water_habit_l: 3.1
-    urine: {calcium: 205, citrate: 640, oxalate: 34, uric_acid: 700, ph: 6.15, creatinine: 1700, sodium: 185, potassium: 72, magnesium: 120}
-    response_factor: 0.9
-    ared_squat_kg: 140
-    t2_speed_kmh: 11.0
-    cevis_watts: 180
-    sleep_h: 7.1
-    pvt_base_ms: 240
+    sex: M
+    birth: "1988-09"
     flights: 1
+    last_dxa_year: 2026
+    mass_kg: 80
+    hr_rest: 63
+    water_habit_l: 3.0
+    urine: {calcium: 210, citrate: 650, oxalate: 35, uric_acid: 720, ph: 6.10, creatinine: 1750, sodium: 190, potassium: 74, magnesium: 122}
+    response_factor: 0.9
+    ared_squat_kg: 145
+    t2_speed_kmh: 11.2
+    cevis_watts: 185
+    sleep_h: 7.2
+    pvt_base_ms: 238
+    vitd_supplement_adherence: 0.85
     vestibular: {sot_base: 79, tandem_base: 9.0, susceptibility: 1.45, tau_days: 4.5}
+    lsah: {bmd_hip: 1.08, vo2peak: 48.0, vitd_serum: 35, hemoglobin: 15.1}
     note: Scripted dehydration episode and a high-workload week. First flight, slow vestibular recovery.
   - id: c3
-    name: Yuki Tanaka
+    name: Sofia Lindqvist
     role: Flight Engineer
     role_tr: Uçuş Mühendisi
-    mass_kg: 61
-    hr_rest: 60
-    water_habit_l: 2.9
-    urine: {calcium: 230, citrate: 520, oxalate: 33, uric_acid: 560, ph: 5.95, creatinine: 1200, sodium: 160, potassium: 66, magnesium: 110}
-    response_factor: 0.25
-    ared_squat_kg: 95
-    t2_speed_kmh: 10.0
-    cevis_watts: 130
-    sleep_h: 7.3
-    pvt_base_ms: 250
+    sex: F
+    birth: "1984-11"
     flights: 1
-    vestibular: {sot_base: 82, tandem_base: 9.4, susceptibility: 1.0, tau_days: 3.0}
-    note: Poor responder to potassium citrate (protocol started day 12) and a poor-sleep week (slower reaction times).
+    last_dxa_year: 2024
+    mass_kg: 60
+    hr_rest: 61
+    water_habit_l: 2.9
+    urine: {calcium: 225, citrate: 530, oxalate: 33, uric_acid: 570, ph: 5.95, creatinine: 1150, sodium: 158, potassium: 64, magnesium: 108}
+    response_factor: 0.25
+    ared_squat_kg: 92
+    t2_speed_kmh: 10.2
+    cevis_watts: 128
+    sleep_h: 7.3
+    pvt_base_ms: 248
+    vitd_supplement_adherence: 0.3
+    vestibular: {sot_base: 81, tandem_base: 9.3, susceptibility: 1.0, tau_days: 3.0}
+    lsah: {bmd_hip: 0.95, vo2peak: 44.0, vitd_serum: 28, hemoglobin: 13.0}
+    note: Poor responder to potassium citrate (protocol started day 12), a poor-sleep week, and often skips the vitamin D tablet.
   - id: c4
-    name: Sam Novak
+    name: Kenji Watanabe
     role: Mission Specialist
     role_tr: Görev Uzmanı
-    mass_kg: 82
-    hr_rest: 55
-    water_habit_l: 3.2
-    urine: {calcium: 215, citrate: 690, oxalate: 33, uric_acid: 720, ph: 6.25, creatinine: 1800, sodium: 190, potassium: 78, magnesium: 125}
+    sex: M
+    birth: "1975-06"
+    flights: 3
+    last_dxa_year: 2024
+    mass_kg: 76
+    hr_rest: 54
+    water_habit_l: 3.1
+    urine: {calcium: 220, citrate: 680, oxalate: 34, uric_acid: 700, ph: 6.20, creatinine: 1650, sodium: 185, potassium: 76, magnesium: 120}
     response_factor: 1.1
-    ared_squat_kg: 155
-    t2_speed_kmh: 12.0
-    cevis_watts: 200
-    sleep_h: 7.1
-    pvt_base_ms: 265
+    ared_squat_kg: 150
+    t2_speed_kmh: 11.5
+    cevis_watts: 190
+    sleep_h: 7.0
+    pvt_base_ms: 268
+    vitd_supplement_adherence: 0.9
+    vestibular: {sot_base: 77, tandem_base: 8.8, susceptibility: 0.9, tau_days: 3.2}
+    lsah: {bmd_hip: 1.02, vo2peak: 40.0, vitd_serum: 38, hemoglobin: 14.6}
+    note: Two scripted missed-workout blocks (bone-loss rule; larger hip bone loss on the post-flight DXA) and an isolation week. Oldest crew member, third flight.
+  - id: c5
+    name: Ana Ribeiro
+    role: Mission Specialist (crew medical officer)
+    role_tr: Görev Uzmanı (mürettebat sağlık sorumlusu)
+    sex: F
+    birth: "1991-02"
     flights: 1
-    vestibular: {sot_base: 78, tandem_base: 9.0, susceptibility: 1.1, tau_days: 3.5}
-    note: Scripted missed-workout block (drives the bone-loss cross-source rule) and an isolation week.
+    last_dxa_year: 2026
+    mass_kg: 60
+    hr_rest: 59
+    water_habit_l: 3.0
+    urine: {calcium: 200, citrate: 620, oxalate: 31, uric_acid: 540, ph: 6.15, creatinine: 1100, sodium: 160, potassium: 66, magnesium: 112}
+    response_factor: 1.0
+    ared_squat_kg: 88
+    t2_speed_kmh: 10.5
+    cevis_watts: 130
+    sleep_h: 7.4
+    pvt_base_ms: 245
+    vitd_supplement_adherence: 0.95
+    vestibular: {sot_base: 83, tandem_base: 9.5, susceptibility: 1.1, tau_days: 3.2}
+    lsah: {bmd_hip: 1.00, vo2peak: 46.0, vitd_serum: 34, hemoglobin: 13.1}
+    note: Two scheduled spacewalks (days 21 and 29); otherwise the healthy reference crew member.
 
 # Scripted events for the default seed (mission days, inclusive).
 scripted_events:
   - {crew: c3, kind: protocol_start, day: 12, protocol: potassium_citrate}
   - {crew: c4, kind: missed_workouts, start: 20, end: 34}
+  - {crew: c4, kind: missed_workouts, start: 100, end: 120}
   - {crew: c2, kind: dehydration, start: 26, end: 32}
   - {crew: c3, kind: poor_sleep, start: 27, end: 33}
   - {crew: c2, kind: high_workload, start: 27, end: 33}
   - {crew: c4, kind: isolation, start: 24, end: 33}
+  - {crew: c5, kind: eva, day: 21}
+  - {crew: c5, kind: eva, day: 29}
 
 # Events that can be injected from the lab-team demo panel.
 injectable_events:
@@ -1146,6 +1198,76 @@ metrics:
     meaning_tr: 0 = yalnızca yardımla ... 4 = araç kullanma onayına hazır. Denge, tandem yürüyüş ve baş dönmesi sonuçlarından belirlenir.
     rules: []
 
+  # --- LSAH clinical tests (periodic: only on the test days in lsah.mission_tests) ---
+  bmd_hip:
+    label: Hip bone density (DXA)
+    label_tr: Kalça kemik yoğunluğu (DXA)
+    unit: g/cm²
+    group: lsah
+    device: dxa
+    decimals: 3
+    direction: low_bad
+    min_sd: 0.01
+    ewma_alpha: 1.0
+    baseline_min_n: 1
+    stale_days: 60
+    meaning: Bone mineral density at the hip, measured by DXA before launch and after landing. Weightlessness removes the load bone needs.
+    meaning_tr: Fırlatmadan önce ve inişten sonra DXA ile ölçülen kalça kemik mineral yoğunluğu. Ağırlıksızlık kemiğin ihtiyaç duyduğu yükü ortadan kaldırır.
+    rules:
+      - {type: pct_below, value: 5, level: amber, rec: resume_resistance, source: *sim, verified: false}
+      - {type: pct_below, value: 7.5, level: red, rec: contact_surgeon, source: *sim, verified: false}
+  vo2peak:
+    label: Aerobic capacity (VO2peak)
+    label_tr: Aerobik kapasite (VO2peak)
+    unit: ml/kg/min
+    unit_tr: ml/kg/dk
+    group: lsah
+    device: gxt
+    decimals: 1
+    direction: low_bad
+    min_sd: 1.5
+    ewma_alpha: 1.0
+    baseline_min_n: 1
+    stale_days: 40
+    meaning: Highest oxygen use in a graded exercise test on the CEVIS cycle. It falls in flight without enough cardio exercise.
+    meaning_tr: CEVIS bisikletinde kademeli egzersiz testinde ölçülen en yüksek oksijen kullanımı. Yeterli kardiyo yapılmazsa uçuşta düşer.
+    rules:
+      - {type: pct_below, value: 10, level: amber, rec: resume_exercise, source: *sim, verified: false}
+      - {type: pct_below, value: 20, level: red, rec: contact_surgeon, source: *sim, verified: false}
+  vitd_serum:
+    label: Serum vitamin D (25-OH)
+    label_tr: Serum D vitamini (25-OH)
+    unit: ng/mL
+    group: lsah
+    device: blood_lab
+    decimals: 0
+    direction: low_bad
+    min_sd: 3
+    ewma_alpha: 1.0
+    baseline_min_n: 1
+    stale_days: 40
+    meaning: Vitamin D in the blood. With no sunlight in flight it comes only from food and the daily tablet.
+    meaning_tr: Kandaki D vitamini. Uçuşta güneş ışığı olmadığından yalnızca besinden ve günlük tabletten gelir.
+    rules:
+      - {type: below, value: 30, level: amber, rec: vitd_supplement, source: *clinical, verified: false}
+      - {type: below, value: 20, level: red, rec: vitd_supplement, source: *clinical, verified: false}
+  hemoglobin:
+    label: Hemoglobin
+    label_tr: Hemoglobin
+    unit: g/dL
+    group: lsah
+    device: blood_lab
+    decimals: 1
+    direction: low_bad
+    min_sd: 0.4
+    ewma_alpha: 1.0
+    baseline_min_n: 1
+    stale_days: 40
+    meaning: The oxygen-carrying protein in red blood cells. Red-cell mass drops in flight ("space anemia").
+    meaning_tr: Kırmızı kan hücrelerinde oksijen taşıyan protein. Uçuşta kırmızı hücre kütlesi azalır ("uzay anemisi").
+    rules:
+      - {type: pct_below, value: 10, level: amber, rec: contact_surgeon, source: *sim, verified: false}
+
   # --- Exercise (ARED, T2, CEVIS) ---
   ex_total_min:
     label: Exercise today
@@ -1494,6 +1616,11 @@ recommendations:
     text_tr: Aşama aşama ayağa kalk - önce bir dakika otur, su iç, bacak kaslarını sık.
     source: *sim
     verified: false
+  vitd_supplement:
+    text: Take the daily vitamin D tablet (800 IU) with a meal; the flight surgeon will recheck it at the next blood draw.
+    text_tr: Günlük D vitamini tabletini (800 IU) bir öğünle al; uçuş hekimi bir sonraki kan alımında yeniden kontrol edecek.
+    source: *clinical
+    verified: false
   prelanding_training:
     text: Do your pre-landing balance training. It shortens balance recovery after landing.
     text_tr: İniş öncesi denge antrenmanını yap. İnişten sonra dengenin toparlanmasını kısaltır.
@@ -1545,6 +1672,492 @@ nutrition_targets:
   sodium_mg: {value: 3500, max: true, source: *clinical, verified: false}
   calcium_mg: {value: 1000, source: *clinical, verified: false}
   vitd_iu: {value: 800, source: *clinical, verified: false}
+
+# ---------------------------------------------------------------------------
+# LSAH - Lifetime Surveillance of Astronaut Health (NASA Life Sciences Portal,
+# https://nlsp.nasa.gov/resources/lsah). LSAH holds real astronauts' medical
+# records; they are protected by the Privacy Act and HIPAA and released only as
+# grouped data or through an approved data request, so this app uses NO real
+# astronaut values. What it takes from LSAH is the structure: which tests exist,
+# in which mission phase they are done, and the annual-exam schedule.
+# ---------------------------------------------------------------------------
+lsah:
+  source: "NASA Life Sciences Portal - LSAH: Medical Data Available for Request (https://nlsp.nasa.gov/doc/Medical%20Data%20Available%20for%20Request.xlsx)"
+  verified: true
+  catalog:   # every LSAH data category, as listed in NASA's file (flags: pre / in-flight / post-flight / annual)
+    - id: 1
+      title: "Non-Public Domain Photo/ Video of medical / behavioral mission activities"
+      title_tr: "Tıbbi / davranışsal görev etkinliklerinin kamuya açık olmayan fotoğraf ve videoları"
+      variables: "Imagery of blood draws or other medical procedures, exercise sessions, etc."
+      variables_tr: "Kan alımı, diğer tıbbi işlemler, egzersiz seansları vb. görüntüleri"
+      phases: {pre: true, in: true, post: true, annual: ""}
+      mrid: "N/A"
+      app_metrics: []
+    - id: 2
+      title: "Clinical Assessment"
+      title_tr: "Klinik değerlendirme"
+      variables: "Diagnoses; Vitals, Head and face, ENT, Eyes, Neck, Pulmonary, Abdomen & Pelvic, Rectum, Genitourinary, Breasts, Extremities, Spine, Skin, Neurologic findings"
+      variables_tr: "Tanılar; yaşamsal bulgular, baş-yüz, KBB, göz, boyun, akciğer, karın ve pelvis, rektum, ürogenital, meme, ekstremiteler, omurga, deri, nörolojik bulgular"
+      phases: {pre: true, in: false, post: true, annual: "yes"}
+      mrid: "1.1, MR009S/L, MSD-MO-044, MSD-MO-045"
+      app_metrics: ["hr_rest", "bp_sys", "bp_dia", "resp_rate", "core_temp", "spo2"]
+    - id: 3
+      title: "Inflight (CMO) Health Status & Pre/Post EVA Evaluations"
+      title_tr: "Uçuşta (CMO) sağlık durumu ve EVA öncesi/sonrası değerlendirmeler"
+      variables: "Vitals, Med history, Physical exam, Blood chemistry, Urinalysis, Pulmonary"
+      variables_tr: "Yaşamsal bulgular, tıbbi öykü, fizik muayene, kan kimyası, idrar tahlili, akciğer"
+      phases: {pre: false, in: true, post: false, annual: ""}
+      mrid: "1.2, 6.1, MR018L, MSD-MO-034"
+      app_metrics: ["hr_rest", "bp_sys", "core_temp", "spo2"]
+    - id: 4
+      title: "Laboratory Testing (data from blood and urine samples)"
+      title_tr: "Laboratuvar testleri (kan ve idrar örnekleri)"
+      variables: "Hematology, Chemistry profile, Thyroid function, Iron profile, Lipid profile, C-reactive protein, Renal stone risk, Vitamin D status, Diabetes screening (glucose, HbA1C), Prostate screening (PSA) if applicable"
+      variables_tr: "Hematoloji, kimya profili, tiroit fonksiyonu, demir profili, lipit profili, C-reaktif protein, böbrek taşı riski, D vitamini düzeyi, diyabet taraması (glukoz, HbA1c), uygunsa prostat taraması (PSA)"
+      phases: {pre: true, in: false, post: true, annual: "yes"}
+      mrid: "2.1, MR010S/L"
+      app_metrics: ["hemoglobin", "vitd_serum", "u_calcium", "u_citrate", "u_ph", "u_volume", "caox_ss"]
+    - id: 5
+      title: "Infectious Disease Screenings"
+      title_tr: "Enfeksiyon hastalığı taramaları"
+      variables: "For conditions such as MRSA, tuberculosis, H. pylori, etc. using methods such as nasal swabs, breath, blood, or stool samples, skin tests, chest x-rays, etc."
+      variables_tr: "MRSA, tüberküloz, H. pylori vb.; burun sürüntüsü, nefes, kan veya dışkı örnekleri, deri testleri, akciğer grafisi gibi yöntemlerle"
+      phases: {pre: true, in: false, post: true, annual: "yes"}
+      mrid: "2.2, 2.3, 2.4, MR021S/L, MSD-MO-001"
+      app_metrics: []
+    - id: 6
+      title: "Ultrasound Imaging"
+      title_tr: "Ultrason görüntüleme"
+      variables: "Abdominal, Retroperitoneal, Pelvic, Thyroid, Heart, Carotid artery (started Nov2009)"
+      variables_tr: "Karın, retroperiton, pelvis, tiroit, kalp, karotis arter (Kasım 2009'dan itibaren)"
+      phases: {pre: true, in: false, post: false, annual: ""}
+      mrid: "1.12, MR015L, MSD-MO-049"
+      app_metrics: []
+    - id: 7
+      title: "Other Imaging"
+      title_tr: "Diğer görüntülemeler"
+      variables: "Brain MRI / MRA (started Nov2009), Coronary Artery Calcium Scan, CT scans, X-rays, etc."
+      variables_tr: "Beyin MR / MRA (Kasım 2009'dan itibaren), koroner arter kalsiyum taraması, BT, röntgen vb."
+      phases: {pre: true, in: false, post: false, annual: ""}
+      mrid: "1.15 (Brain)"
+      app_metrics: []
+    - id: 8
+      title: "Photodocumentation of Medical Issues"
+      title_tr: "Tıbbi sorunların fotoğrafla kaydı"
+      variables: "Visual images of skin, injuries, other medical problems"
+      variables_tr: "Deri, yaralanma ve diğer tıbbi sorunların görüntüleri"
+      phases: {pre: true, in: true, post: true, annual: "yes"}
+      mrid: "1.14, MR076S/L, MSD-MO-017, MSD-MO-020"
+      app_metrics: []
+    - id: 9
+      title: "Family Medical History"
+      title_tr: "Aile tıbbi öyküsü"
+      variables: "Family medical history as pertains only to risk of chronic disease (e.g., cancer, cardiovascular disease); no psychological data available"
+      variables_tr: "Yalnızca kronik hastalık riskiyle ilgili aile öyküsü (ör. kanser, kalp-damar hastalığı); psikolojik veri yok"
+      phases: {pre: false, in: false, post: false, annual: "yes"}
+      mrid: ""
+      app_metrics: []
+    - id: 10
+      title: "Personal Medical History"
+      title_tr: "Kişisel tıbbi öykü"
+      variables: "Medical history prior to astronaut selection exams"
+      variables_tr: "Astronot seçim muayenelerinden önceki tıbbi öykü"
+      phases: {pre: false, in: false, post: false, annual: "yes"}
+      mrid: ""
+      app_metrics: []
+    - id: 11
+      title: "Occupational Health History"
+      title_tr: "Mesleki sağlık öyküsü"
+      variables: "Job-related hazard exposures (such as radiation, chemicals, biologicals) or injuries/illnesses"
+      variables_tr: "İşle ilgili tehlikelere maruziyet (radyasyon, kimyasal, biyolojik) veya yaralanma/hastalıklar"
+      phases: {pre: false, in: false, post: false, annual: "yes"}
+      mrid: ""
+      app_metrics: []
+    - id: 12
+      title: "Allergy List"
+      title_tr: "Alerji listesi"
+      variables: "Allergies and sensitivities"
+      variables_tr: "Alerjiler ve duyarlılıklar"
+      phases: {pre: false, in: false, post: false, annual: "yes"}
+      mrid: ""
+      app_metrics: []
+    - id: 13
+      title: "Problems/ Diagnoses List"
+      title_tr: "Sorun / tanı listesi"
+      variables: "Listing of Reported Medical Problems"
+      variables_tr: "Bildirilen tıbbi sorunların listesi"
+      phases: {pre: false, in: false, post: false, annual: "yes"}
+      mrid: ""
+      app_metrics: []
+    - id: 14
+      title: "Risk Factors/Lifestyle Questionnaire"
+      title_tr: "Risk faktörleri / yaşam tarzı anketi"
+      variables: "Diet/exercise habits, Caffeine, Tobacco, & Alcohol use, Sun exposure, Framingham Risk Score"
+      variables_tr: "Beslenme/egzersiz alışkanlıkları, kafein, tütün ve alkol kullanımı, güneşe maruziyet, Framingham risk skoru"
+      phases: {pre: false, in: false, post: false, annual: "yes"}
+      mrid: ""
+      app_metrics: []
+    - id: 15
+      title: "Selection / Qualifying Information"
+      title_tr: "Seçim / yeterlilik bilgileri"
+      variables: "Exams performed as part of astronaut selection, FAA certificate status, Diver certification"
+      variables_tr: "Astronot seçimi kapsamında yapılan muayeneler, FAA sertifika durumu, dalgıç sertifikası"
+      phases: {pre: false, in: false, post: false, annual: "yes"}
+      mrid: "JSC-50667, Vol. A; OCHMO 80771201MED.doc"
+      app_metrics: []
+    - id: 16
+      title: "Medication and Supplement recommendations and usage"
+      title_tr: "İlaç ve takviye önerileri ve kullanımı"
+      variables: "Records of physician-recommended medications and usage. Data such as medication, dose, frequency, effectiveness may exist in the EMR or inflight medical records (PMC, medication kits, flight surgeon logs, etc.)"
+      variables_tr: "Hekimin önerdiği ilaçlar ve kullanımı: ilaç, doz, sıklık, etkinlik (elektronik kayıt veya uçuştaki tıbbi kayıtlar)"
+      phases: {pre: true, in: true, post: true, annual: "yes"}
+      mrid: ""
+      app_metrics: ["u_citrate", "u_potassium"]
+    - id: 17
+      title: "Consultant Records"
+      title_tr: "Konsültan kayıtları"
+      variables: "Records from consultants or other external medical providers (such as orthopedics, cardiology, neurology, ophthalmology)"
+      variables_tr: "Dış uzman kayıtları (ortopedi, kardiyoloji, nöroloji, göz vb.)"
+      phases: {pre: true, in: false, post: true, annual: "yes"}
+      mrid: ""
+      app_metrics: []
+    - id: 18
+      title: "Clinical Data Derived from Private Medical Conferences"
+      title_tr: "Özel tıbbi görüşmelerden elde edilen klinik veriler"
+      variables: "Medication logs, diagnoses (e.g. headache), etc."
+      variables_tr: "İlaç kayıtları, tanılar (ör. baş ağrısı) vb."
+      phases: {pre: false, in: true, post: false, annual: ""}
+      mrid: "1.3, MR017S/L, MSD-MO-040"
+      app_metrics: ["feeling", "stress", "tiredness", "connection"]
+    - id: 19
+      title: "Postflight Medical, EVA Debriefs"
+      title_tr: "Uçuş sonrası tıbbi ve EVA bilgilendirme görüşmeleri"
+      variables: "Comments regarding inflight medical events, fluid loading, noise, sleep, re-entry issues, etc."
+      variables_tr: "Uçuştaki tıbbi olaylar, sıvı yüklemesi, gürültü, uyku, atmosfere giriş sorunları vb. hakkında notlar"
+      phases: {pre: false, in: false, post: true, annual: ""}
+      mrid: "MR025L, MSD-MO-046"
+      app_metrics: []
+    - id: 20
+      title: "Ophthalmology Examination and Imaging"
+      title_tr: "Göz muayenesi ve görüntüleme"
+      variables: "Questionnaire, Visual acuity, Refraction, Automated visual fields, Amsler grid, Pupil reflexes, Extraocular muscle eval, Biomicroscopy, Dilated fundoscopy, Retinal photography, Tonometry, OCT, MRI, A-scan & 2-D ultrasound"
+      variables_tr: "Anket, görme keskinliği, kırma kusuru, otomatik görme alanı, Amsler ızgarası, pupil refleksleri, göz kası değerlendirmesi, biyomikroskopi, dilate fundus muayenesi, retina fotoğrafı, tonometri, OCT, MR, A-tarama ve 2B ultrason"
+      phases: {pre: true, in: true, post: true, annual: "yes"}
+      mrid: "1.10, MR014S/L"
+      app_metrics: []
+    - id: 21
+      title: "Audiometry"
+      title_tr: "Odyometri"
+      variables: "Audiogram: hearing threshold at specific frequencies"
+      variables_tr: "Odyogram: belirli frekanslarda işitme eşiği"
+      phases: {pre: true, in: true, post: true, annual: ""}
+      mrid: "1.8, MR013S/L, MR086L"
+      app_metrics: []
+    - id: 22
+      title: "Dental Exam"
+      title_tr: "Diş muayenesi"
+      variables: "Dental history & exam, Periodontal eval, Oral cancer screening"
+      variables_tr: "Diş öyküsü ve muayene, periodontal değerlendirme, ağız kanseri taraması"
+      phases: {pre: true, in: false, post: false, annual: "yes"}
+      mrid: "1.9, MR012L, MSD-MO-043"
+      app_metrics: []
+    - id: 23
+      title: "Dental Panorex"
+      title_tr: "Panoramik diş röntgeni"
+      variables: "Full dental orthopantomogram x-ray"
+      variables_tr: "Tam ortopantomogram"
+      phases: {pre: true, in: false, post: false, annual: "yes"}
+      mrid: "1.9.1"
+      app_metrics: []
+    - id: 24
+      title: "24-Hour Ambulatory ECG Monitoring"
+      title_tr: "24 saatlik ambulatuvar EKG izlemi"
+      variables: "3-lead ECG (Holter)"
+      variables_tr: "3 derivasyonlu EKG (Holter)"
+      phases: {pre: false, in: false, post: false, annual: ""}
+      mrid: "1.7, MR071L, MSD-MO-013"
+      app_metrics: []
+    - id: 25
+      title: "Pulmonary Function"
+      title_tr: "Solunum fonksiyonu"
+      variables: "Lung function (Tidal Volume, etc.)"
+      variables_tr: "Akciğer fonksiyonu (tidal hacim vb.)"
+      phases: {pre: true, in: false, post: true, annual: "yes"}
+      mrid: "MR029L"
+      app_metrics: []
+    - id: 26
+      title: "Resting ECG"
+      title_tr: "İstirahat EKG'si"
+      variables: "12-lead ECG"
+      variables_tr: "12 derivasyonlu EKG"
+      phases: {pre: true, in: false, post: true, annual: "yes"}
+      mrid: "1.6, MR011L, MR076L, MSD-MO-031"
+      app_metrics: []
+    - id: 27
+      title: "Stand Test / Tilt Test"
+      title_tr: "Ayağa kalkma / eğik masa testi"
+      variables: "3-lead ECG, BP, U/S images of aorta, Stroke volume"
+      variables_tr: "3 derivasyonlu EKG, kan basıncı, aort ultrason görüntüleri, atım hacmi"
+      phases: {pre: true, in: false, post: true, annual: ""}
+      mrid: "MR001S/L, MSD-MO-006, MSD-MO-007"
+      app_metrics: ["ortho_hr_rise"]
+    - id: 28
+      title: "Aerobic Functional Capacity (treadmill or cycle ergometer)"
+      title_tr: "Aerobik fonksiyonel kapasite (koşu bandı veya bisiklet ergometresi)"
+      variables: "Max heart rate, Max VO2, Blood pressure, Work load, Perception of effort, 3- or 12-lead ECG"
+      variables_tr: "En yüksek nabız, maksimum VO2, kan basıncı, iş yükü, algılanan efor, 3 veya 12 derivasyonlu EKG"
+      phases: {pre: true, in: true, post: true, annual: "yes"}
+      mrid: "4.1, 4.3, MR080L, MR006L, MSD-MO-023"
+      app_metrics: ["vo2peak"]
+    - id: 29
+      title: "Anthropometric Measurements"
+      title_tr: "Antropometrik ölçümler"
+      variables: "Height, weight, BMI, body joint and segment height, length, breadth, circumference; range of motion, reach; body segment volumes, mass properties, center of mass location"
+      variables_tr: "Boy, kilo, BKİ, eklem ve segment yükseklik/uzunluk/genişlik/çevre; hareket açıklığı, uzanma; segment hacimleri, kütle özellikleri, kütle merkezi"
+      phases: {pre: false, in: false, post: false, annual: ""}
+      mrid: "JSC-50667, Vol. A; OCHMO 80771201MED.doc"
+      app_metrics: []
+    - id: 30
+      title: "Isokinetic Testing"
+      title_tr: "İzokinetik test"
+      variables: "Muscle strength (peak torque) and endurance (total work)"
+      variables_tr: "Kas kuvveti (tepe tork) ve dayanıklılık (toplam iş)"
+      phases: {pre: true, in: false, post: true, annual: ""}
+      mrid: "5.3, MR079L, MSD-MO-038"
+      app_metrics: []
+    - id: 31
+      title: "Functional Fitness Assessment"
+      title_tr: "Fonksiyonel kondisyon değerlendirmesi"
+      variables: "Skeletal muscle strength & Endurance, Flexibility, Agility, Balance, Hand grip"
+      variables_tr: "İskelet kası kuvveti ve dayanıklılığı, esneklik, çeviklik, denge, el kavrama"
+      phases: {pre: true, in: false, post: true, annual: "yes"}
+      mrid: "5.1, MR078L, MSD-MO-037"
+      app_metrics: []
+    - id: 32
+      title: "Handgrip Dynamometry"
+      title_tr: "El kavrama dinamometrisi"
+      variables: "Hand strength and endurance"
+      variables_tr: "El kuvveti ve dayanıklılığı"
+      phases: {pre: true, in: true, post: false, annual: ""}
+      mrid: "MR081L"
+      app_metrics: []
+    - id: 33
+      title: "On-orbit Strength & Conditioning Monitoring"
+      title_tr: "Yörüngede kuvvet ve kondisyon izlemi"
+      variables: "Inflight aerobic (treadmill,cycle ergometer, etc.) & Resistive (ARED, hand grip, etc.) exercise activity"
+      variables_tr: "Uçuştaki aerobik (koşu bandı, bisiklet vb.) ve direnç (ARED, el kavrama vb.) egzersizleri"
+      phases: {pre: false, in: true, post: false, annual: ""}
+      mrid: "5.2, MR019L MR082L, MSD-MO-022"
+      app_metrics: ["ared_squat_kg", "t2_speed_kmh", "cevis_watts", "ex_week_min", "hr_exercise"]
+    - id: 34
+      title: "In-flight Calf Volume Measurement"
+      title_tr: "Uçuşta baldır hacmi ölçümü"
+      variables: "Calf volume"
+      variables_tr: "Baldır hacmi"
+      phases: {pre: false, in: true, post: false, annual: ""}
+      mrid: "5.4"
+      app_metrics: []
+    - id: 35
+      title: "Postflight Rehabilitation"
+      title_tr: "Uçuş sonrası rehabilitasyon"
+      variables: "Physical fitness assessments"
+      variables_tr: "Fiziksel kondisyon değerlendirmeleri"
+      phases: {pre: false, in: false, post: true, annual: ""}
+      mrid: "MR026L"
+      app_metrics: ["ex_total_min", "vest_sot"]
+    - id: 36
+      title: "Bone Densitometry (DXA)"
+      title_tr: "Kemik yoğunluğu ölçümü (DXA)"
+      variables: "Measurements of whole body, Lumbar spine, Proximal femora/ hips, Heels, Forearm, etc., Fat free body mass"
+      variables_tr: "Tüm vücut, bel omurgası, kalça, topuk, ön kol vb. ölçümleri; yağsız vücut kütlesi"
+      phases: {pre: true, in: false, post: true, annual: "Every 3 yr."}
+      mrid: "1.11, MR035L, MSD-MO-030"
+      app_metrics: ["bmd_hip"]
+    - id: 37
+      title: "Colonoscopy"
+      title_tr: "Kolonoskopi"
+      variables: "Colonoscopy findings"
+      variables_tr: "Kolonoskopi bulguları"
+      phases: {pre: false, in: false, post: false, annual: "Age-based"}
+      mrid: ""
+      app_metrics: []
+    - id: 38
+      title: "Reproductive & Urological Health Exam"
+      title_tr: "Üreme ve ürolojik sağlık muayenesi"
+      variables: "Females: Genital exam, Pap smear, Mammogram; Males: Genital, rectal, prostate exam"
+      variables_tr: "Kadın: jinekolojik muayene, Pap smear, mamografi; Erkek: genital, rektal, prostat muayenesi"
+      phases: {pre: false, in: false, post: false, annual: "yes"}
+      mrid: ""
+      app_metrics: []
+    - id: 39
+      title: "Nutritional Assessments"
+      title_tr: "Beslenme değerlendirmeleri"
+      variables: "Dietary intake, body composition, 48-hour urine measurements"
+      variables_tr: "Besin alımı, vücut kompozisyonu, 48 saatlik idrar ölçümleri"
+      phases: {pre: true, in: true, post: true, annual: "yes"}
+      mrid: "8.1, N3.02 MR016L, MSD-MO-025"
+      app_metrics: ["kcal", "protein_g", "water_l", "sodium_mg", "calcium_mg", "vitd_iu"]
+    - id: 40
+      title: "In-flight Body Mass Measurement"
+      title_tr: "Uçuşta vücut kütlesi ölçümü"
+      variables: "Body mass using Mass Measurement Device"
+      variables_tr: "Kütle ölçüm cihazıyla vücut kütlesi"
+      phases: {pre: false, in: true, post: false, annual: ""}
+      mrid: "1.13, MR024L, MSD-MO-047"
+      app_metrics: ["mass_kg"]
+    - id: 41
+      title: "Neurovestibular Platform Test"
+      title_tr: "Nörovestibüler platform testi"
+      variables: "Balance control, Sensory-motor integration"
+      variables_tr: "Denge kontrolü, duyu-motor entegrasyonu"
+      phases: {pre: true, in: false, post: true, annual: ""}
+      mrid: "1.5, MR042S/L, MSD-MO-005"
+      app_metrics: ["vest_sot", "vest_tandem"]
+    - id: 42
+      title: "Neurocognitive Assessment"
+      title_tr: "Nörobilişsel değerlendirme"
+      variables: "WinSCAT data"
+      variables_tr: "WinSCAT verileri"
+      phases: {pre: true, in: true, post: true, annual: ""}
+      mrid: "7.6, MR085L, MSD-MO-016"
+      app_metrics: ["pvt_rt_ms", "pvt_lapses"]
+    - id: 43
+      title: "Sleep Assessments"
+      title_tr: "Uyku değerlendirmeleri"
+      variables: "Actiwatch, subjective sleep assessments (e.g., sleep logs)"
+      variables_tr: "Actiwatch, öznel uyku değerlendirmeleri (ör. uyku günlüğü)"
+      phases: {pre: true, in: true, post: true, annual: ""}
+      mrid: "N3.07"
+      app_metrics: ["sleep_h", "sleep_quality", "light_lux"]
+    - id: 44
+      title: "Biodosimetry"
+      title_tr: "Biyodozimetri"
+      variables: "Whole body radiation dose equivalent, lymphocyte chromosomal aberrations"
+      variables_tr: "Tüm vücut radyasyon doz eşdeğeri, lenfosit kromozom anomalileri"
+      phases: {pre: true, in: false, post: true, annual: ""}
+      mrid: "3.2, N3.05/4, MR003L, MSD-MO-003"
+      app_metrics: []
+    - id: 45
+      title: "In-flight Radiation Monitoring"
+      title_tr: "Uçuşta radyasyon izlemi"
+      variables: "Radiation doses from crew worn or area dosimeters, TEPC, etc."
+      variables_tr: "Kişisel veya alan dozimetreleri, TEPC vb. ile radyasyon dozları"
+      phases: {pre: false, in: true, post: false, annual: ""}
+      mrid: "3.1, MR004S/L, MR005S/L, MR030L, MSD-MO-008, MSD-MO-035"
+      app_metrics: ["rad_msv", "rad_cum"]
+    - id: 46
+      title: "EVA Arm ergometry (Orlan)"
+      title_tr: "EVA kol ergometrisi (Orlan)"
+      variables: "Work rate, Heart Rate, Duration of exercise"
+      variables_tr: "İş hızı, nabız, egzersiz süresi"
+      phases: {pre: true, in: true, post: false, annual: ""}
+      mrid: "6.3, MR038L"
+      app_metrics: []
+    - id: 47
+      title: "EVA Exercise Prebreathe"
+      title_tr: "EVA egzersizli ön soluma"
+      variables: "Heart rate, oxygen consumption, ECG, exercise workload"
+      variables_tr: "Nabız, oksijen tüketimi, EKG, egzersiz iş yükü"
+      phases: {pre: true, in: true, post: false, annual: ""}
+      mrid: "MR087S, MR087L"
+      app_metrics: []
+    - id: 48
+      title: "EVA Metabolic Task Analysis"
+      title_tr: "EVA metabolik görev analizi"
+      variables: "ECG, VO2, Body temperature (Russian Orlan suit only), Heart rate, Suit CO2 partial pressure, Suit Pressure, Radiation Exposure"
+      variables_tr: "EKG, VO2, vücut sıcaklığı (yalnızca Rus Orlan giysisi), nabız, giysi CO2 kısmi basıncı, giysi basıncı, radyasyon maruziyeti"
+      phases: {pre: true, in: true, post: false, annual: ""}
+      mrid: "6.1"
+      app_metrics: []
+    - id: 49
+      title: "Monitoring during EVA"
+      title_tr: "EVA sırasında izlem"
+      variables: "ECG, Radiation dosimetry, Body temperature"
+      variables_tr: "EKG, radyasyon dozimetrisi, vücut sıcaklığı"
+      phases: {pre: false, in: true, post: false, annual: ""}
+      mrid: "6.2"
+      app_metrics: ["workload_h"]
+    - id: 50
+      title: "Data Collected by or Reported to International Partner Agencies' Physicians"
+      title_tr: "Uluslararası ortak ajansların hekimlerince toplanan veya onlara bildirilen veriler"
+      variables: "Russian tilt tests, audiology, laboratory tests, etc. (applies predominantly to NASA-Mir, early ISS crewmembers)"
+      variables_tr: "Rus eğik masa testleri, odyoloji, laboratuvar testleri vb. (çoğunlukla NASA-Mir ve ilk ISS mürettebatı)"
+      phases: {pre: true, in: true, post: true, annual: ""}
+      mrid: "MO-xx"
+      app_metrics: []
+
+  # Annual medical examination rules (MR089S, JSC 28913). Each item is checked
+  # against the crew member's age and sex for the year of their next birth month.
+  annual_exam:
+    source: "MR089S Annual Medical Examinations, Medical Requirements Integration Documents JSC 28913 (https://nlsp.nasa.gov/doc/MR089S.pdf)"
+    verified: true
+    note: Collected in each astronaut's birth month. The psychological evaluation is due within 3 months of the birth month.
+    note_tr: Her astronotun doğum ayında yapılır. Psikolojik değerlendirme doğum ayını izleyen 3 ay içinde yapılmalıdır.
+    items:
+      - {id: physical, rule: yearly, label: "Physical exam (vital signs lying, sitting and standing, temperature, breathing rate, height, weight)", label_tr: "Fizik muayene (yatarak, oturarak ve ayakta yaşamsal bulgular, ateş, solunum hızı, boy, kilo)"}
+      - {id: labs, rule: yearly, label: "Clinical labs: blood (CBC, chemistry, lipids, ionized calcium, iron panel, TSH, free T4, hs-CRP) and urinalysis; 12-hour fast", label_tr: "Klinik laboratuvar: kan (tam kan sayımı, kimya, lipitler, iyonize kalsiyum, demir paneli, TSH, serbest T4, hs-CRP) ve idrar tahlili; 12 saat açlık"}
+      - {id: psa, rule: yearly, sex: M, min_age: 40, label: "PSA (prostate), men 40 and older", label_tr: "PSA (prostat), 40 yaş ve üzeri erkekler"}
+      - {id: audiometry, rule: yearly, label: "Audiometry (pure-tone hearing thresholds)", label_tr: "Odyometri (saf ses işitme eşikleri)"}
+      - {id: ecg, rule: yearly, label: "Resting 12-lead ECG", label_tr: "İstirahat 12 derivasyonlu EKG"}
+      - {id: optometry, rule: yearly, label: "Optometry exam (visual acuity, refraction, tonometry, dilated fundus exam)", label_tr: "Göz muayenesi (görme keskinliği, kırma kusuru, tonometri, dilate fundus muayenesi)"}
+      - {id: dental, rule: yearly, label: "Dental exam", label_tr: "Diş muayenesi"}
+      - {id: psych, rule: yearly, label: "Psychological evaluation (POMS questionnaire and interview)", label_tr: "Psikolojik değerlendirme (POMS anketi ve görüşme)"}
+      - {id: pap, rule: yearly, sex: F, label: "Pap smear", label_tr: "Pap smear"}
+      - {id: gxt, rule: gxt_age, label: "Graded exercise test (max HR, VO2max): ages 30, 35, 40; every 2 years at 40-50; every year after 50", label_tr: "Kademeli egzersiz testi (en yüksek nabız, VO2max): 30, 35, 40 yaşlarında; 40-50 arası 2 yılda bir; 50'den sonra her yıl"}
+      - {id: dxa, rule: every_3_years, label: "Bone density (DXA) with bone markers, every 3 years", label_tr: "Kemik yoğunluğu (DXA) ve kemik belirteçleri, 3 yılda bir"}
+      - {id: eye3, rule: every_3_years, label: "Threshold visual fields and retinal photography, every 3 years", label_tr: "Eşik görme alanı ve retina fotoğrafı, 3 yılda bir"}
+      - {id: mammo, rule: mammo_age, sex: F, label: "Mammography: every 2 years at 40-50, every year after 50", label_tr: "Mamografi: 40-50 arası 2 yılda bir, 50'den sonra her yıl"}
+      - {id: procto, rule: at_ages, ages: [40, 45, 55, 65, 70], label: "Proctosigmoidoscopy at ages 40, 45, 55, 65 and 70", label_tr: "Proktosigmoidoskopi: 40, 45, 55, 65 ve 70 yaşlarında"}
+      - {id: colon, rule: at_ages, ages: [50, 60], label: "Colonoscopy at ages 50 and 60", label_tr: "Kolonoskopi: 50 ve 60 yaşlarında"}
+
+  # When this app runs four LSAH-category tests during the mission (days relative
+  # to launch; r_days relative to landing). The categories are LSAH's; the exact
+  # days are this demo's choice.
+  mission_tests:
+    source: *sim
+    verified: false
+    tests:
+      - id: blood_draw
+        category_id: 4
+        label: LSAH blood draw (vitamin D, hemoglobin)
+        label_tr: LSAH kan alımı (D vitamini, hemoglobin)
+        detail: 15 min. A crewmate draws the blood; the sample is spun in the centrifuge and frozen.
+        detail_tr: 15 dk. Kanı bir ekip arkadaşı alır; örnek santrifüjde ayrılır ve dondurulur.
+        metrics: [vitd_serum, hemoglobin]
+        days: [-9, 30, 60, 90, 120, 150, 175]
+        r_days: [0, 14]
+      - id: gxt
+        category_id: 28
+        label: Graded exercise test on CEVIS (VO2peak)
+        label_tr: CEVIS'te kademeli egzersiz testi (VO2peak)
+        detail: 30 min. Pedal while the load rises every minute until you cannot keep the pace.
+        detail_tr: 30 dk. Yük her dakika artarken tempoyu sürdüremeyene kadar pedal çevir.
+        metrics: [vo2peak]
+        days: [-7, 15, 45, 75, 105, 135, 165]
+        r_days: [5, 15]
+      - id: dxa
+        category_id: 36
+        label: Bone density scan (DXA)
+        label_tr: Kemik yoğunluğu taraması (DXA)
+        detail: 60 min at the clinic. Lie still on the scanner table.
+        detail_tr: Klinikte 60 dk. Tarayıcı masasında hareketsiz uzan.
+        metrics: [bmd_hip]
+        days: [-8]
+        r_days: [7]
+
+  # How the four LSAH tests change in the simulation (assumptions).
+  model:
+    source: *sim
+    verified: false
+    bmd_loss_pct_per_month: 0.4         # hip bone density lost in flight with full resistance exercise
+    bmd_loss_extra_pct_per_month: 3.0   # extra loss in proportion to missed ARED (bone deficit)
+    vo2_inflight_drop: 0.08             # early in-flight drop, fading over ~40 days with exercise
+    vo2_postflight_drop: 0.10           # drop on landing day, fading over ~7 days
+    vitd_inflight_floor_ng_ml: 15       # steady state with no vitamin D intake and no sunlight
+    vitd_ng_ml_per_100_iu: 2.0          # steady-state rise per 100 IU/day eaten
+    vitd_tau_days: 45
+    vitd_tablet_iu: 800
+    hb_inflight_drop: 0.06              # "space anemia": share of hemoglobin lost early in flight
 
 # ---------------------------------------------------------------------------
 # Ground link. Delays run in REAL time (not on the fast mission clock) so the

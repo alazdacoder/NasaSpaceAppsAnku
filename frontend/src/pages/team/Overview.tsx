@@ -22,9 +22,9 @@ interface Overview {
 }
 interface Packet { seq: number; crew_id: string | null; kind: string; status: string; age_s: number; arrives_in_s: number | null }
 
-const CREW_COLORS = ["#38bdf8", "#a78bfa", "#34d399", "#f472b6"];
+const CREW_COLORS = ["#38bdf8", "#a78bfa", "#34d399", "#f472b6", "#fbbf24"];
 const TREND_CHOICES = ["u_volume", "caox_ss", "u_calcium", "u_citrate", "u_ph", "hr_rest", "sleep_h", "core_temp", "ex_week_min", "ared_week_min",
-  "water_l", "kcal", "kcal_out", "energy_balance", "mass_kg", "wellbeing", "stress", "pvt_rt_ms", "connection", "vest_sot", "vest_dizzy", "co2_mmhg", "rad_cum", "spo2"];
+  "water_l", "kcal", "kcal_out", "energy_balance", "mass_kg", "wellbeing", "stress", "pvt_rt_ms", "connection", "vest_sot", "vest_dizzy", "vitd_serum", "hemoglobin", "vo2peak", "bmd_hip", "co2_mmhg", "rad_cum", "spo2"];
 
 function corrColor(r: number | null) {
   if (r === null) return "#0f1624";
@@ -329,7 +329,7 @@ export default function TeamOverview() {
           <p className="text-slate-400">{t("Onboard clock {c} — everything below arrived through the ground link.", { c: missionTime(data.onboard_clock) })}</p>
         </div>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
         {data.crew.map((c) => <CrewCard key={c.id} c={c} onOpen={() => { setCrewId(c.id); nav("/team/alerts"); }} />)}
       </div>
 

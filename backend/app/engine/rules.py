@@ -59,7 +59,7 @@ def evaluate_metric(mid: str, mdef: dict, days: list[int], values: list[float], 
     sm = ewma_days(days, values, alpha)
 
     base_vals = [v for d, v in zip(days, values) if d < 0]
-    has_baseline = mdef.get("baseline") != "none" and len(base_vals) >= 3
+    has_baseline = mdef.get("baseline") != "none" and len(base_vals) >= mdef.get("baseline_min_n", 3)
     if has_baseline:
         b_mean, b_sd = mean_sd(base_vals, mdef.get("min_sd", 0.0))
     else:
@@ -118,7 +118,7 @@ def evaluate_metric(mid: str, mdef: dict, days: list[int], values: list[float], 
         "value": latest, "ewma": latest_s, "day": days[-1],
         "baseline_mean": b_mean, "baseline_sd": b_sd, "z": z, "pct": pct, "slope": sl,
         "anomaly": anomaly, "status": status, "triggered": triggered,
-        "stale": days[-1] < today - 2,
+        "stale": days[-1] < today - mdef.get("stale_days", 2),
     }
 
 

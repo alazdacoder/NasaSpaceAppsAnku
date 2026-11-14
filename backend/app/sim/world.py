@@ -15,6 +15,7 @@ from ..db import DB, dumps
 from ..engine.response import protocol_response
 from ..engine.rules import LEVELS, evaluate_crew
 from ..engine.stats import ewma
+from ..engine.lsah import tests_on
 from ..engine.vestibular import readiness_level
 from ..link.groundlink import GroundLink
 from .model import (CrewState, DayInputs, block_kcal, caox_supersaturation, day_schedule, kcal_per_min,
@@ -43,7 +44,8 @@ class World:
         self.adapters = all_sim_adapters() + [ManualAdapter(), CSVImportAdapter()]
         self.adapter_by_id = {a.id: a for a in self.adapters}
         self.landing_day = landing_day(cfg)
-        self.adapter_by_id["posturography"].landing_day = self.landing_day   # type: ignore[attr-defined]
+        for aid in ("posturography", "dxa"):
+            self.adapter_by_id[aid].landing_day = self.landing_day   # type: ignore[attr-defined]
         self.link = GroundLink(db, cfg, real_clock)
         self.link.on_profile_change.append(self._profile_changed)
         self.autopilot = {cid: True for cid in self.crew_ids}
@@ -229,6 +231,8 @@ class World:
             water_task_done=tasks.get("water", {}).get("status") == "done", water_extra_l=water_extra,
             food_entries=food, feeling=feeling, checkin=checkin, pvt=pvt, dizziness=dizziness,
             prelanding_done=did("prelanding"), vest_rehab_done=did("vest_rehab"),
+            lsah_done={t["id"] for t in tests_on(self.cfg, day)
+                       if tasks.get(f"lsah:{t['id']}", {}).get("status") == "done" or autopilot},
             protocols=protocols, doses_confirmed=confirmed, events=self._active_events(crew_id, day),
             profile=self.link.profile, link_delay_s=self.link.delay_s())
 
@@ -316,6 +320,8 @@ class World:
                 status = "auto" if inp.prelanding_done else "missed"
             elif tid == "vest_rehab":
                 status = "auto" if inp.vest_rehab_done else "missed"
+            elif tid.startswith("lsah:"):
+                status = "auto" if tid.split(":", 1)[1] in inp.lsah_done else "missed"
             self.db.execute("UPDATE tasks SET status=? WHERE crew_id=? AND day=? AND task_id=?", (status, cid, day, tid))
 
     def _begin_day(self, day: int, quiet: bool = False) -> None:
@@ -372,6 +378,9 @@ class World:
         add("water", "water", f"Drink {tgt:.1f} L of water", f"{tgt:.1f} L su iç",
             "Target for today's exercise. Keeps urine above 2.5 L/day.",
             "Bugünkü egzersize göre hedef. İdrarı günde 2.5 L'nin üzerinde tutar.", {"target_l": tgt})
+        for t in tests_on(self.cfg, day):
+            add(f"lsah:{t['id']}", "lsah", t["label"], t.get("label_tr", t["label"]), t.get("detail", ""),
+                t.get("detail_tr", t.get("detail", "")), {"test": t["id"], "category_id": t["category_id"]})
         add("checkin", "checkin", "Daily check-in: mood and stress", "Günlük durum bildirimi: ruh hali ve stres",
             "4 quick questions, about 30 seconds.", "4 kısa soru, yaklaşık 30 saniye.")
         if phase == "inflight" and day >= self.landing_day - self.cfg["vestibular"]["prelanding_training_days"]:
@@ -498,8 +507,8 @@ class World:
             r["payload"] = json.loads(r["payload"] or "{}")
             r["title_tr"] = r["payload"].get("title_tr")
             r["detail_tr"] = r["payload"].get("detail_tr")
-        order = {"supplement_start": 0, "fluid": 1, "dizziness": 2, "workout": 3, "vest_rehab": 4, "prelanding": 5,
-                 "supplement": 6, "water": 7, "checkin": 8}
+        order = {"supplement_start": 0, "fluid": 1, "lsah": 2, "dizziness": 2, "workout": 3, "vest_rehab": 4,
+                 "prelanding": 5, "supplement": 6, "water": 7, "checkin": 8}
         rows.sort(key=lambda r: order.get(r["kind"], 9))
         return rows
 

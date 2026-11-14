@@ -155,7 +155,7 @@ def test_balance_drops_on_landing_and_recovers(landed):
         ready = dict(zip(*s["vest_readiness"]))
         assert ready[L + 6] >= ready[L] and ready[L] <= 2
         assert "vest_sot" not in {m for m, (d, _) in s.items() if any(0 <= x < L for x in d)}   # no balance tests in flight
-    # Marco: first flight, high susceptibility -> slowest recovery
+    # Daniel (c2): first flight, high susceptibility -> slowest recovery
     slow = dict(zip(*w.series("c2")["vest_readiness"]))
     fast = dict(zip(*w.series("c1")["vest_readiness"]))
     assert sum(slow[L + i] for i in range(4)) < sum(fast[L + i] for i in range(4))

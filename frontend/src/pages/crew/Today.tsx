@@ -49,7 +49,7 @@ export function TaskRow({ t: task, onConfirm, busy }: { t: Task; onConfirm: () =
             <Button kind="ghost" onClick={() => nav(`/crew/exercise?start=${task.payload.device}`)}>{t("Start live")}</Button>
           )}
           <Button kind={isStart ? "danger" : "ok"} onClick={onConfirm} disabled={busy} className="min-w-[140px]">
-            {isStart ? t("Start & take dose") : task.kind === "workout" || task.kind === "vest_rehab" || task.kind === "prelanding" ? t("Mark done") : t("Confirm")}
+            {isStart ? t("Start & take dose") : ["workout", "vest_rehab", "prelanding", "lsah"].includes(task.kind) ? t("Mark done") : t("Confirm")}
           </Button>
         </div>
       )}

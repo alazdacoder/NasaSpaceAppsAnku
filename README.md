@@ -71,7 +71,7 @@ Every start uses a fresh simulation with the default seed (42) and opens on miss
 | **Today** | Overall status, the top alert with what to do, today's tasks with one confirm tap, energy burned so far, a mood check-in prompt, last night's sleep, the supplement score. After landing: today's readiness level. |
 | **Exercise** | Today's plan with an energy estimate, then a **live workout**: heart rate and **calories burned** update every second. Summary afterwards. |
 | **Energy** | Every activity of the day (sleep, meals, science, maintenance, exercise, spacewalk, family call…) on a timeline with the calories it burns, what is done/now/next, burned vs eaten for 7 days, body mass. |
-| **Body** | Vitals now against "your normal", sleep for 14 nights, kidney health in one word, CO₂ and radiation. |
+| **Body** | Vitals now against "your normal", sleep for 14 nights, kidney health in one word, **medical checkups (LSAH)**: the next tests and the latest results, CO₂ and radiation. |
 | **Food & water** | One-tap water and food logging, the supplement dose, yesterday against target. |
 | **Mind** | Daily check-in (feeling, stress, tiredness, connection), a 10-tap **reaction test**, wellbeing score, tips. Shared only with the flight surgeon and psychologist. |
 | **Return to Earth** | In flight: landing countdown, a personal prediction of balance on landing day and days to recover, pre-landing training progress, the plan. After landing: **what you may do today** (walk alone, stairs, shower standing, drive), a dizziness check, the balance recovery chart and safety tips. |
@@ -87,6 +87,7 @@ Every start uses a fresh simulation with the default seed (42) and opens on miss
 | **Urine lab** | Stone risk, bone-loss indicators, protocol response score, all urine markers |
 | **Nutrition** | Last full day against plan, supplement adherence, trends |
 | **Mental health** | Wellbeing index, check-in answers, reaction time and lapses, workload, private calls, rules triggered |
+| **LSAH tests** | NASA's Lifetime Surveillance of Astronaut Health structure: the crew member's next annual exam with the MR089S items due for their age and sex, the LSAH tests during this mission (done / missed / planned), the four simulated LSAH results, and the full 50-category LSAH test catalog |
 | **Vestibular** | Readiness level and its rule table, model landing effects, pre-landing training, measured recovery with an exponential fit, balance, tandem walk, dizziness and stand-test trends |
 | **Environment · Devices · Data sources** | As before, plus the new devices and every new value |
 
@@ -97,13 +98,13 @@ Every start uses a fresh simulation with the default seed (42) and opens on miss
 | Time | Where | Do / say |
 |---|---|---|
 | 0:00 | **Start page** → **TR** | Show the language switch (server text such as alerts and tips switches too). Back to **EN**, then **Astronaut**. |
-| 0:15 | **Today** (Lena) | Red status, *"Kidney-stone risk is high"* with its reason, today's tasks, **Energy today** (calories burned so far), the check-in prompt. |
+| 0:15 | **Today** (Elif) | Red status, *"Kidney-stone risk is high"* with its reason, today's tasks, **Energy today** (calories burned so far), the check-in prompt. |
 | 0:35 | **Today** → *T2 / CEVIS* → **Start live** | Heart rate climbs and **kcal** count up live; raise speed/watts and watch kcal/min rise. **Finish & log**: minutes, kcal, heart rate. |
 | 1:00 | **Energy** | The day as a timeline: each activity with the energy it burns, *NOW* marker, burned vs eaten. |
-| 1:15 | **Mind** | Do the 4-question check-in and the reaction test. Switch to **Yuki**: poor-sleep week → *"Slower reactions after poor sleep"*, advice to postpone critical tasks. |
-| 1:35 | **Portals → Lab team** | Overview: all crew. Marco *"Workload is driving stress up"*, Sam *"Isolation strain"*. Open **Mental health** and **Exercise & energy** for the detail. |
-| 1:55 | **Lab team → Overview → Demo panel → R+1** | Fast-forward to the day after landing (a few seconds). **Vestibular**: Marco (first flight) is at readiness 1, *"Post-flight vestibular dysfunction"*. |
-| 2:20 | **Astronaut portal → Balance** (Marco) | What he may do today (✓ walk with a helper, ✕ stairs, ✕ drive), dizziness check, rehab task. Jump **R+3 / R+7**: levels rise as balance recovers; Lena (second flight) recovers fastest. |
+| 1:15 | **Mind** | Do the 4-question check-in and the reaction test. Switch to **Sofia**: poor-sleep week → *"Slower reactions after poor sleep"*, advice to postpone critical tasks. |
+| 1:35 | **Portals → Lab team** | Overview: all five crew. Daniel *"Workload is driving stress up"*, Kenji *"Isolation strain"*. Open **Mental health** and **Exercise & energy** for the detail. |
+| 1:55 | **Lab team → Overview → Demo panel → R+1** | Fast-forward to the day after landing (a few seconds). **Vestibular**: Daniel (first flight) is at readiness 1, *"Post-flight vestibular dysfunction"*. |
+| 2:20 | **Astronaut portal → Balance** (Daniel) | What he may do today (✓ walk with a helper, ✕ stairs, ✕ drive), dizziness check, rehab task. Jump **R+3 / R+7**: levels rise as balance recovers; Elif (second flight) recovers fastest. **Lab team → LSAH tests** (Kenji): the post-flight DXA shows his larger hip bone loss. |
 | 2:45 | Demo panel → **Mars** profile | The lab views lag behind the crew by the link delay. The astronaut's **Mind** screen now says live calls home are impossible and suggests a video message; over the next week *Private calls* falls and raises an alert. |
 | 3:00 | **Data sources** | Every reference value with its source, the unverified list, live NASA OSDR studies. |
 
@@ -143,7 +144,7 @@ frontend/src/
   scripts/check-i18n.mjs  fails the build if a UI string has no Turkish entry
 ```
 
-**Simulator.** 4 crew members, 10 preflight baseline days, a 180-day mission and **21 days after landing** (R+0 … R+20). The sources affect each other:
+**Simulator.** 5 crew members, 10 preflight baseline days, a 180-day mission and **21 days after landing** (R+0 … R+20). The sources affect each other:
 - Exercise raises heart rate, sweat loss, the water target and **energy burned**, and lowers stress.
 - Low water lowers urine volume, which raises specific gravity and stone risk.
 - Missing ARED sessions makes urine calcium rise faster.
@@ -152,11 +153,12 @@ frontend/src/
 - **Behavioural health:** sleep debt, workload above 9 h, CO₂ and isolation raise stress and tiredness; exercise lowers stress; live family calls (weekly, impossible with a Mars delay) keep the crew member connected. Reaction time slows with sleep debt, CO₂ and tiredness. The crew member's own check-in and reaction test replace the simulated values for that day.
 - **Return to Earth:** balance tests need gravity, so they run before launch (baseline) and after landing. The landing-day drop in balance score, tandem walk, dizziness and stand-test heart rate scales with mission length and personal susceptibility; pre-landing training (last 14 days) lowers it by up to 25 % and fitness lowers the stand-test rise. Everything fades with a personal time constant, a little faster with daily vestibular rehab.
 
-Scripted events with the default seed:
-- Lena: high stone risk; second flight, so the fastest vestibular recovery.
-- Marco: dehydration on days 26–32 and a high-workload week (27–33, overtime replaces free time and the family call); first flight with high susceptibility, so the slowest recovery.
-- Yuki: poor-sleep week on days 27–33 (slower reaction times), and a poor responder to potassium citrate from day 12.
-- Sam: missed workouts on days 20–34 (bone-loss rule) and an isolation week on days 24–33.
+**The crew.** Five fictional astronauts (launch 1 March 2027, landing 28 August 2027). Age, sex, birth month and earlier flights matter, because the LSAH annual-exam rules depend on them. Scripted events with the default seed:
+- **Elif Aydın** (Commander, 45, 2nd flight): high stone risk; the fastest vestibular recovery.
+- **Daniel Mensah** (Pilot, 38, 1st flight): dehydration on days 26–32 and a high-workload week (27–33, overtime replaces free time and the family call); high susceptibility, so the slowest vestibular recovery.
+- **Sofia Lindqvist** (Flight Engineer, 42, 1st flight): poor-sleep week on days 27–33 (slower reaction times), a poor responder to potassium citrate from day 12, and she often skips the vitamin D tablet, so her blood vitamin D falls in flight.
+- **Kenji Watanabe** (Mission Specialist, 51, 3rd flight): missed workouts on days 20–34 and 100–120 (bone-loss rule, the largest hip bone loss on the post-flight DXA) and an isolation week on days 24–33.
+- **Ana Ribeiro** (Mission Specialist and crew medical officer, 36, 1st flight): two spacewalks (days 21 and 29); otherwise the healthy reference.
 
 The same seed and the same actions always give the same data. Tasks you don't confirm are completed by the simulated crew at their usual adherence ("demo autopilot", which can be switched per crew in the Demo panel).
 
@@ -176,6 +178,11 @@ Every alert shows its reason and a recommendation from the fixed list, in Englis
 
 **Return readiness.** After landing, each test day sets a level from 0 (*assisted only*) to 4 (*ready for driving clearance*): the highest level whose balance (% vs baseline), tandem-walk and dizziness limits all hold. Each level unlocks activities (walk with a helper, walk alone indoors, stairs, shower standing, driving after the flight surgeon's clearance). Levels and limits are in the config.
 
+**LSAH.** [Lifetime Surveillance of Astronaut Health](https://nlsp.nasa.gov/resources/lsah) is NASA's medical surveillance program for astronauts. Its real records are protected by the Privacy Act and HIPAA and are released only as grouped data or through an approved NASA data request (with ethics-board approval and about 13 months' lead time for de-identified data), so **no real astronaut values are used**. The app takes LSAH's structure from its public documents:
+- the **test catalog**: all 50 LSAH data categories, with the mission phase each is collected in (before, in, after flight, yearly) and the NASA medical requirement (MRID) behind it, from *Medical Data Available for Request* (nlsp.nasa.gov);
+- the **annual medical exam rules** from *MR089S Annual Medical Examinations* (JSC 28913): physical, labs, audiometry, resting ECG, optometry, dental and psychological evaluation every year in the birth month; graded exercise test at ages 30, 35, 40, every 2 years at 40–50 and yearly after 50; DXA and threshold visual fields every 3 years; PSA for men 40+; Pap smear yearly and mammography every 2 years at 40–50 and yearly after 50 for women; proctosigmoidoscopy and colonoscopy at set ages;
+- four **LSAH-category tests simulated during the mission**: blood draws (serum vitamin D, hemoglobin) on L-9, days 30–175 and R+0/R+14; a graded exercise test on CEVIS (VO2peak) on L-7, every 30 days and R+5/R+15; and a hip DXA scan on L-8 and R+7. The categories and phases are LSAH's; the exact days and the value models are this demo's assumptions. In-flight bone loss grows with missed resistance exercise, VO2peak is protected by cardio, vitamin D in flight depends on food and the daily tablet (no sunlight), and hemoglobin dips ("space anemia") and recovers after landing.
+
 **Response score.** For each target marker, `progress = 1 − |current − target| / |start − target|`, clipped to 0..1 and computed on EWMA values. The protocol score is the average over its markers. Days to target come from fitting `p(t) = p_max·(1 − e^(−t/τ))`. It measures how far urine markers have moved; it is **not** bioavailability. The same fit estimates balance recovery after landing.
 
 **Ground link.** The ISS profile has a 0.5 s delay, Gateway 1.3 s, and Mars up to 22 min (adjustable). Each profile has periodic blackouts, and a blackout can also be forced. Delays run in **real time**, not on the fast mission clock, so the lag is visible. The whole lab-team portal reads only data that has arrived through the link.
@@ -184,13 +191,14 @@ Every alert shows its reason and a recommendation from the fixed list, in Englis
 
 **OSDR.** The app calls `https://visualization.osdr.nasa.gov/biodata/api/v2/query/datasets/` with `study.characteristics.organism=Homo sapiens` plus the study title and description columns (`format=json.records`), then tags the studies by topic. Responses are cached for 6 h in `data/osdr_cache.json`. If the live call fails, the app uses that cache, or `config/osdr_fallback.json`. Study titles stay in their original language.
 
-**Tests.** `./run.sh test` runs the pytest suite (72 tests) covering:
+**Tests.** `./run.sh test` runs the pytest suite (78 tests) covering:
 - the simulator: seeding, coupling between sources, scripted events, the protocol flow, the live workout and link delay
 - energy: machine-based exercise cost, the day's energy adding up, body mass, live workout kcal, EVA days
 - behavioural health: Mars delay and live calls, the scripted mind states, check-in and reaction test values
 - return to Earth: training and fitness effects, readiness levels, landing drop and recovery, post-flight rules and tasks
 - the rules: thresholds, z-score, slope, anomaly, cross-source and protocol rules, and config validation
 - the response score: formula, clipping and the exponential fit
+- LSAH: the five-crew roster, the 50-category bilingual catalog, every MR089S annual-exam rule, tests only on their days, the crew stories in the LSAH results, and the LSAH API
 - languages: localization, Turkish text for every metric/rule/recommendation, Turkish API responses
 - API smoke tests, including the lab team's ground view lagging behind the crew with a Mars delay
 
@@ -204,12 +212,13 @@ These are the only values marked `verified: true`:
 - Crew sleep less in flight than before or after — *NASA wearable technology*
 - In flight, urine calcium is up to ~50% higher, and volume, pH and citrate are lower. Stone risk is higher under 2 L/day of urine and lowest above 2.5 L/day — *ntrs.nasa.gov/citations/20000084164, /20000020539*
 - Potassium citrate 20 mEq/day as two 10 mEq pills with the last meal raises citrate by about 130–140 mg/day and pH by 0.2–0.3. Calcium oxalate supersaturation above 2.0 means higher risk — *ntrs.nasa.gov/citations/20090019087*
+- The LSAH test catalog (categories, mission phases, MRIDs) — *NLSP, LSAH: Medical Data Available for Request* — and the annual-exam schedule rules — *MR089S Annual Medical Examinations, JSC 28913*. These are structure only; no LSAH values are used.
 
 ## Values still marked unverified
 
-Everything else in `config/reference.yaml` has `verified: false` and shows an **unverified** tag in the UI. The same list (in both languages) appears on the **Data sources** page. There are 94 items:
+Everything else in `config/reference.yaml` has `verified: false` and shows an **unverified** tag in the UI. The same list (in both languages) appears on the **Data sources** page. There are 104 items:
 
-**Models and settings (10)**
+**Models and settings (12)**
 - Simulation settings (seed, start day, clock speed, workout time scale ×10, 21 post-flight days)
 - All physiology model coefficients (water→urine volume, sweat loss, calcium rise and post-flight recovery, citrate/pH flight drop size, protocol onset, water target, heart-rate response, post-flight heart-rate rise, how much less crew sleep in flight, radiation dose rates, CO2 levels)
 - The daily split of the exercise prescription (ARED 45 min + cardio 40 min, 60 min reconditioning after landing). The 600 min/week target itself is verified.
@@ -220,9 +229,10 @@ Everything else in `config/reference.yaml` has `verified: false` and shows an **
 - **Behavioural-health model** (stress, tiredness, connection and reaction-time coefficients)
 - **Post-flight vestibular model** (landing drop in balance, tandem walk, dizziness and stand-test heart rate; mission-length scaling; 25 % training benefit; recovery time constants)
 - **Readiness levels** and the activities each level allows
+- **LSAH test days** during the mission and **how the LSAH test values change** (bone loss per month, VO2peak, vitamin D, hemoglobin)
 - **The CaOx supersaturation estimate.** It is a simplified formula, not the EQUIL2 program. The 2.0 threshold is verified; the way the number is computed is not.
 
-**Thresholds (47)**
+**Thresholds (54)**
 - Sleep < 6.0 h amber, < 5.0 h red; sleep efficiency < 80%
 - Resting heart rate z > 2 amber, > 3 red; breathing > 20/min; BP > 135/88
 - SpO₂ < 95% amber, < 92% red; core temperature > 37.6 °C amber, > 38.0 °C red
@@ -231,14 +241,15 @@ Everything else in `config/reference.yaml` has `verified: false` and shows an **
 - Water intake < 2.5 L; protein < 70 g; sodium > 4500 mg
 - Energy balance < −600 kcal; body mass −5 % vs baseline
 - How I feel < 2.5; stress > 3.5 amber, > 4.3 red; tiredness > 3.5; feeling connected < 2.5; wellbeing < 50; reaction time z > 2 amber, > 3 red; attention lapses > 3; workload > 10.5 h; private calls < 30 min/week (in flight)
+- Hip bone density −5 % amber, −7.5 % red; VO2peak −10 % amber, −20 % red; serum vitamin D < 30 ng/mL amber, < 20 red; hemoglobin −10 %
 - Balance score −10 % amber, −25 % red; tandem walk < 7 amber, < 5 red; dizziness > 3 amber, > 6 red; stand-test heart-rate rise > 30 bpm
 
 **Rules**
 - Cross-source rules (9): bone loss, exercise dehydration, fatigue, energy deficit, cognitive fatigue, isolation strain, workload stress, post-flight vestibular dysfunction, feeling faint when standing. The stone-risk rule is verified.
 - Protocol rule: response score below 0.35 after 14 days means "not working well".
 
-**Recommendations (19)**
-- Resume ARED, reduce intensity, protect sleep, core-temperature check, check CO₂, radiation shelter, lower salt, flag for the flight surgeon, talk to the crew psychologist, plan a family call or video message, take a break, postpone safety-critical tasks, reduce workload, fall precautions, no driving until cleared, vestibular rehab, move the head slowly, stand up in stages, pre-landing training.
+**Recommendations (20)**
+- Resume ARED, reduce intensity, protect sleep, core-temperature check, check CO₂, radiation shelter, lower salt, flag for the flight surgeon, talk to the crew psychologist, plan a family call or video message, take a break, postpone safety-critical tasks, reduce workload, fall precautions, no driving until cleared, vestibular rehab, move the head slowly, stand up in stages, pre-landing training, take the daily vitamin D tablet.
 
 **Targets and link**
 - Nutrition targets: protein 90 g, sodium max 3500 mg, calcium 1000 mg, vitamin D 800 IU

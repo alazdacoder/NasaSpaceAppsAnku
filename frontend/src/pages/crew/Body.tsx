@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { SimpleLine } from "../../components/charts";
 import { Card, Empty, PageTitle, ProgressBar, SimpleAlert, SimpleMetric, StatusPill, cx } from "../../components/ui";
-import { fmt, usePoll, type Alert, type Metric } from "../../lib/api";
+import { dayLabel, fmt, usePoll, type Alert, type Metric } from "../../lib/api";
 import { useApp } from "../../lib/context";
 import { t } from "../../lib/i18n";
+import { dateText, monthName, type LsahData } from "../team/Lsah";
 
 interface BodyData {
   live: Record<string, any>; vitals: Record<string, Metric>; sleep: Record<string, Metric>;
@@ -86,6 +87,8 @@ export default function Body() {
         </Card>
       </div>
 
+      <Checkups />
+
       <Card title={t("Air and radiation")}>
         <div className="grid gap-3 sm:grid-cols-2">
           <SimpleMetric m={data.environment.co2_mmhg} value={L.co2_mmhg ?? undefined} label={t("CO₂ in your air now")} />
@@ -93,5 +96,45 @@ export default function Body() {
         </div>
       </Card>
     </div>
+  );
+}
+
+/** LSAH medical checkups: what is next and the latest results, in plain words. */
+function Checkups() {
+  const { crewId } = useApp();
+  const { data } = usePoll<LsahData>(`/api/crew/${crewId}/lsah`, 8000);
+  if (!data) return null;
+  const upcoming = data.tests.filter((x) => x.next).sort((a, b) => a.next!.day - b.next!.day);
+  const m = data.metrics;
+  return (
+    <Card title={t("Medical checkups (LSAH)")} right={<span className="text-sm text-slate-400">{t("NASA's astronaut health program")}</span>}>
+      <div className="grid gap-4 md:grid-cols-[1fr_1.4fr]">
+        <div className="space-y-2">
+          <div className="text-sm text-slate-400">{t("Coming up")}</div>
+          {upcoming.length === 0 && <p className="text-slate-400">{t("No more checkups planned in this mission.")}</p>}
+          {upcoming.map((x) => {
+            const isToday = x.next!.status === "today" || x.next!.status === "today_done";
+            return (
+              <div key={x.id} className={cx("rounded-xl border p-3", isToday ? "border-accent bg-accent/10" : "border-ink-700 bg-ink-850")}>
+                <div className="font-semibold">{x.label}</div>
+                <div className="text-sm text-slate-400">
+                  {isToday ? <span className="font-bold text-accent">{t("Today")}</span> : dayLabel(x.next!.day)} · {dateText(x.next!.date)}
+                </div>
+              </div>
+            );
+          })}
+          <p className="pt-1 text-sm text-slate-300">
+            {t("Your annual exam: {m}", { m: monthName(data.annual.month) })}
+            {data.annual.in_flight ? ` · ${t("done after landing")}` : ""}
+          </p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <SimpleMetric m={m.vitd_serum} />
+          <SimpleMetric m={m.hemoglobin} />
+          <SimpleMetric m={m.vo2peak} />
+          <SimpleMetric m={m.bmd_hip} />
+        </div>
+      </div>
+    </Card>
   );
 }

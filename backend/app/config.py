@@ -71,8 +71,10 @@ def _validate(cfg: dict[str, Any]) -> None:
     for pid, p in cfg["link"]["profiles"].items():
         need(p, f"link.profiles.{pid}")
     for key in ("simulation", "model", "prescription", "limits", "cevis_limits", "food_catalog", "energy",
-                "schedule", "mind", "vestibular", "readiness"):
+                "schedule", "mind", "vestibular", "readiness", "lsah"):
         need(cfg[key], key)
+    for key in ("annual_exam", "mission_tests", "model"):
+        need(cfg["lsah"][key], f"lsah.{key}")
     for nid, n in cfg["nutrition_targets"].items():
         need(n, f"nutrition_targets.{nid}")
     if problems:
@@ -130,6 +132,13 @@ def unverified_items(cfg: dict[str, Any] | None = None) -> list[dict[str, str]]:
             ("readiness", "Return-to-Earth readiness levels and allowed activities", "Dünya'ya uyum seviyeleri ve izin verilen etkinlikler")):
         if not cfg[key]["verified"]:
             add("model", key, label, cfg[key]["source"], label_tr)
+    for key, label, label_tr in (
+            ("mission_tests", "Days of the LSAH tests during the mission (blood draws, exercise tests, DXA)",
+             "Görev sırasında LSAH testlerinin günleri (kan alımları, egzersiz testleri, DXA)"),
+            ("model", "How the LSAH test values change in flight (bone density, VO2peak, vitamin D, hemoglobin)",
+             "LSAH test değerlerinin uçuşta nasıl değiştiği (kemik yoğunluğu, VO2peak, D vitamini, hemoglobin)")):
+        if not cfg["lsah"][key]["verified"]:
+            add("model", f"lsah.{key}", label, cfg["lsah"][key]["source"], label_tr)
     for mid, m in cfg["metrics"].items():
         for r in m.get("rules", []):
             if not r["verified"]:

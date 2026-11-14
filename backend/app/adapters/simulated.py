@@ -245,7 +245,49 @@ class PosturographyAdapter(SimAdapter):
         return st
 
 
+class LSAHClinicMixin:
+    """Ground clinic tests: in standby while the crew is in flight."""
+
+    def status(self, crew_id: str, mission_t: float, real_t: float) -> DeviceStatus:
+        st = super().status(crew_id, mission_t, real_t)          # type: ignore[misc]
+        if st.connected and 0 <= mission_t < getattr(self, "landing_day", 180):
+            return DeviceStatus(self.id, True, None, self.last_sync.get(crew_id), "standby",   # type: ignore[attr-defined]
+                                "On the ground: before launch and after landing",
+                                "Yerde: fırlatmadan önce ve inişten sonra")
+        return st
+
+
+class DXAAdapter(LSAHClinicMixin, SimAdapter):
+    id, name, kind = "dxa", "Bone densitometry (DXA) - LSAH", "clinic"
+    name_tr = "Kemik yoğunluğu ölçümü (DXA) - LSAH"
+    description = "Dual-energy X-ray absorptiometry of the hip before launch and after landing (LSAH category: Bone Densitometry)."
+    description_tr = "Fırlatmadan önce ve inişten sonra kalçanın çift enerjili X-ışını absorpsiyometrisi (LSAH kategorisi: Kemik yoğunluğu ölçümü)."
+    metrics = ("bmd_hip",)
+    group = "lsah"
+    has_battery = False
+
+
+class GXTAdapter(SimAdapter):
+    id, name, kind = "gxt", "Graded exercise test on CEVIS - LSAH", "exercise"
+    name_tr = "CEVIS'te kademeli egzersiz testi - LSAH"
+    description = "VO2peak from a graded cycle test before, during and after flight (LSAH category: Aerobic Functional Capacity)."
+    description_tr = "Uçuş öncesi, sırası ve sonrası kademeli bisiklet testinden VO2peak (LSAH kategorisi: Aerobik fonksiyonel kapasite)."
+    metrics = ("vo2peak",)
+    group = "lsah"
+    has_battery = False
+
+
+class BloodLabAdapter(SimAdapter):
+    id, name, kind = "blood_lab", "Blood draw kit + centrifuge - LSAH", "lab"
+    name_tr = "Kan alma kiti + santrifüj - LSAH"
+    description = "Scheduled blood draws: serum vitamin D and hemoglobin (LSAH category: Laboratory Testing)."
+    description_tr = "Planlı kan alımları: serum D vitamini ve hemoglobin (LSAH kategorisi: Laboratuvar testleri)."
+    metrics = ("vitd_serum", "hemoglobin")
+    group = "lsah"
+    has_battery = False
+
+
 def all_sim_adapters() -> list[DeviceAdapter]:
     return [AREDAdapter(), T2Adapter(), CEVISAdapter(), BioMonitorAdapter(), ActiwatchAdapter(),
             TMiniAdapter(), CO2Adapter(), DosimeterAdapter(), UWMSAdapter(), SLAMMDAdapter(), PVTAdapter(),
-            PosturographyAdapter()]
+            PosturographyAdapter(), DXAAdapter(), GXTAdapter(), BloodLabAdapter()]

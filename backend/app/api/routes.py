@@ -19,6 +19,7 @@ from fastapi import APIRouter, Body, HTTPException, Request, WebSocket, WebSocke
 from starlette.concurrency import run_in_threadpool
 
 from ..config import phase_of, unverified_items
+from ..engine.lsah import age_on, annual_plan, mission_date, test_days
 from ..engine.rules import evaluate_metric
 from ..engine.stats import ewma_days, pearson
 from ..engine.vestibular import balance_recovery, level_info
@@ -132,6 +133,7 @@ def clock_payload() -> dict:
             "phase": phase, "mission_days": w.landing_day, "landing_day": w.landing_day, "last_day": w.last_day,
             "r_day": w.today - w.landing_day if phase == "postflight" else None,
             "days_to_landing": w.landing_day - w.today if phase != "postflight" else None,
+            "date": mission_date(w.cfg, w.today).isoformat(),
             "day_seconds_options": w.cfg["simulation"]["day_seconds_options"], "seed": w.seed,
             "finished": w.mission_t >= w.last_day + 1 - 1e-5}
 
@@ -160,7 +162,8 @@ async def meta():
     cfg = w.cfg
     return {"app_name": cfg["meta"]["app_name"], "disclaimer": cfg["meta"]["disclaimer"],
             "disclaimer_tr": cfg["meta"].get("disclaimer_tr"),
-            "crew": [{"id": c["id"], "name": c["name"], "role": c["role"], "role_tr": c.get("role_tr")} for c in w.crew],
+            "crew": [{"id": c["id"], "name": c["name"], "role": c["role"], "role_tr": c.get("role_tr"), "sex": c.get("sex"),
+                      "birth": c.get("birth"), "flights": c.get("flights")} for c in w.crew],
             "clock": clock_payload(), "link": w.link.status(),
             "profiles": {k: {"label": v["label"], "label_tr": v.get("label_tr"), "delay_s": v["delay_s"],
                              "delay_min_s": v.get("delay_min_s", v["delay_s"]),
@@ -587,6 +590,62 @@ async def import_csv(request: Request):
     if len(text) > 2_000_000:
         raise HTTPException(413, "file too large")
     return W().import_csv(text)
+
+
+# ------------------------------------------------------------------ LSAH
+LSAH_METRICS = ["bmd_hip", "vo2peak", "vitd_serum", "hemoglobin"]
+
+
+@router.get("/lsah")
+async def lsah_catalog():
+    cfg = W().cfg
+    ls = cfg["lsah"]
+    return {"source": ls["source"], "verified": ls["verified"], "catalog": ls["catalog"],
+            "annual_exam": {k: ls["annual_exam"][k] for k in ("source", "verified", "note", "note_tr", "items")},
+            "mission_tests": {"source": ls["mission_tests"]["source"], "verified": ls["mission_tests"]["verified"],
+                              "tests": [{**t, "all_days": test_days(cfg, t)} for t in ls["mission_tests"]["tests"]]}}
+
+
+@router.get("/crew/{cid}/lsah")
+async def crew_lsah(cid: str, side: str = "crew"):
+    prof = _crew(cid)
+    w = W()
+    cfg = w.cfg
+    v = View(cid, side)
+    ref_day = v.last_day if v.ground else w.today
+    today = mission_date(cfg, w.today)
+    cat = {c["id"]: c for c in cfg["lsah"]["catalog"]}
+    tasks = {t["task_id"]: t for t in w.tasks(cid)} if not v.ground else {}
+    tests = []
+    for t in cfg["lsah"]["mission_tests"]["tests"]:
+        sessions = []
+        for d in test_days(cfg, t):
+            res = {m: dict(zip(*v.series[m])).get(d) for m in t["metrics"] if m in v.series}
+            if any(x is not None for x in res.values()):
+                status = "done"
+            elif d == w.today and not v.ground:
+                status = "today_done" if tasks.get(f"lsah:{t['id']}", {}).get("status") == "done" else "today"
+            elif d <= ref_day:
+                status = "missed"
+            else:
+                status = "planned"
+            sessions.append({"day": d, "date": mission_date(cfg, d).isoformat(), "status": status, "results": res})
+        nxt = next((s for s in sessions if s["status"] in ("today", "today_done", "planned")), None)
+        c = cat.get(t["category_id"], {})
+        tests.append({"id": t["id"], "label": t["label"], "label_tr": t.get("label_tr"), "detail": t.get("detail"),
+                      "detail_tr": t.get("detail_tr"), "metrics": t["metrics"], "category_id": t["category_id"],
+                      "category": c.get("title"), "category_tr": c.get("title_tr"), "mrid": c.get("mrid"),
+                      "sessions": sessions, "next": nxt})
+    return {"profile": {"name": prof["name"], "role": prof["role"], "role_tr": prof.get("role_tr"), "sex": prof.get("sex"),
+                        "birth": prof.get("birth"), "age": age_on(prof["birth"], today), "flights": prof.get("flights"),
+                        "last_dxa_year": prof.get("last_dxa_year")},
+            "annual": annual_plan(cfg, prof, today), "tests": tests, "metrics": v.metrics(LSAH_METRICS),
+            "alerts": alerts_for(v.ev, {"lsah"}), "dates": {"today": today.isoformat(),
+                                                           "launch": mission_date(cfg, 0).isoformat(),
+                                                           "landing": mission_date(cfg, w.landing_day).isoformat()},
+            "source": cfg["lsah"]["source"],
+            "schedule": {"source": cfg["lsah"]["mission_tests"]["source"], "verified": cfg["lsah"]["mission_tests"]["verified"]},
+            "view": v.info(), "clock": clock_payload()}
 
 
 # --------------------------------------------------------------- surgeon

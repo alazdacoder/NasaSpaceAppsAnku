@@ -36,8 +36,8 @@ def test_seeded_runs_are_identical(cfg):
     assert c.db.series("c1") != a.db.series("c1")
 
 
-def test_shape_4_crew_10_baseline_days(world, cfg):
-    assert len(world.crew_ids) == 4
+def test_shape_5_crew_10_baseline_days(world, cfg):
+    assert len(world.crew_ids) == 5
     days, _ = world.db.series("c1")["u_volume"]
     assert days[0] == -10 and days[-1] == cfg["simulation"]["start_day"] - 1
     assert world.today == cfg["simulation"]["start_day"]

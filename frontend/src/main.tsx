@@ -16,6 +16,7 @@ import CrewToday from "./pages/crew/Today";
 import TeamDevices from "./pages/team/Devices";
 import TeamEnvironment from "./pages/team/Environment";
 import TeamExerciseEnergy from "./pages/team/ExerciseEnergy";
+import TeamLsah from "./pages/team/Lsah";
 import TeamMind from "./pages/team/Mind";
 import TeamNutrition from "./pages/team/Nutrition";
 import TeamOverview from "./pages/team/Overview";
@@ -52,6 +53,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="nutrition" element={<TeamNutrition />} />
               <Route path="mind" element={<TeamMind />} />
               <Route path="vestibular" element={<TeamVestibular />} />
+              <Route path="lsah" element={<TeamLsah />} />
               <Route path="environment" element={<TeamEnvironment />} />
               <Route path="devices" element={<TeamDevices />} />
               <Route path="sources" element={<TeamSources />} />

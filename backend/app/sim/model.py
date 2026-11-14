@@ -28,6 +28,7 @@ from typing import Any
 import numpy as np
 
 from ..config import phase_of
+from ..engine.lsah import tests_on
 
 
 def rng_for(seed: int, crew_idx: int, day: int, stream: str) -> np.random.Generator:
@@ -75,6 +76,8 @@ class CrewState:
     prelanding_days: int = 0            # pre-landing training sessions done
     vest_rehab_days: int = 0            # post-flight vestibular rehab sessions done
     landing: dict | None = None         # landing-day effects, fixed when the crew lands
+    bmd_frac: float = 1.0               # hip bone density as a share of the preflight value
+    vitd: float | None = None           # serum 25-OH vitamin D (ng/mL)
 
 
 @dataclass
@@ -92,6 +95,7 @@ class DayInputs:
     dizziness: float | None = None
     prelanding_done: bool = False
     vest_rehab_done: bool = False
+    lsah_done: set = field(default_factory=set)                # LSAH tests performed today (ids)
     protocols: list[dict] = field(default_factory=list)        # active: {id, type, start_day}
     doses_confirmed: set = field(default_factory=set)          # protocol ids confirmed today
     events: list[dict] = field(default_factory=list)           # active events with params
@@ -401,6 +405,10 @@ def simulate_day(cfg: dict, seed: int, crew_idx: int, prof: dict, st: CrewState,
         for k in ("kcal", "protein_g", "sodium_mg", "calcium_mg", "vitd_iu"):
             food[k] += f.get(k, 0)
         water += f.get("water_l", 0)
+    rl = rng_for(seed, crew_idx, day, "lsah")
+    lm = cfg["lsah"]["model"]
+    if rl.random() < prof.get("vitd_supplement_adherence", 0.9):     # daily vitamin D tablet habit
+        food["vitd_iu"] += lm["vitd_tablet_iu"]
 
     # ---- supplements ------------------------------------------------------
     doses: dict[int, dict] = {}
@@ -570,11 +578,39 @@ def simulate_day(cfg: dict, seed: int, crew_idx: int, prof: dict, st: CrewState,
     if inp.dizziness is not None:
         vest["vest_dizzy"] = float(inp.dizziness)
 
+    # ---- LSAH clinical tests (only on their test days) ----------------------
+    base = prof["lsah"]
+    if st.vitd is None:
+        st.vitd = float(base["vitd_serum"])
+    vitd_target = (lm["vitd_inflight_floor_ng_ml"] + lm["vitd_ng_ml_per_100_iu"] * food["vitd_iu"] / 100.0
+                   if inflight else float(base["vitd_serum"]))          # on the ground the sun keeps it up
+    st.vitd += (vitd_target - st.vitd) / lm["vitd_tau_days"]
+    if inflight:
+        st.bmd_frac -= (lm["bmd_loss_pct_per_month"] + lm["bmd_loss_extra_pct_per_month"] * st.bone_deficit) / 100 / 30.44
+    hb_factor = (1 - lm["hb_inflight_drop"] * (1 - math.exp(-(day + 1) / 10.0)) if inflight
+                 else 1 - lm["hb_inflight_drop"] * math.exp(-r_day / 20.0) if post else 1.0)
+    fit_eff = min(st.fitness, 1.02)       # exercise protects aerobic capacity; it does not keep raising it
+    vo2_factor = fit_eff * (1 - lm["vo2_inflight_drop"] * math.exp(-day / 40.0) if inflight
+                               else 1 - lm["vo2_postflight_drop"] * math.exp(-r_day / 7.0) if post else 1.0)
+    lsah: dict[str, float] = {}
+    for t in tests_on(cfg, day):
+        if t["id"] not in inp.lsah_done:
+            continue
+        for m_id in t["metrics"]:
+            if m_id == "bmd_hip":
+                lsah[m_id] = base["bmd_hip"] * st.bmd_frac + float(rl.normal(0, 0.004))
+            elif m_id == "vo2peak":
+                lsah[m_id] = base["vo2peak"] * vo2_factor + float(rl.normal(0, 0.8))
+            elif m_id == "vitd_serum":
+                lsah[m_id] = max(5.0, st.vitd + float(rl.normal(0, 1.5)))
+            elif m_id == "hemoglobin":
+                lsah[m_id] = base["hemoglobin"] * hb_factor + float(rl.normal(0, 0.2))
+
     return {
         "day": day, "phase": phase, "sessions": sessions, "ex_min": ex_min, "ared_min": ared_min, "t2_min": t2_min,
         "cevis_min": cevis_min, "rehab_min": rehab_min, "water_l": water, "water_target_l": target, "food": food,
         "doses": doses, "sleep": {"sleep_h": sleep, "sleep_quality": sleep_q, "light_lux": light},
         "vitals": vitals, "env": env, "urine": urine, "feeling": feeling, "mind": mind, "vest": vest,
-        "energy": energy, "activities": activities,
+        "energy": energy, "activities": activities, "lsah": lsah,
         "ared_week_min": sum(st.ared_7), "ex_week_min": sum(st.ex_7),
     }
