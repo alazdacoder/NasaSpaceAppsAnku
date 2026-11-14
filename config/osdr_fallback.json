@@ -1,0 +1,601 @@
+{
+ "fetched_at": "2026-11-14T07:11:23+00:00",
+ "query_url": "https://visualization.osdr.nasa.gov/biodata/api/v2/query/datasets/?study.characteristics.organism=Homo%20sapiens&investigation.study.study%20title&investigation.study.study%20description&format=json.records",
+ "studies": [
+  {
+   "accession": "OSD-2",
+   "title": "Response of human lymphoblastoid cells to HZE (iron ions) or gamma-rays",
+   "description": "Transcriptional profiling of human lymphoblastoid TK6 cells comparing mock irradiated cells with cells exposed 24 hours previously to 1.67 Gy HZE (1 GeV/amu iron ions accelerated at the NASA Space Research Laboratory (NSRL) of Brookhaven National Laboratory) or 2.5 Gy 137Cs gamma rays. TK6 cells were mock irradiated or exposed to HZE or gamma-rays, and RNA was harvested 24 hours later. 3 biological replicates were independently grown and harvested during three different runs at the NSRL. One replicate per array."
+  },
+  {
+   "accession": "OSD-5",
+   "title": "Transcription profiling of activated human T cells induced by microgravity to identify apoptotic genes and other immune response genes",
+   "description": "The purpose of this study was to search for microgravity-sensitive genes, specifically for apoptotic genes influenced by the microgravity environment and other genes related to immune response. Experiment Overall Design: Two-group design with paired samples, i.e., one 1G and one MMG culture came from the same donor. Therefore, 6 samples came from 3 different donors. Experiment Overall Design: Donor 1 :GSM96146,GSM96147 Experiment Overall Design: Donor 2: GSM96148, GSM96149 Experiment Overall Design: Donor 3: GSM96150,GSM96151 Experiment Overall Design: Total RNA was submitted to, and then labe"
+  },
+  {
+   "accession": "OSD-9",
+   "title": "Response of human lymphoblastoid cells to activated medium",
+   "description": "Transcriptional profiling of human lymphoblastoid TK6 cells comparing mock irradiaed cells resuspended in fresh untreated RPMI 1640 medium with cells resuspended in medium activated by exposure to 2.5 Gy HZE (1 GeV/amu iron ions accelerated at the NASA Space Research Laboratory (NSRL) of Brookhaven National Laboratory). Two-condition experiment, mock irradiated vs. cells exposed to activated medium. 3 biological replicates were independently grown and harvested during three different runs at the NSRL. One replicate per array."
+  },
+  {
+   "accession": "OSD-13",
+   "title": "T Cell Activation in Microgravity Compared to 1g (Earth's) Gravity",
+   "description": "This study tested the hypothesis that transcription of immediate early genes is inhibited in T cells activated in microgravity (uG). Immunosuppression during spaceflight is a major barrier to safe long-term human space habitation and travel. The goals of these experiments were to prove that uG was the cause of impaired T cell activation during spaceflight as well as understand the mechanisms controlling early T cell activation. T cells from 4 human donors were stimulated with concanavalin A (ConA) and anti-CD28 onboard the International Space Station (ISS). An onboard centrifuge was used to ge"
+  },
+  {
+   "accession": "OSD-51",
+   "title": "Woman skeletal muscle transcriptome with bed rest and countermeasures.",
+   "description": "Microgravity has a dramatic impact on human physiology, illustrated in particular with skeletal muscle impairment. A thorough understanding of the mechanisms leading to loss of muscle mass and structural disorders is necessary for the definition of efficient clinical and spaceflight countermeasures. We investigated the effects of long-term bed rest on transcriptome of soleus (SOL) and vastus lateralis (VL) muscles in healthy women (BRC group, n equals 8), and the potential beneficial impact of protein supplementation (BRN group, n equals 8) and of a combined resistance and aerobic training (BR"
+  },
+  {
+   "accession": "OSD-52",
+   "title": "Expression data from SPHINX (SPaceflight of Huvec: an INtegrated eXperiment)",
+   "description": "Changes in the physical environment modulate cell responses and may lead to the impairment or even failure of tissue function as a result of mechanotransduction processes. It has been suggested that this situation occurs in some age-related diseases and some pathological conditions observed in space, such as cardiovascular deconditioning, bone loss, muscle atrophy, and impaired immune responses. All of these are associated with endothelial dysfunction but the precise mechanism is still unclear. We used the microarray approach to obtain insights into the mechanism responsible for endothelial dy"
+  },
+  {
+   "accession": "OSD-53",
+   "title": "Spaceflight Modulates Gene Expression in Astronauts",
+   "description": "Astronauts are exposed to a unique combination of stressors during spaceflight, which leads to alterations in their physiology and potentially increases their susceptibility to infectious pathogens. Here we report the first microarray evaluation of any astronaut tissue sample, specifically whole blood, before and after spaceflight using an array comprising 234 well-characterized stress response genes. Differentially regulated genes included those important for DNA repair, oxidative stress, and protein folding/degradation. Microarrays comprising 234 well characterized stress-related genes were "
+  },
+  {
+   "accession": "OSD-54",
+   "title": "Immune responses to the in vitro LPS assault engineered in the spaceflight multi-omics study",
+   "description": "Microgravity alters the immune response to in vitro LPS assault engineered in spaceflight: A multi-omics study Microgravity can facilitate creation of a potent environment for opportunistic infection by augmenting virulence and suppressing the host defense. Presumably, extraterrestrial infection may trigger potentially novel bionetworks different from the terrestrial equivalent, which could only be probed by investigating the host-pathogen relationship with minimum terrestrial bias. Towards this objective, we strategically engineered a cell culture module equipped with a feedback controlled se"
+  },
+  {
+   "accession": "OSD-55",
+   "title": "microRNA expression profiles in human peripheral blood lymphocytes cultured in modeled microgravity",
+   "description": "In the present study we analyzed miRNA and mRNA expression profiles in human peripheral blood lymphocytes (PBLs) incubated in microgravity condition, simulated by a ground-based Rotating Wall Vessel (RWV) bioreactor. Our results show that 42 miRNAs were differentially expressed in MMG-incubated PBLs compared with 1g-incubated ones. Among these, miR-9-5p, miR-9-3p, miR-155-5p, miR-150-3p, and miR-378-3p were the most dysregulated. To improve the detection of functional miRNA-mRNA pairs we performed gene expression profiles on the same samples assayed for miRNA profiling and we integrated miRNA "
+  },
+  {
+   "accession": "OSD-56",
+   "title": "Gene expression profiling of human peripheral blood lymphocytes cultured in modeled microgravity",
+   "description": "In the present study we analyzed miRNA and mRNA expression profiles in human peripheral blood lymphocytes (PBLs) incubated in microgravity condition, simulated by a ground-based Rotating Wall Vessel (RWV) bioreactor. Our results show that 42 miRNAs were differentially expressed in MMG-incubated PBLs compared with 1g-incubated ones. Among these, miR-9-5p, miR-9-3p, miR-155-5p, miR-150-3p, and miR-378-3p were the most dysregulated. To improve the detection of functional miRNA-mRNA pairs we performed gene expression profiles on the same samples assayed for miRNA profiling and we integrated miRNA "
+  },
+  {
+   "accession": "OSD-71",
+   "title": "Immediate Transcriptional Changes in Response to High Dose Radiation Exposure",
+   "description": "One of the most likely risks astronauts on long duration space missions face is exposure to ionizing radiation associated with highly energetic and charged heavy (HZE) particles. Since access to medical expertise on such a mission is limited at best, early diagnosis and mitigation of such exposure is critical. In order to accurately determine the dosage within 1 hour post-exposure, dose-dependent biomarkers are needed. Therefore, we performed a dose-course transcriptional analysis for radiation exposure at 0, 0.3, 1.5, and 3.0 Gy with corresponding time point at 1 hour (hr) post-exposure using"
+  },
+  {
+   "accession": "OSD-73",
+   "title": "Transcriptome Profiles in Normal Human Bronchial Epithelial Cells after Exposure to gamma-rays and different HZE particles",
+   "description": "Distinct transcriptome profiles in response to low-LET and high-LET, and different radiation qualities of HZE particles. Total RNA obtained from HBEC3KT cells after 1, 4, 12 and 24 hours of radiation. Mock-irradiated samples at each time point and control samples before radiation (0 hour) were also collected."
+  },
+  {
+   "accession": "OSD-78",
+   "title": "Transcription profiling of human MCF10A cells subjected to ionizing radiation and treatment with transforming growth factor beta-1",
+   "description": "Transforming growth factor beta-1 (TGFbeta) is a tumor suppressor during the initial stage of tumorigenesis, but it can switch to a tumor promoter during neoplastic progression. Ionizing radiation (IR), both a carcinogen and a therapeutic agent, induces TGFbeta activation in vivo. We now show that IR sensitizes human mammary epithelial cells (HMEC) to undergo TGFbeta-mediated epithelial to mesenchymal transition (EMT). Non-malignant HMEC (MCF10A, HMT3522 S1 and 184v) were irradiated with 2 Gy shortly after attachment in monolayer culture, or treated with a low concentration of TGFbeta (0.4 ng/"
+  },
+  {
+   "accession": "OSD-86",
+   "title": "A study of alterations DNA epigenetic modifiincations (5mC and 5hmC) influenced by simulated microgravity in human lymphoblastoid cells",
+   "description": "Here, in this study we systematically examined the patterns of DNA methylation and hydroxy-methylation with its functional implications in gene regulation for the cultured TK6 lymphoblastoid cells upon exposure to micro-gravity conditions. The results reported here indicate that simulated microgravity alters methylation patterns in a limited way and subsequently the expression of genes involved in stress response like ATF3, FBXO17, MAP3K13 and VCL in TK6 cells. Overall design: Examination of 2 different DNA modifications with 2 replicates each for 1 cell type."
+  },
+  {
+   "accession": "OSD-91",
+   "title": "A study of gene expression influenced by simulated microgravity in human lymphoblastoid cells",
+   "description": "Here, in this study we systematically examined the patterns of DNA methylation and hydroxy-methylation with its functional implications in gene regulation for the cultured TK6 lymphoblastoid cells upon exposure to micro-gravity conditions. The results reported here indicate that simulated microgravity alters methylation patterns in a limited way and subsequently the expression of genes involved in stress response like ATF3, FBXO17, MAP3K13 and VCL in TK6 cells. Overall design: Examination of RNA-seq with 2 replicates each for 1 cell type"
+  },
+  {
+   "accession": "OSD-92",
+   "title": "Response of the EPI-200 human 3-D skin model to high and low doses of protons",
+   "description": "Accumulating data suggest that the biological responses to high and low doses of radiation are qualitatively different, necessitating the direct study of low dose responses. Most such studies have utilized 2-dimensional culture systems, which may not fully represent responses in 3-dimensional tissues. To gain insight into low dose responses in tissue, we have profiled global gene expression in EPI-200, a 3-dimensional tissue model from MatTek that imitates the structure and function of human epidermis, at 4, 16 and 24 hours after exposure to high (2.5 Gy) and low (0.1 Gy) doses of low LET prot"
+  },
+  {
+   "accession": "OSD-114",
+   "title": "Gene Expression Profile Changes due to Bleomycin-Induced DNA Damage in Human Fibroblasts in Space",
+   "description": "To understand gene expression responses in confluent human fibroblast in microgravity conditions to bleomycin treatment. Confluent human fibroblasts AG01522 were flown to the International Space Station (ISS). After three day on ISS, the cells were treated with bleomycin at 1.0 microg/ml for 3 hours. The cells were washed and fixed with RNALater. Total RNA were isolated after the samples were returned to earth and subject to microarray analysis."
+  },
+  {
+   "accession": "OSD-115",
+   "title": "Gene expression profiling in human fibroblast after low-LET irradiation",
+   "description": "Exposure to radiation provokes cellular responses controlled in part by gene expression networks. MicroRNAs (miRNAs) are small non-coding RNAs which mostly regulate gene expression by degrading the messages or inhibiting translation. Here, we investigated changes in miRNA expression patterns after low (0.1 Gy) and high (2.0 Gy) doses of X-ray in human fibroblasts. At early (0.5 h) and late (6 and 24 h) time points, irradiation caused qualitative and quantitative differences in the down-regulation of miRNA levels, including miR-92b, 137, 660, and 656. A transient up-regulation of miRNAs was obs"
+  },
+  {
+   "accession": "OSD-118",
+   "title": "Transient gene expression profile changes of confluent human fibroblast cells in spaceflight",
+   "description": "Microgravity or an altered gravity environment from the static 1g has been shown to influence global gene expression patterns and protein levels in cultured cells or animals, but it is unclear how these changes in gene and protein expressions are related to each other or are related to other factors regulating such changes. Recent advancement in the field of molecular biology revealed that a different class of RNA, the small non-coding microRNA (miRNA), can have a broad effect on gene expression networks by mainly inhibiting the translational process. In this experiment conducted on the Intern"
+  },
+  {
+   "accession": "OSD-124",
+   "title": "Effect of electromagnetic fields on the chondrogenic differentiation under microgravity conditions",
+   "description": "A combination therapy of electromagnetic fields (EMF) and simulated microgravity (SMG) has not been examined in regenerative medicine of cartilage. In the present study, a bioreactor system using extremely low-frequency EMF and SMG was applied during the chondrogenic differentiation of human mesenchymal stem cells (hMSCs). It was hypothesized that a beneficial effect of EMF regarding chondrogenesis (COL2A) could be combined with an avoiding effect of SMG regarding hypertrophy (COLXA1) of cartilage. Pellet cultures of hMSCs formed cartilaginous tissue under the addition of growth factors (FGF; "
+  },
+  {
+   "accession": "OSD-125",
+   "title": "mRNA expression profile in DLD-1 and MOLT-4 cancer cell lines cultured under Microgravity",
+   "description": "DLD-1 and MOLT-4 cell lines were cultured in a rotating cell culture system to simulate microgravity and mRNA expression profile in comparison to Static controls. Cells were grown in 10mL rotating vessels in a Rotary Cell Culture System (RCCS) and in 60mm Petri dishes (test, control respectively). Two replicates of test (Microgravity) and control (static), each from DLD-1 and MOLT-4 were analyzed by microarray. Simulated microgravity affected the solid tumor cell line DLD-1 markedly which showed a higher percentage of dysregulated genes compared to the hematological tumor cell line, MOLT-4. Mi"
+  },
+  {
+   "accession": "OSD-127",
+   "title": "Global gene expression profiles of cardiac progenitors differentiated from human pluripotent stem cells in 3D culture under simulated microgravity",
+   "description": "Efficient generation of cardiomyocytes from human pluripotent stem cells is critical for their regenerative applications. Microgravity and 3D culture can profoundly modulate cell proliferation and survival. Here, we engineered microscale progenitor cardiac spheres from human pluripotent stem cells and exposed the spheres to simulated microgravity using a random positioning machine for 3 days during their differentiation to cardiomyocytes. Methods: RNA-seq libraries were prepared using the Illumina TruSeq RNA kit and the TrueSeq method was employed for mRNA enrichment. The libraries were quanti"
+  },
+  {
+   "accession": "OSD-128",
+   "title": "Identification of miRNAs involved in cell response to ionizing radiation and modeled microgravity",
+   "description": "BACKGROUND: Ionizing radiation (IR) can be extremely harmful for human cells since an improper DNA-damage response (DDR) to IR can contribute to carcinogenesis initiation. Perturbations in DDR pathway can originate from alteration in the functionality of the microRNA-mediated gene regulation, being microRNAs (miRNAs) small noncoding RNA that act as post-transcriptional regulators of gene expression. In this study we gained insight into the role of miRNAs in the regulation of DDR to IR under microgravity, a condition of weightlessness experienced by astronauts during space missions, which could"
+  },
+  {
+   "accession": "OSD-129",
+   "title": "Gene expression profiling of PBL in response to ionizing radiation and modeled microgravity",
+   "description": "BACKGROUND: Ionizing radiation (IR) can be extremely harmful for human cells since an improper DNA-damage response (DDR) to IR can contribute to carcinogenesis initiation. Perturbations in DDR pathway can originate from alteration in the functionality of the microRNA-mediated gene regulation, being microRNAs (miRNAs) small noncoding RNA that act as post-transcriptional regulators of gene expression. In this study we gained insight into the role of miRNAs in the regulation of DDR to IR under microgravity, a condition of weightlessness experienced by astronauts during space missions, which could"
+  },
+  {
+   "accession": "OSD-130",
+   "title": "RAD51 Interconnects Between DNA Replication, DNA Repair and Immunity",
+   "description": "RAD51, a multifunctional protein, plays a central role in DNA replication and homologous recombination repair, and is known to be involved in cancer development. We identified a novel role for RAD51 in innate immune response signaling. Defects in RAD51 lead to the accumulation of self-DNA in the cytoplasm, triggering a STING-mediated innate immune response after replication stress and DNA damage. Our data suggest that in addition to playing roles in homologous recombination-mediated DNA double-strand break repair and replication fork processing, RAD51 is also implicated in the suppression of i"
+  },
+  {
+   "accession": "OSD-140",
+   "title": "Dynamic nature of epigenetic patterns observed during the Mars 520-d mission simulation",
+   "description": "Interplanetary human spaceflight represents a formidable medical challenge, but also provides a unique platform for investigating human adaptation to extreme environmental changes. Understanding the long-term effects of isolation has relevance in a range of scenarios and it is well recognized that a better understanding of the relationship between environmental exposure and the epigenome can lead to more effective preventive measures. Here we conduct a longitudinal epigenetic, mood state and biochemical profiling of 6 crew members in an experiment simulating a 520-day mission to Mars. Illumina"
+  },
+  {
+   "accession": "OSD-149",
+   "title": "Comparison of gene expression profiles of normal human bronchial epithelial cells in 2D and 3D cultural conditions",
+   "description": "The experiment is part of a project to study DNA repair process after ionizing radiation in organotypic 3-dimentional human bronchial epithlial cell culture. Human bronchial epithelial cells were grown in tissue culture flask (2D) or in matrics gel (3D). Three independent cultures were done for each condition."
+  },
+  {
+   "accession": "OSD-151",
+   "title": "Bystander response to 2.5 Gy of protons in a human 3-dimensional skin model in 16 h after exposure",
+   "description": "Bystander mechanisms that originate in the areas surrounding a tissue damage presumably play an important role participating in wound healing and tissue remodeling. Thus, identification and characterization of bystander mechanisms will help to development of new treatments of patients with a radiation exposure. In the present study, we irradiated 3-dimensional tissue model of human epidermis, Epi-200 (Mat-Tek, Ashland, MA), with 2.5 Gy protons. By exposing only a thin strip across the center of the EPI-200 tissue, we have been able to measure global gene expression responses in directly irradi"
+  },
+  {
+   "accession": "OSD-152",
+   "title": "Transcription profiling of human peripheral blood to development gene expression signatures for practical radiation biodosimetry",
+   "description": "To further develop our gene expression approach to biodosimetry, we have employed whole genome microarray expression profiling as a discovery platform to identify genes with the potential to distinguish radiation dose across an exposure range relevant for medical decision-making in a radiological emergency. Human peripheral blood from healthy donors was irradiated ex vivo, and a 74-gene consensus signature was identified that distinguished between four radiation doses (0.5, 2, 5 and 8 Gy) and control samples. The same set of genes separated samples by exposure level at both six and 24 hours af"
+  },
+  {
+   "accession": "OSD-154",
+   "title": "Low dose ionizing radiation treated lymphoblastoid cells",
+   "description": "Irradiated cell lines exposed to 1-10 cGy 2 Lymphoblastoid cell lines (GM15510 and GM15036) irradiated 1, 2.5, 5, 7.5, 10 cGy, RNA is isolated and labeled using a T7 amplification Arcturus kit for hybridization on triplicate arrays."
+  },
+  {
+   "accession": "OSD-155",
+   "title": "Radiation responses in peripheral white blood cells of smokers and non-smokers",
+   "description": "Understanding the possible impact of potential confounding factors is necessary for any approach to radiation biodosimetry. Potential confounding factors have not been fully addressed for gene expression-based biodosimetry approaches, such as we are developing. To begin addressing this need, we have used an ex vivo irradiated peripheral blood cell model to investigate the potential effect of smoking on the global radiation gene expression response, and looked for genes that respond to radiation differently in smokers and non-smokers, and also in males and females. The results indicate that onl"
+  },
+  {
+   "accession": "OSD-157",
+   "title": "Gene expression in human peripheral blood 48 hours after exposure to ionizing radiation",
+   "description": "Analysis of human peripheral blood 48 hours after irradiation ex vivo with graded doses of gamma rays. Results have been used in building and testing classifiers to predict exposure dose for use in radiological triage, and also provide insight into immune cell responses. Results were compared with those from earlier times and from patients exposed in vivo. Peripheral blood from 5 healthy donors was exposed ex vivo to 0. 0.5, 2, 5, or 8 Gy gamma-rays and gene expression was analyzed up to 48 hours after exposure."
+  },
+  {
+   "accession": "OSD-172",
+   "title": "Dynamic gene expression response to altered gravity in human T cells (parabolic flight)",
+   "description": "We investigated differentially regulated genes in human Jurkat T lymphocytic cells in 20s and 5min microgravity and in hypergravity and compared expression profiles to identify potential gravity-regulated genes and adaptation processes. This dataset is part of a series of three, and the other two datasets are deposited in GLDS-188 and GLDS-189."
+  },
+  {
+   "accession": "OSD-174",
+   "title": "Effects of a Closed Space Environment on Gene Expression in Hair Follicles of Astronauts in the International Space Station",
+   "description": "In recent times, long-term stay has become a common occurrence in the International Space Station (ISS). However, adaptation to the space environment can sometimes pose physiological problems to the astronauts after their return. Therefore, it is important to develop healthcare technologies for astronauts. In this study, hair, an easy-to-obtain sample, was identified as the candidate. In order to investigate the genetic changes in human hair during space flight, the hair follicles of 10 astronauts were analyzed by DNA microarray and real time q-PCR analyses. Space environment induced gene expr"
+  },
+  {
+   "accession": "OSD-175",
+   "title": "IMR90 4hr bystander experiment 0.5Gy alpha particle strip dish format",
+   "description": "Radiation affects tissue and cellular integrity at the level of DNA, protein and metabolites of the cell and extracellular space. The effects of radiation are not limited to targeted cells and tissue and radiation induced bystander effects are significant to exposed individuals in accidental or therapeutic situations. These non-targeted effects of radiation have been studied extensively at the low dose range where they appear to have adverse effects on cells and surrounding environments. The requirement of cellular contact and shared fluid media has been established as critical to the bystande"
+  },
+  {
+   "accession": "OSD-176",
+   "title": "Regulation of early signaling and gene expression in the alpha-particle and bystander response of IMR-90 human fibroblasts.",
+   "description": "The existence of a radiation bystander effect, in which non-irradiated cells respond to signals from irradiated cells, is well established. To understand early signaling and gene regulation in bystander cells, we used a bioinformatics approach, measuring global gene expression at 30 minutes and signaling pathways between 30 minutes and 4 hours after exposure to alpha-particles in IMR-90 fibroblasts. We used whole human genome microarrays and real time quantitative PCR to measure and validate gene expression. Microarray analysis was done using BRB-Array Tools; pathway and ontology analyses were"
+  },
+  {
+   "accession": "OSD-178",
+   "title": "IMR90 radiation bystander time-course experiment 0.5Gy alpha particle",
+   "description": "The radiation bystander effect is an important component of the overall biological response of tissues and organisms to ionizing radiation. Little is known about the contribution of genome level changes in neighboring bystander cells to tissue and organ stress after irradiation. The timing of these changes is critical in the physiological context and these questions can only be answered by studying signaling and global transcriptomics in a chronological way. Here, we present a strategy to identify different biologically important signaling modules that act in concert in the radiation and bysta"
+  },
+  {
+   "accession": "OSD-182",
+   "title": "Human skin fibroblast mitochondrial depletion, 0.5 Gy alpha-particle",
+   "description": "Mitochondrial DNA-depleted human skin fibroblasts (HSF rho0) with suppressed oxidative phosphorylation were characterized by significant changes in the expression of 2100 nuclear genes, encoding numerous protein classes, in NF-kappaB and STAT3 signaling pathways and by decreased activity of the mitochondrial death pathway, compared to the parent rho+ HSF. In contrast, the extrinsic TRAIL/TRAIL-Receptor-mediated death pathway remained highly active, and exogenous TRAIL induced higher levels of apoptosis in rho0 cells compared to rho+ HSF. Global gene expression analysis using microarray and qua"
+  },
+  {
+   "accession": "OSD-183",
+   "title": "Radiation-induced bystander effects and gene expression in cells deficient for RAD9",
+   "description": "Background: The radiation bystander response is an important component of the overall response of cells to radiation and critical to understanding health risks of radiation exposure to humans. The mechanism of radiation response includes inter-cellular signaling and intra-cellular communication by which the bystander signal is propagated. Methods: We measured the bystander response to 1Gy a-particle radiation in Mrad9-/- mouse stem cells and H1299shRAD9 cells, using chromosomal aberration and micronucleus formation as DNA damage endpoints. In the H1299 model we used whole genome microarray ana"
+  },
+  {
+   "accession": "OSD-188",
+   "title": "Dynamic gene expression response to altered gravity in human T cells (sounding rocket flight)",
+   "description": "We investigated differentially regulated genes in human Jurkat T lymphocytic cells in 20s and 5min microgravity and in hypergravity and compared expression profiles to identify potential gravity-regulated genes and adaptation processes. This dataset is part of a series of three, and the other two datasets are deposited in GLDS-172 and GLDS-189."
+  },
+  {
+   "accession": "OSD-189",
+   "title": "Gene expression response to simulated gravity and hypergravity in human T cells",
+   "description": "We investigated differentially regulated and stably expressed genes in human Jurkat T lymphocytic cells in 5min simulated microgravity and hypergravity and compared expression profiles to identify gravity-regulated and unaffected genes as well as adaptation processes. This dataset is part of a series of three, and the other two datasets are deposited in GLDS-172 and GLDS-188."
+  },
+  {
+   "accession": "OSD-195",
+   "title": "Effects of 21 days of bedrest on human skeletal muscle gene expression",
+   "description": "The present study concerns the effects of 21 days of sustained recumbence (bedrest) on skeletal muscle gene expression. 14 male subjects participated in normoxic bedrest (NBR) with muscle unloading, for 21 days, this is a substudy of tha PlanHab-study which apart from normoxic bedrest also involved hypoxic bedrest and hypoxic ambulation. Throughout both bedrest interventions, each subject remained in a horizontal position at all times. He was allowed one pillow for the head and to occasionally lean on an elbow while eating or being transferred to a gurney. Muscular exercise was prohibited. Dur"
+  },
+  {
+   "accession": "OSD-198",
+   "title": "Effects of bedrest and hypoxia on human skeletal muscle miRNA expression",
+   "description": "The present study concerns the effects of 21 days of sustained recumbence (bedrest) and hypoxia, alone and in combination, on skeletal muscle microRNA expression. 14 male subjects participated in 3 experimental campaigns in a counterbalanced fashion: normoxic bedrest (NBR), hypoxic bedrest (HBR) and hypoxic ambulatory confinement (HAMB), both hypoxic conditions with FO2 equals 0.141 and PIO2 equals 90 \u00b1 0.4 mmHg, equivalent to an altitude of \u2248 4000 m). Each intervention (bedrest or ambulatory confinement) lasted 21 days, and the interventions were separated by a 4-month wash-out/recovery perio"
+  },
+  {
+   "accession": "OSD-258",
+   "title": "Effects of Spaceflight on Human Induced Pluripotent Stem Cell-Derived Cardiomyocyte Structure and Function",
+   "description": "With extended stays aboard the International Space Station (ISS) becoming commonplace, there is a need to better understand the effects of microgravity on cardiac function. We utilized human induced pluripotent stem cell-derived cardiomyocytes (hiPSC-CMs) to study the effects of microgravity on cell-level cardiac function and gene expression. The hiPSC-CMs were cultured aboard the ISS for 5.5 weeks and their gene expression, structure, and functions were compared to ground control hiPSC-CMs. Exposure to microgravity on the ISS caused alterations in hiPSC-CM calcium handling. RNA-sequencing ana"
+  },
+  {
+   "accession": "OSD-283",
+   "title": "Dynamic gene expression response to altered gravity in human myelomonocytic U937 cells [parabolic]",
+   "description": "We investigated differentially regulated genes in human myelomonocytic U937 cells in 20s and 5min microgravity and in hypergravity and compared expression profiles to identify potential gravity-regulated genes and adaptation processes. Overall design: Human myelomonocytic U937 cells were exposed to altered gravity during a parabolic flight."
+  },
+  {
+   "accession": "OSD-285",
+   "title": "Chronic low dose-rate radiation down-regulates transcription related to mitosis and chromosomal movement similar to acute high dose in prostate cells.",
+   "description": "Despite concerns over risks from exposure to low-dose ionizing radiations encountered in the environment and workplace, the molecular consequences of these exposures, particularly at representative doses and dose-rates, remains poorly understood. Using a novel flood source construct, we performed a direct comparison of genome-wide gene expression regulations resulting from exposure of primary human prostate fibroblast cultures to acute (10 cGy and 200 cGy) and longer-term chronic (1.0-2.45 cGy cumulative over 24 h) exposures. Expression profiling showed significant differential regulation of 3"
+  },
+  {
+   "accession": "OSD-297",
+   "title": "Dynamic gene expression response to altered gravity in human myelomonocytic U937 cells [sounding rocket]",
+   "description": "We investigated differentially regulated genes in human myelomonocytic U937 cells in 20s and 5min microgravity and in hypergravity and compared expression profiles to identify potential gravity-regulated genes and adaptation processes. Overall design: Human myelomonocytic U937 cells were exposed to altered gravity during a sounding rocket mission."
+  },
+  {
+   "accession": "OSD-315",
+   "title": "Comparative proteomic analysis and bioluminescent reporter gene assays to investigate effects of simulated microgravity on Caco-2 cells",
+   "description": "Microgravity is one of the most important features in spaceflight. Previous evidence has shown that significant changes to the musculoskeletal and immune systems occurred under microgravity. The present study was undertaken to explore the change in protein abundance in human colon colorectal cells that were incubated for 48 or 72 h either in normal conditions and \u00b5G simulated conditions. The comparative proteomic method based on the 18O labeling technique was applied to investigate the up-regulated proteins and down-regulated proteins in SH-SY5Y under simulated microgravity."
+  },
+  {
+   "accession": "OSD-316",
+   "title": "Plasticity of the human IgM repertoire in response to a long-term spaceflight",
+   "description": "Immune dysregulation is among the main adverse outcomes of spaceflight. Despite its crucial role in host protection, effects on the human antibody repertoire are unknown. Consequently, we examined the IgM repertoire of five cosmonauts 25 days before launch, after 64 and 129 days spent on the International Space Station (ISS), and after 1, 7 and 30 days of Earth reambulation using high-throughput sequencing. This is the first study of this kind. Our data revealed that the IgM repertoire of cosmonauts was different from the one of control subjects already prior to launch, and that 2 out the 5 an"
+  },
+  {
+   "accession": "OSD-317",
+   "title": "Galactic cosmic radiation induces stable epigenome alterations relevant to human lung cancer",
+   "description": "Human deep space and planetary travel is limited by uncertainties regarding the health risks associated with exposure to galactic cosmic radiation (GCR), and in particular the high linear energy transfer (LET), heavy ion component. Here we assessed the impact of two high-LET ions 56Fe and 28Si, and low-LET X rays on genome-wide methylation patterns in human bronchial epithelial cells. We found that all three radiation types induced rapid and stable changes in DNA methylation but at distinct subsets of CpG sites affecting different chromatin compartments. The 56Fe ions induced mostly hypermethy"
+  },
+  {
+   "accession": "OSD-323",
+   "title": "Evaluating the effect of spaceflight on the host-pathogen interaction between human intestinal epithelial cells and Salmonella Typhimurium",
+   "description": "Spaceflight uniquely alters the physiology of both human cells and microbial pathogens, stimulating cellular and molecular changes directly relevant to infectious disease. However, the influence of this environment on host-pathogen interactions remains poorly understood. Here we report our results from the STL-IMMUNE study flown aboard Space Shuttle mission STS-131, which investigated multi-omic responses (transcriptomic, proteomic) of human intestinal epithelial cells to infection with Salmonella Typhimurium when both host and pathogen were simultaneously exposed to spaceflight. To our knowle"
+  },
+  {
+   "accession": "OSD-331",
+   "title": "Effect of microgravity on HUVECs (Human Umbilical vein Endothelial cells) cells and its transcriptome analysis.",
+   "description": "Adaptation of humans in low gravity conditions is a matter of utmost importance when efforts are on to a gigantic leap in human space expeditions for tourism and formation of space colonies. In this connection, cardiovascular adaptation in low gravity is a critical component of human space exploration. Deep high-throughput sequencing approach allowed us to analyze the miRNA and mRNA expression profiles in human umbilical cord vein endothelial cells (HUVEC), cultured under gravity (G), and stimulated microgravity (MG) achieved with a clinostat. The present study identified totally 1870 miRNAs d"
+  },
+  {
+   "accession": "OSD-344",
+   "title": "Real-time quantitative PCR analysis of human cardiovascular progenitor cells flown aboard the International Space Station",
+   "description": "Adult and neonatal human cardiovacular progenitor cell clonal populations were flown aboard the ISS for 12 days prior to fixation in RNAprotect. Gene expression analysis was performed against clone-, patient-, and passage-matched ground control samples. qPCR gene expression profiling. Human CPCs from three neonates and three adults were individually cultured on the ground or aboard the ISS."
+  },
+  {
+   "accession": "OSD-353",
+   "title": "The Effects of Spaceflight Factors on the Human Plasma Proteome, Including Both Real Space Missions and Ground-Based Experiments",
+   "description": "The aim of the study was to continue of the proteomic data accumulation on the effects of space flight factors on the human body, including ground-based model experiments. Blood plasma samples were collected from 5 healthy men included in the 21 days head-down bed rest experiment (HDBR) and 5 volunteers participating in a 21 day long dry immersion experiment."
+  },
+  {
+   "accession": "OSD-354",
+   "title": "Molecular Transducers of Human Skeletal Muscle Remodeling under Different Loading States",
+   "description": "The annotation of the Affymetrix HTA 2.0 array was updated to optimise the detection of RNA in human skeletal muscle biopsy samples by removing invalid and low signal-high-variance probes (as for CDF GPL24047). The probes were then summarized into groups (probe-sets) reflecting either an ensembl full transcript identifier (FL-ENST, GPL24047) or just the probes targeting the 3' UTR or the 5' UTR of that particular ENST. Therefore, 3 different CDF were used to process the HTA 2.0 arrays in this study. Note that each CEL file was GC adjusted using APT while our custom CDF pipeline removes any pro"
+  },
+  {
+   "accession": "OSD-359",
+   "title": "Proteome profiling of the exhaled breath condensate after long-term spaceflights",
+   "description": "The aim of the study was to analyze exhaled breath condensate (EBC) proteome changes due to the effects of spaceflight factors. All the protocols were approved at the Institute of Biomedical Problems \u2013 Russian Federation State Scientific Research Center in the frame of Protocon experiment. EBC samples were collected by commercial devices RTube one month before flight (background) at the Yu. A. Gagarin Research and Test Cosmonaut Training Center, immediately after landing of the landing modules in the field (R0), and on the seventh day after landing as a part of medical examination (R+7). Semi-"
+  },
+  {
+   "accession": "OSD-363",
+   "title": "Inflammatory gene expression signatures in idiopathic intracranial hypertension: possible implications in microgravity-induced ICP elevation - CSF",
+   "description": "The visual impairment and intracranial pressure (VIIP) syndrome is a neuro-ophthalmologic condition described in astronauts returning from long duration space missions. Idiopathic intracranial hypertension (IIH), also known as pseudotumor cerebri, is characterized by a chronic elevation of intracranial pressure (ICP) in the absence of an intracranial mass lesion. Because VIIP and IIH share some neurologic and ophthalmologic manifestations, the latter might be used as a model to study some of the processes underlying VIIP. This work constitutes a preliminary investigation of the molecular pathw"
+  },
+  {
+   "accession": "OSD-364",
+   "title": "Inflammatory gene expression signatures in idiopathic intracranial hypertension: possible implications in microgravity-induced ICP elevation - Plasma",
+   "description": "The visual impairment and intracranial pressure (VIIP) syndrome is a neuro-ophthalmologic condition described in astronauts returning from long duration space missions. Idiopathic intracranial hypertension (IIH), also known as pseudotumor cerebri, is characterized by a chronic elevation of intracranial pressure (ICP) in the absence of an intracranial mass lesion. Because VIIP and IIH share some neurologic and ophthalmologic manifestations, the latter might be used as a model to study some of the processes underlying VIIP. This work constitutes a preliminary investigation of the molecular pathw"
+  },
+  {
+   "accession": "OSD-367",
+   "title": "Bystander response to 0.5 Gy of alpha-particles in a human 3-dimensional skin model in 16h after exposure to ionizing radiation",
+   "description": "Ionizing radiation (IR) not only affects cells that are directly irradiated but also their non-irradiated neighbors, which show responses known as bystander effects. While bystander and direct responses have several common end points including apoptosis and micronucleation, chromatin remodeling and altered levels or activities of regulatory proteins, they can be quantitatively and qualitatively different. The majority of studies of radiation bystander effects have utilized 2-dimensional in vitro systems, but we have recently demonstrated such effects in EPI-200 (Mat-Tek, Ashland, MA), a 3-dime"
+  },
+  {
+   "accession": "OSD-368",
+   "title": "Biological response to low dose of alpha-particles in a human 3-dimensional skin model, in 1 and 16h after exposure to ionizing radiation.",
+   "description": "Direct irradiation of 3-dimensional skin model, Epi-200, with alpha-particles led to differential regulation of 166 genes: 16 and 150 genes were differentially expressed at 1 and 16 h postirradiation. Unlike the traditional 2-dimensional in vitro systems, Epi-200 made of the primary cells, epidermal human keratinocytes. It mimics the structure of the human epidermis Global gene expression is a powerful tool for uncovering both fundamental signaling processes and the mechanistic basis of cellular or physiological effects. By comparing irradiated tissues with non-irradiated control, we have been"
+  },
+  {
+   "accession": "OSD-369",
+   "title": "Bystander responses to 0.5Gy of alpha-particles in a human 3-dimensional skin model in 4h after exposure to ionizing radiation",
+   "description": "Direct irradiation of 3-dimensional skin model, Epi-200, with alpha-particles led to differential regulation of 545 genes at 4 h postirradiation. Unlike the traditional 2-dimensional in vitro systems, Epi-200 made of the primary cells, epidermal human keratinocytes. It mimics the structure of the human epidermis Global gene expression is a powerful tool for uncovering both fundamental signaling processes and the mechanistic basis of cellular or physiological effects. By comparing irradiated tissues with non-irradiated control, we have been able to measure global gene expression responses and r"
+  },
+  {
+   "accession": "OSD-370",
+   "title": "Insulin resistance induced by physical inactivity is associated with multiple transcriptional changes in skeletal muscle in young men",
+   "description": "Physical inactivity is a risk factor for insulin resistance. We examined the effect of nine days of bed rest on basal and insulin stimulated expression of genes potentially involved in insulin action by applying hypothesis-generating microarray in parallel with candidate gene real-time PCR approaches in 20 healthy, young men. Furthermore, we investigated whether bed rest affected DNA methylation in the promoter region of the peroxisome proliferator-activated receptor gamma coactivator 1 alpha (PPARGC1A) gene. Subjects were re-examined after four weeks of retraining. Findings: Bed rest induced "
+  },
+  {
+   "accession": "OSD-410",
+   "title": "Dataset for dose and time-dependent transcriptional response to ionizing radiation exposure.",
+   "description": "One of the most likely risks astronauts on long duration space missions face is exposure to ionizing radiation associated with highly energetic and charged heavy (HZE) particles. Since access to medical expertise on such a mission is limited at best, early diagnosis and mitigation of such exposure is critical. In order to accurately determine the time since exposure and dosage of exposure, dose- and time-dependent biomarkers are needed. Therefore, we performed a dose- and time-course transcriptional analysis for radiation exposure at 0, 0.15, 0.30, and 1.5 Gy with corresponding time points at "
+  },
+  {
+   "accession": "OSD-431",
+   "title": "Microgravity and space radiation exert either opposite or synergic effects on single molecular pathways",
+   "description": "Microgravity and space radiation (SR) are two highly influential factors affecting humans in space flight. Many health problems reported by astronauts derive from endothelial dysfunction and impaired homeostasis. Here we describe the adaptive response of human, capillary endothelial cells to space. Reference samples on ground and at 1g onboard allowed discrimination between the contribution of microgravity and SR within the combined response to space. Cell softening and reduced motility occurred in space, with loss of actin stress fibers and a greater distribution of microtubules and intermedi"
+  },
+  {
+   "accession": "OSD-481",
+   "title": "New insights into the role of lncRNA after spaceflight",
+   "description": "We analyzed the transcriptional profile by RNA-sequencing of exosomal content isolated from blood plasma of three astronauts who flew on various ISS missions between 1998-2001. Computational analysis of the transcriptome of these exosomes identified 27 differentially expressed lncRNAs with possible functions and clinical implications."
+  },
+  {
+   "accession": "OSD-483",
+   "title": "small-RNA sequencing of sEV isolated from plasma of astronauts",
+   "description": "We sought to determine whether the spaceflight environment can induce alterations in small extracellular vesicles (sEV) smallRNA content and their utility as biomarkers. Using small RNA sequencing (sRNAseq), we evaluated the impact of the spaceflight environment on sEV miRNA content in peripheral blood (PB) plasma of 14 astronauts, who flew STS missions between 1998-2001. Samples were collected at three-time points:10 days before the launch (L-10), the day of return (R-0), and three days post-landing (R+3)."
+  },
+  {
+   "accession": "OSD-484",
+   "title": "Astronauts plasma-derived exosomes induced gene expression in AC16 cells",
+   "description": "There are unique stressors in the spaceflight environment. Exposure to such stressors is associated with adverse effects on astronauts' health, including increased cancer and cardiovascular disease risks. Small extracellular vesicles (sEVs, i.e., exosomes) play a vital role in intercellular communication and regulate various biological processes contributing to their role in disease pathogenesis. To assess whether spaceflight alters sEVs transcriptome profile, sEVs were isolated from the blood plasma of 3 astronauts at two different time points: 10 days before launch (L-10) and 3 days after re"
+  },
+  {
+   "accession": "OSD-516",
+   "title": "Modeling cellular responses to serum and vitamin D in microgravity using a human kidney microphysiological system",
+   "description": "The microgravity environment aboard the International Space Station (ISS) provides a unique stressor that can help understand underlying cellular and molecular drivers of pathological changes observed in astronauts with the ultimate goals of developing strategies to enable long- term spaceflight and better treatment of diseases on Earth. We used this unique environment to evaluate the effects of microgravity on kidney proximal tubule epithelial cell (PTEC) response to serum exposure and vitaminD biotransformation capacity. To test if microgravity alters the pathologic response of the proximal "
+  },
+  {
+   "accession": "OSD-530",
+   "title": "Cell-free RNA analysis of plasma samples collected from six astronauts in JAXA Cell-Free Epigenome (CFE) Study",
+   "description": "A detailed understanding of how the human body responds to spaceflight will be important to develop countermeasures for long-term space exploration. Liquid biopsies offer minimally invasive alternatives to traditional tissue biopsies, while also permitting the extraction of cell-free nucleic acids, which may resolve molecular heterogeneity and extend the multi-omics scope better than standard methods. Full-body molecular profiling using cell-free nucleic acids isolated from liquid biopsies is hence one viable avenue for advancing space healthcare. Here, we perform a liquid biopsy study with si"
+  },
+  {
+   "accession": "OSD-539",
+   "title": "Transcriptomic response of bioengineered human cartilage to parabolic flight microgravity is sex-dependent",
+   "description": "Spaceflight and simulated spaceflight microgravity induced osteoarthritic-like alterations at the transcriptomic and proteomic levels in the articular and meniscal cartilages of rodents. But little is known about the effect of spaceflight or simulated spaceflight microgravity on the transcriptome of tissue-engineered cartilage developed from human cells. In this study, we investigate the effect of simulated spaceflight microgravity facilitated by parabolic flights on tissue-engineered cartilage developed from chondrogenically differentiated human bone marrow mesenchymal stem cells obtained fro"
+  },
+  {
+   "accession": "OSD-540",
+   "title": "Ten-day human unilateral lower limb suspension and active recovery in young healthy men",
+   "description": "Electrophysiological alterations of the neuromuscular junction (NMJ) and motor unit potential (MUP) with unloading are poorly studied. We aimed to investigate these aspects and the underlying molecular mechanisms with short-term unloading and active recovery (AR). Eleven healthy males underwent a 10-day unilateral lower limb suspension (ULLS) period, followed by 21-day AR based on resistance exercise. Quadriceps femoris (QF) cross-sectional area (CSA) and isometric maximum voluntary contraction (MVC) were evaluated. Intramuscular electromyographic recordings were obtained during 10% and 25% MV"
+  },
+  {
+   "accession": "OSD-541",
+   "title": "Simulated Microgravity Exerts an Age-Dependent Effect on the Differentiation of Cardiovascular Progenitors Isolated from the Human Heart",
+   "description": "Microgravity has a profound effect on cardiovascular function, however, little is known about the impact of microgravity on progenitors that reside within the heart. We investigated the effect of simulated microgravity exposure on progenitors isolated from the neonatal and adult human heart by quantifying changes in functional parameters, gene expression and protein levels after 6-7 days of 2D clinorotation. Utilization of neonatal and adult cardiovascular progenitors in ground-based studies has provided novel insight into how microgravity may affect cells differently depending on age. Simulat"
+  },
+  {
+   "accession": "OSD-542",
+   "title": "Effects of 14 days of confinement on blood gene expression profiles in men",
+   "description": "The effects of short-term confinement on gene expression profiles in blood were evaluated. Fourteen days confinement study was conducted 2 times. In each experiment, 8 male subjects were stayed in an isolation and confinement facility at Japan Aerospace Exploration Agency. DNA microarray of extracted RNA from whole blood samples revealed that the expression levels of 3,659 genes were significantly altered by the 14-day confinement. The changes in gene expression profiles were not exactly the same as those in response to the other stress conditions, such as chronic psychological stress and spac"
+  },
+  {
+   "accession": "OSD-546",
+   "title": "SCD \u2013 Stem Cell Differentiation Toward Osteoblast Onboard the International Space Station",
+   "description": "Microgravity produces a variety of physical, chemical, and biological cues leading to an intricate and largely unresolved network of mechanosensitive molecules, transduction pathways, oxidative stress-related responses, and adaptations. The bone loss observed in astronauts and animal models after spaceflight is attributable to alterations in the bone tissue formation that depends on the continuous remodelling through the activities of bone-resorbing osteoclasts of hematopoietic lineage and bone-forming osteoblast of mesenchymal origin. Focusing on osteogenic differentiation, we present the res"
+  },
+  {
+   "accession": "OSD-569",
+   "title": "Whole Blood Measurements from the SpaceX Inspiration4 Mission (RNA-seq, epitranscriptome, WGS, clonal hematopoiesis, CBC)",
+   "description": "The SpaceX Inspiration4 mission was a 3-day mission with four private astronauts to low Earth orbit that occurred in September 2021. The crew collected biospecimen samples before, during, and after flight. One of these biospecimen collections included whole blood collected via venipuncture into PaxGene Blood RNA tubes (BD Biosciences, #762165), collected pre-flight (L-92, L-44, L-3) and post-flight (R+1, R+45, R+82, R+194). Total RNA was purified from each tube and mRNA was sequenced using the Oxford Nanopore Technologies direct RNA-sequencing kit on the PromethION. Data was used to generate d"
+  },
+  {
+   "accession": "OSD-570",
+   "title": "SpaceX Inspiration4 PBMC Profiling: snRNA-seq, snATAC-seq, and T-cell and B-cell repertoire profiling",
+   "description": "The SpaceX Inspiration4 mission was a 3-day mission with four private astronauts to low Earth orbit that occurred in September 2021. The crew collected biospecimen samples before and after flight. One of these biospecimen collections included PBMCs collected via venipuncture two 4mL K2 EDTA tubes (BD Biosciences, cat# 367844), collected pre-flight (L-92, L-44, L-3) and post-flight (R+1, R+45, R+82). Single-nuclei RNA-seq and single-nuclei ATAC-seq were co-assayed using the 10X Genomics Multiome Kit (L-92, L-44, L-3, R+1, R+45, R+82 timepoints). T-cell and B-cell V(D)J repertoires were profiled"
+  },
+  {
+   "accession": "OSD-571",
+   "title": "SpaceX Inspiration4 Plasma Profiling: Proteomics, EVPs, Metabolomics, cfDNA Sequencing and cfRNA Sequencing",
+   "description": "The SpaceX Inspiration4 mission was a 3-day mission with four private astronauts to low Earth orbit that occurred in September 2021. The crew collected biospecimen samples before, during, and after flight. One of these biospecimens was plasma from venous blood, which was collected pre-flight (L-92, L-44, L-3) and post-flight (R+1, R+45, R+82). Plasma was collected via three methods: cell-free DNA blood collection tubes (cfDNA BCTs), cell processing tubes (CPTs) and via Ficoll separation from K2 EDTA tubes. Plasma from cfDNA BCTs was used to isolate cfDNA for sequencing. Plasma from CPTs was us"
+  },
+  {
+   "accession": "OSD-574",
+   "title": "SpaceX Inspiration4 Deltoid Skin and Microbiome Data: Spatial Transcriptomics (NanoString GeoMx), Metageomics, and Metatranscriptomics",
+   "description": "The SpaceX Inspiration4 mission was a 3-day mission with four private astronauts to low Earth orbit that occurred in September 2021. The crew collected biospecimen samples before, during, and after flight. One of these biospecimen collections included deltoid skin biopsies, collected once pre-flight (L-44) and within 1 day postflight (R+1). Biopsies were 3mm - 4mm in diameter and were frozen at -80C at the time of collection. Samples were then embedded in OCT and prepared for spatially resolved transcriptomics using the NanoString GeoMx Whole Transcriptome Atlas Panel. Skin was profiled in fou"
+  },
+  {
+   "accession": "OSD-575",
+   "title": "SpaceX Inspiration4 Blood Serum Metabolic Panel and Immune/Cardiac Cytokine Arrays (Comprehensive Metabolic Panel and Multiplex)",
+   "description": "The SpaceX Inspiration4 mission was a 3-day mission with four private astronauts to low Earth orbit that occurred in September 2021. The crew collected biospecimen samples before, during, and after flight. One of these biospecimen collections included whole blood collected via venipuncture, with serum extracted from blood using a serum separator tube (SST). Samples were collected pre-flight (L-92, L-44, L-3) and post-flight (R+1, R+45, R+82). Serum samples were submitted for immune and cardiovascular cytokine biomarker profiling panels at two different companies (Eve Technologies and Alamar), "
+  },
+  {
+   "accession": "OSD-577",
+   "title": "3D Human Umbilical Vein Endothelial Cells (HUVECs) irradiated with GCR simulated irradiation with miRNA based countermeasures",
+   "description": "From our previous work we have shown a key miRNA signature that is associated with spaceflight can be used as a biomarker and countermeasure to mitigate the damage caused by space radiation. Here, we have further expanded on this work to determine key biological factors that are being rescued by the countermeasure treatment. We performed RNA-sequencing and transcriptomic analysis on our established 3D microvessel cell cultures (i.e. 3D Human Umbilical Vein Endothelial Cells (HUVECs)) exposed to simulated deep space radiation (0.5 Gy of Galactic Cosmic Radiation) with and without the antagonist"
+  },
+  {
+   "accession": "OSD-635",
+   "title": "Spaceflight effects on human vascular smooth muscle cell phenotype and function",
+   "description": "The cardiovascular system is strongly impacted by the hazards of spaceflight. Astronauts spending steadily increasing lengths of time in microgravity are subject to cardiovascular deconditioning resulting in loss of vascular tone, reduced total blood volume, and diminished cardiac output. Appreciating the mechanisms by which the cells of the vasculature are altered during spaceflight will be integral to understanding and combating these deleterious effects as the human presence in space advances. In this study, we performed RNA-Seq analysis coupled with review by QIAGEN Ingenuity Pathway Analy"
+  },
+  {
+   "accession": "OSD-656",
+   "title": "SpaceX Inspiration4 Urine Inflammation Panel (Multiplex, NULISAseq)",
+   "description": "The SpaceX Inspiration4 mission was a 3-day mission with four private astronauts to low Earth orbit that occurred in September 2021. The crew collected biospecimen samples before, during, and after flight. One of these biospecimen collections included urine from pre-flight and post-flight/recovery timepoints (L-92, L-44, L-3, R+1, R+45, R+82). 203 inflammatory, cytokine, and chemokine proteins were quantified using NULISAseq. This study derives results from the Multiplex assay, and the urine data in this study are related to other studies using data from the same experiment; OSD-569 (whole blo"
+  },
+  {
+   "accession": "OSD-684",
+   "title": "Human skeletal muscle tissue chip autonomous payload reveals changes in fiber type and metabolic gene expression due to spaceflight",
+   "description": "Microphysiological systems provide the opportunity to model accelerated changes at the human tissue level in the extreme space environment. Spaceflight-induced muscle atrophy experienced by astronauts shares similar physiological changes to muscle wasting in older adults, known as sarcopenia. These shared attributes provide a rationale for investigating molecular changes in muscle cells exposed to spaceflight that may mimic the underlying pathophysiology of sarcopenia. We report the results from three-dimensional myobundles derived from muscle biopsies from young and older adults, integrated i"
+  },
+  {
+   "accession": "OSD-687",
+   "title": "SpaceX Inspiration4 T-Cell Histone Modification Profiling (H3K4me1, H3K4me3, H3K27ac)",
+   "description": "The SpaceX Inspiration4 mission was a 3-day mission with four private astronauts to low Earth orbit that occurred in September 2021. T-cells were isolated from whole blood in one crew member at the  R+194 timepoint for histone modification quantification as a proof of concept study, as no histone modifications have been previously studied in astronaut cohorts. The H3K4me1, H3K4me3, and H3K27ac modifications were profiled using Cut and Run."
+  },
+  {
+   "accession": "OSD-689",
+   "title": "Single-cell analysis identifies conserved features of immune dysfunction in simulated microgravity and spaceflight",
+   "description": "Microgravity is associated with immunological dysfunction, though the mechanisms are poorly understood. Here, using single-cell analysis of human peripheral blood mononuclear cells (PBMCs)\u00a0exposed to short term (25\u2009hours) simulated microgravity, we characterize altered genes and pathways at basal and stimulated states with a Toll-like Receptor-7/8 agonist. We validate single-cell analysis by RNA sequencing and super-resolution microscopy, and against data from the Inspiration-4 (I4) mission, JAXA (Cell-Free Epigenome) mission, Twins study, and spleens from mice on the International Space Stati"
+  },
+  {
+   "accession": "OSD-781",
+   "title": "Skeletal muscle-on-a-chip in microgravity as a platform for regeneration modeling and drug screening - myoblast data",
+   "description": "Microgravity has been shown to lead to both muscle atrophy and impaired muscle regeneration. The purpose was to study the efficacy of microgravity to model impaired muscle regeneration in an engineered muscle platform and then to demonstrate the feasibility of performing drug screening in this model. Engineered human muscle was launched to the International Space Station National Laboratory, where the effect of microgravity exposure for 7\u00a0days was examined by transcriptomics and proteomics approaches. Gene set enrichment analysis of engineered muscle cultured in microgravity, compared to norma"
+  },
+  {
+   "accession": "OSD-783",
+   "title": "Multidirectional effect of low-intensity electrical myostimulation on gene expression and phenotype in thigh and calf muscles after one week of disuse - soleus data",
+   "description": "Low-intensity neuromuscular electrical stimulation (NMES) is often used as an alternative to exercise and high-intensity electrical stimulation to prevent the loss of muscle mass, strength, and endurance in spaceflight and in patients with severe chronic diseases. This study assessed the efficiency of low-intensity (~10% of maximal voluntary contraction) combined (low- and high-frequency) electrical stimulation in preventing the negative effects of weekly disuse (dry immersion without [DI, see a related dataset GSE271607] and with [DI+NMES] daily stimulation; 10 males in each group) on the str"
+  },
+  {
+   "accession": "OSD-784",
+   "title": "Multidirectional effect of low-intensity electrical myostimulation on gene expression and phenotype in thigh and calf muscles after one week of disuse - vastus lateralis data",
+   "description": "Low-intensity neuromuscular electrical stimulation (NMES) is often used as an alternative to exercise and high-intensity electrical stimulation to prevent the loss of muscle mass, strength, and endurance in spaceflight and in patients with severe chronic diseases. This study assessed the efficiency of low-intensity (~10% of maximal voluntary contraction) combined (low- and high-frequency) electrical stimulation in preventing the negative effects of weekly disuse (dry immersion without [DI, see a related dataset GSE271607] and with [DI+NMES] daily stimulation; 10 males in each group) on the str"
+  },
+  {
+   "accession": "OSD-787",
+   "title": "Skeletal muscle-on-a-chip in microgravity as a platform for regeneration modeling and drug screening - vastus lateralis data",
+   "description": "Microgravity has been shown to lead to both muscle atrophy and impaired muscle regeneration. The purpose was to study the efficacy of microgravity to model impaired muscle regeneration in an engineered muscle platform and then to demonstrate the feasibility of performing drug screening in this model. Engineered human muscle was launched to the International Space Station National Laboratory, where the effect of microgravity exposure for 7\u00a0days was examined by transcriptomics and proteomics approaches. Gene set enrichment analysis of engineered muscle cultured in microgravity, compared to norma"
+  },
+  {
+   "accession": "OSD-811",
+   "title": "Space microgravity increases expression of genes associated with proliferation and differentiation in human cardiac spheres",
+   "description": "Efficient generation of cardiomyocytes from human-induced pluripotent stem cells (hiPSCs) is important for their application in basic and translational studies. Space microgravity can significantly change cell activities and function. Previously, we reported upregulation of genes associated with cardiac proliferation in cardiac progenitors derived from hiPSCs that were exposed to space microgravity for 3 days. Here we investigated the effect of long-term exposure of hiPSC-cardiac progenitors to space microgravity on global gene expression. Cryopreserved 3D hiPSC-cardiac progenitors were sent t"
+  },
+  {
+   "accession": "OSD-812",
+   "title": "Simulated microgravity impairs human NK cell cytotoxic activity against space radiation-relevant leukemic cells.",
+   "description": "Natural killer (NK) cells are an important first-line of defense against malignant cells. Because of the potential for increased cancer risk from astronaut exposure to space radiation, we determined whether microgravity present during spaceflight affects the body's defenses against leukemogenesis. Human NK cells were cultured for 48\u2009h under normal gravity and simulated microgravity (s\u03bcG), and cytotoxicity against K-562 (CML) and MOLT-4 (T-ALL) cells was measured using standard methodology or under continuous s\u03bcG. This brief exposure to s\u03bcG markedly reduced NK cytotoxicity against both leukemia"
+  },
+  {
+   "accession": "OSD-815",
+   "title": "The ex vivo human translaminar autonomous system to study spaceflight associated neuro-ocular syndrome pathogenesis (Ocular Globe, Photography)",
+   "description": "Spaceflight-Associated Neuro-ocular Syndrome (SANS) is a significant unexplained adverse reaction to long-duration spaceflight. We employ an ex vivo translaminar autonomous system (TAS) to recreate a human ocular ground-based spaceflight analogue model to study SANS pathogenesis. To recapitulate the human SANS conditions, human ocular posterior segments are cultured in the TAS model for 14 days. Translaminar pressure differentials are generated by simulating various flow rates within intracranial pressure (ICP) and intraocular (IOP) chambers to maintain hydrostatic pressures of ICP: IOP (12:16"
+  },
+  {
+   "accession": "OSD-816",
+   "title": "The ex vivo human translaminar autonomous system to study spaceflight associated neuro-ocular syndrome pathogenesis (Retina, RT-PCR and electroretinography)",
+   "description": "Spaceflight-Associated Neuro-ocular Syndrome (SANS) is a significant unexplained adverse reaction to long-duration spaceflight. We employ an ex vivo translaminar autonomous system (TAS) to recreate a human ocular ground-based spaceflight analogue model to study SANS pathogenesis. To recapitulate the human SANS conditions, human ocular posterior segments are cultured in the TAS model for 14 days. Translaminar pressure differentials are generated by simulating various flow rates within intracranial pressure (ICP) and intraocular (IOP) chambers to maintain hydrostatic pressures of ICP: IOP (12:16"
+  },
+  {
+   "accession": "OSD-817",
+   "title": "The ex vivo human translaminar autonomous system to study spaceflight associated neuro-ocular syndrome pathogenesis (Optic Nerve, Histology and Microscopy)",
+   "description": "Spaceflight-Associated Neuro-ocular Syndrome (SANS) is a significant unexplained adverse reaction to long-duration spaceflight. We employ an ex vivo translaminar autonomous system (TAS) to recreate a human ocular ground-based spaceflight analogue model to study SANS pathogenesis. To recapitulate the human SANS conditions, human ocular posterior segments are cultured in the TAS model for 14 days. Translaminar pressure differentials are generated by simulating various flow rates within intracranial pressure (ICP) and intraocular (IOP) chambers to maintain hydrostatic pressures of ICP: IOP (12:16"
+  },
+  {
+   "accession": "OSD-818",
+   "title": "The ex vivo human translaminar autonomous system to study spaceflight associated neuro-ocular syndrome pathogenesis (Culture Media, Western Blot)",
+   "description": "Spaceflight-Associated Neuro-ocular Syndrome (SANS) is a significant unexplained adverse reaction to long-duration spaceflight. We employ an ex vivo translaminar autonomous system (TAS) to recreate a human ocular ground-based spaceflight analogue model to study SANS pathogenesis. To recapitulate the human SANS conditions, human ocular posterior segments are cultured in the TAS model for 14 days. Translaminar pressure differentials are generated by simulating various flow rates within intracranial pressure (ICP) and intraocular (IOP) chambers to maintain hydrostatic pressures of ICP: IOP (12:16"
+  },
+  {
+   "accession": "OSD-832",
+   "title": "Effects of 5-Ion Beam Irradiation and Hindlimb Unloading on Metabolic Pathways in Plasma and Brain of Behaviorally Tested WAG/Rij Rats - Plasma data",
+   "description": "A limitation of simulated space radiation studies is that radiation exposure is not the only environmental challenge astronauts face during missions. Therefore, we characterized behavioral and cognitive performance of male WAG/Rij rats 3 months after sham-irradiation or total body irradiation with a simplified 5-ion mixed beam exposure in the absence or presence of simulated weightlessness using hindlimb unloading (HU) alone. Six months following behavioral and cognitive testing or 9 months following sham-irradiation or total body irradiation, plasma and brain tissues (hippocampus and cortex) "
+  },
+  {
+   "accession": "OSD-833",
+   "title": "Effects of 5-Ion Beam Irradiation and Hindlimb Unloading on Metabolic Pathways in Plasma and Brain of Behaviorally Tested WAG/Rij Rats - Hippocampus data",
+   "description": "A limitation of simulated space radiation studies is that radiation exposure is not the only environmental challenge astronauts face during missions. Therefore, we characterized behavioral and cognitive performance of male WAG/Rij rats 3 months after sham-irradiation or total body irradiation with a simplified 5-ion mixed beam exposure in the absence or presence of simulated weightlessness using hindlimb unloading (HU) alone. Six months following behavioral and cognitive testing or 9 months following sham-irradiation or total body irradiation, plasma and brain tissues (hippocampus and cortex) "
+  },
+  {
+   "accession": "OSD-834",
+   "title": "Effects of 5-Ion Beam Irradiation and Hindlimb Unloading on Metabolic Pathways in Plasma and Brain of Behaviorally Tested WAG/Rij Rats - Cortex data",
+   "description": "A limitation of simulated space radiation studies is that radiation exposure is not the only environmental challenge astronauts face during missions. Therefore, we characterized behavioral and cognitive performance of male WAG/Rij rats 3 months after sham irradiation or total body irradiation with a simplified 5-ion mixed beam exposure in the absence or presence of simulated weightlessness using hindlimb unloading (HU) alone. Six months following behavioral and cognitive testing or 9 months following sham-irradiation or total body irradiation, plasma and brain tissues (hippocampus and cortex) "
+  },
+  {
+   "accession": "OSD-863",
+   "title": "Effects of microgravity on human iPSC-derived neural organoids on the International Space Station - cortical organoids",
+   "description": "Research conducted on the International Space Station (ISS) in low-Earth orbit (LEO) has shown the effects of microgravity on multiple organs. To investigate the effects of microgravity on the central nervous system, we developed a unique organoid strategy for modeling specific regions of the brain that are affected by neurodegenerative diseases. We generated 3-dimensional human neural organoids from induced pluripotent stem cells (iPSCs) derived from individuals affected by primary progressive multiple sclerosis (PPMS) or Parkinson's disease (PD) and non-symptomatic controls, by differentiati"
+  },
+  {
+   "accession": "OSD-867",
+   "title": "Impact of spaceflight on gene expression in cultured human mesenchymal stem/stromal cell",
+   "description": "With technological advancements, human's desire to explore space is growing and more people are staying longer at the international space station (ISS). The impact of microgravity on stem cells (SC) is not fully understood. We explored the impact of microgravity on gene expression profile of cultured mesenchymal stem/stromal cells (MSCs) at the ISS. We also evaluated how the new knowledge gained sheds light on our understanding of human physiology on Earth. Primary cultures of MSCs were expanded at the ISS for 1 or 2 weeks and mRNA was isolated from samples of the cultured cells. Gene expressi"
+  },
+  {
+   "accession": "OSD-871",
+   "title": "Effects of microgravity on human iPSC-derived neural organoids on the International Space Station - dopaminergic organoids",
+   "description": "Research conducted on the International Space Station (ISS) in low-Earth orbit (LEO) has shown the effects of microgravity on multiple organs. To investigate the effects of microgravity on the central nervous system, we developed a unique organoid strategy for modeling specific regions of the brain that are affected by neurodegenerative diseases. We generated 3-dimensional human neural organoids from induced pluripotent stem cells (iPSCs) derived from individuals affected by primary progressive multiple sclerosis (PPMS) or Parkinson's disease (PD) and non-symptomatic controls, by differentiati"
+  },
+  {
+   "accession": "OSD-936",
+   "title": "Gravitational and mechanical forces drive mitochondrial translation- human HEK293 cell datasets",
+   "description": "Life on Earth has evolved in a form suitable for the gravitational force of 1 x g. Although the pivotal role of gravity in gene expression has been revealed by multi-omics approaches in space-flown samples and astronauts, the molecular details of how mammalian cells harness gravity have remained unclear. Here, we showed that mitochondria utilize gravity to activate protein synthesis within the organelle. Genome-wide ribosome profiling revealed reduced mitochondrial translation in mammalian cells and Caenorhabditis elegans under both microgravity at the International Space Station and simulated"
+  },
+  {
+   "accession": "OSD-937",
+   "title": "Microgravity accelerates skeletal muscle degeneration: Functional and transcriptomic insights from an ISS muscle lab-on-chip model",
+   "description": "Microgravity accelerates skeletal muscle degeneration, mimicking aspects of aging, yet its effects on muscle cell function remain underexplored. Using a muscle lab-on-chip model onboard the International Space Station (ISS), we examined 3D-bioengineered myobundles derived from young and older adult donors under microgravity. Electrical stimulation applied intermittently to the myobundles revealed reduced contraction magnitude in microgravity and decreased protein levels of myosin heavy chain 7, a main isoform in slow-twitch muscle fibers. Transcriptomic profiling revealed active myogenesis acr"
+  },
+  {
+   "accession": "OSD-940",
+   "title": "Effects of simulated microgravity on colorectal cancer organoids growth and drug response",
+   "description": "Cellular and molecular dynamics of human cells are constantly affected by gravity. Alteration of the gravitational force disturbs the cellular equilibrium, which might modify physiological and molecular characteristics. Nevertheless, biological responses of cancer cells to reduced gravitational force remains obscure. We established four organoids directly from CRC patients, and organoids cultured in 3D clinostat were subjected to genome wide expression profiling and drug library screening."
+  },
+  {
+   "accession": "OSD-941",
+   "title": "Spaceflight reshapes Alzheimer's disease\u2013associated molecular programs in human brain organoids",
+   "description": "Spaceflight provides a unique environment to study neural responses relevant to neurodegenerative diseases. Here, human cortical organoids derived from induced pluripotent stem cells (iPSCs) that carry familial Alzheimer's disease (fAD) mutations in APP (p.V717G), PSEN1 (p.M233L), and PSEN2 (p.N141I) were cultivated at the International Space Station (ISS) alongside isogenic controls for 40 days. Multi-omic profiling, integrating transcriptomics, proteomics, and metabolic analyses, revealed a coordinated shift in neuronal and cellular states during spaceflight. AD-derived organoids showed alte"
+  },
+  {
+   "accession": "OSD-942",
+   "title": "Exercise Training Attenuates the Muscle Mitochondria Genomic Response to Bed Rest (gene expression microarray data)",
+   "description": "Exercise training during the National Aeronautics and Space Administration 70-d bed rest study effectively counteracted the decline in aerobic capacity, muscle mass, strength, and endurance. We aimed to characterize the genomic response of the participants' vastus lateralis on day 64 of bed rest with and without exercise countermeasures. Twenty-two healthy young males were randomized into three groups: 1) bed rest only (n equals 7), 2) bed rest + aerobic (6 d/wk) and resistance training (3 d/wk) on standard equipment (n equals 7), and 3) bed rest + aerobic and resistance training using a flywh"
+  },
+  {
+   "accession": "OSD-946",
+   "title": "Exercise Training Attenuates the Muscle Mitochondria Genomic Response to Bed Rest (miRNA microarray data)",
+   "description": "Exercise training during the National Aeronautics and Space Administration 70-d bed rest study effectively counteracted the decline in aerobic capacity, muscle mass, strength, and endurance. We aimed to characterize the genomic response of the participants' vastus lateralis on day 64 of bed rest with and without exercise countermeasures. Twenty-two healthy young males were randomized into three groups: 1) bed rest only (n equals 7), 2) bed rest + aerobic (6 d/wk) and resistance training (3 d/wk) on standard equipment (n equals 7), and 3) bed rest + aerobic and resistance training using a flywh"
+  },
+  {
+   "accession": "OSD-990",
+   "title": "Transcriptional Response in Human Jurkat T Lymphocytes to a near Physiological Hypergravity Environment and to One Common in Routine Cell Culture Protocols - 9g hypergravity experiment",
+   "description": "Cellular effects of hypergravity have been described in many studies. We investigated the transcriptional dynamics in Jurkat T cells between 20 s and 60 min of 9 g hypergravity and characterized a highly dynamic biphasic time course of gene expression response with a transition point between rapid adaptation and long-term response at approximately 7 min. Upregulated genes were shifted towards the center of the nuclei, whereby downregulated genes were shifted towards the periphery. Upregulated gene expression was mostly located on chromosomes 16-22. Protein-coding transcripts formed the majorit"
+  },
+  {
+   "accession": "OSD-992",
+   "title": "Space radiation induces distinct senescent phenotypes: Implications for space travel [scRNA-Seq]",
+   "description": "As Earth's magnetic field weakens, space radiation begins to pose a significant threat to the health of not only space travelers, but the world's population. Space radiation, comprising high-energy and high-charge ions, creates distinct clusters of DNA damage and dense macromolecular damage that result in the accumulation of senescent cells (SnCs) known to play a critical role in promoting multimorbidity. Here, we demonstrate that human fibroblasts exposed to different forms of space radiation acquire senescence-associated phenotypes including morphological alterations and the accumulation of "
+  },
+  {
+   "accession": "OSD-993",
+   "title": "Space radiation induces distinct senescent phenotypes: Implications for space travel [bulk RNA-Seq]",
+   "description": "As Earth's magnetic field weakens, space radiation begins to pose a significant threat to the health of not only space travelers, but the world's population. Space radiation, comprising high-energy and high-charge ions, creates distinct clusters of DNA damage and dense macromolecular damage that result in the accumulation of senescent cells (SnCs) known to play a critical role in promoting multimorbidity. Here, we demonstrate that human fibroblasts exposed to different forms of space radiation acquire senescence-associated phenotypes including morphological alterations and the accumulation of "
+  },
+  {
+   "accession": "OSD-998",
+   "title": "Transcriptional Response in Human Jurkat T Lymphocytes to a near Physiological Hypergravity Environment and to One Common in Routine Cell Culture Protocols - 300 g centrifugation and heat stress experiment",
+   "description": "Cellular effects of hypergravity have been described in many studies. We investigated the transcriptional dynamics in Jurkat T cells between 20 s and 60 min of 9 g hypergravity and characterized a highly dynamic biphasic time course of gene expression response with a transition point between rapid adaptation and long-term response at approximately 7 min. Upregulated genes were shifted towards the center of the nuclei, whereby downregulated genes were shifted towards the periphery. Upregulated gene expression was mostly located on chromosomes 16-22. Protein-coding transcripts formed the majorit"
+  },
+  {
+   "accession": "OSD-999",
+   "title": "Sex\u2010Specific Changes in Brain Organoids from Acute Simulated Galactic Cosmic Radiation are Rescued by Targeted ECM Pathway Stimulation (sex-specific response experiment)",
+   "description": "This study aims to characterize transcriptomic responses to Simplified 5 Ion GCR Simulation (simGCRsim) in human brain organoids derived from hiPSCs. Two independent RNA-seq experiments were conducted. The first set compared male- and female-derived organoids to evaluate sex-specific transcriptional responses to GCR. The second set assessed organoids derived from i) male hiPSCs expressing optogenetically-controlled FGFR (opto-FGFR) or mock constructs to explore FGFR signaling as a potential countermeasure and ii) one female hiPSC line (SC2131), with or without GCR exposure. Together, these dat"
+  },
+  {
+   "accession": "OSD-1000",
+   "title": "Sex\u2010Specific Changes in Brain Organoids from Acute Simulated Galactic Cosmic Radiation are Rescued by Targeted ECM Pathway Stimulation (Opto-FGFR-mediated rescue under simGCRsim exposure)",
+   "description": "This study aims to characterize transcriptomic responses to Simplified 5 Ion GCR Simulation (simGCRsim) in human brain organoids derived from hiPSCs. Two independent RNA-seq experiments were conducted. The first set compared male- and female-derived organoids to evaluate sex-specific transcriptional responses to GCR. The second set assessed organoids derived from i) male hiPSCs expressing optogenetically-controlled FGFR (opto-FGFR) or mock constructs to explore FGFR signaling as a potential countermeasure and ii) one female hiPSC line (SC2131), with or without GCR exposure. Together, these dat"
+  },
+  {
+   "accession": "OSD-1005",
+   "title": "PROtection MEdiated by Antioxidant NanoTEchnOlogy Against Neuronal Damage in Space 2 (PROMETEO 2, Nano Protection)",
+   "description": "The spaceflight environment exposes biological systems to microgravity and cosmic radiation, which are factors known to induce oxidative stress and neurodegenerative processes. As the central nervous system is highly susceptible to disruptions in redox homeostasis, the development of effective strategies to safeguard astronaut health and cognitive function during extended space missions has become imperative. In this study, we investigate cerium oxide nanoparticles (nanoceria, NC) as an antioxidant agent for human neuron-like cells aboard the International Space Station. Nanoceria demonstrated"
+  },
+  {
+   "accession": "OSD-1008",
+   "title": "Proteomic dataset of MECP2-deficient and wild-type human brain organoids under spaceflight and ground conditions",
+   "description": "This dataset contains mass spectrometry-based proteomic profiles of human brain organoids cultured on Earth for 30 days, then maintained aboard the International Space Station (ISS) for an additional 30 days, with matched ground controls that remained on Earth for the equivalent duration. Brain organoids were derived from induced pluripotent stem cell (iPSC) lines: Q83X, carrying a nonsense mutation in MECP2 from a male patient with Rett syndrome, and WT83, derived from the patient\u2019s unaffected familial control. Rett syndrome is a severe X-linked neurodevelopmental disorder caused by loss-of-f"
+  },
+  {
+   "accession": "OSD-1010",
+   "title": "Lacticaseibacillus rhamnosus GG modulates epithelial responses to space-relevant heavy-ion irradiation in a human gut-on-chip",
+   "description": "Space radiation poses significant risks to human health, particularly to the radiation-sensitive gastrointestinal tract, yet the role of the microbiome in modulating intestinal responses to space-relevant heavy-ion exposure remains poorly understood due to the lack of advanced human-relevant experimental models. Here, we adapted a previously developed gut-on-chip (HuMiX) that recapitulates host-microbiome crosstalk to investigate the specific role of Lacticaseibacillus rhamnosus GG (LGG) on the radiation response of normal human intestinal cells (FHs 74 Int) after exposure to 600 MeV per nucle"
+  },
+  {
+   "accession": "OSD-1012",
+   "title": "Impact of Neutron Exposure on Global Gene Expression in a Human Peripheral Blood Model.",
+   "description": "The detonation of an improvised nuclear device would produce prompt radiation consisting of both photons (gamma rays) and neutrons. While much effort in recent years has gone into the development of radiation biodosimetry methods suitable for mass triage, the possible effect of neutrons on the endpoints studied has remained largely uninvestigated. We have used a novel neutron irradiator with an energy spectrum based on that 1-1.5 km from the epicenter of the Hiroshima blast to begin examining the effect of neutrons on global gene expression, and the impact this may have on the development of g"
+  },
+  {
+   "accession": "OSD-1014",
+   "title": "Distinct molecular responses of human intestinal organoids to proton and photon radiation.",
+   "description": "Radiation exposure impairs rapidly renewing tissues like the intestinal epithelium, yet translational insights from murine models have been limited by species-specific responses. Here, we use human intestinal organoids (HIOs) derived from jejunal epithelium to evaluate human epithelial responses to low-dose proton and photon (gamma) radiation. Gamma irradiation induces a unique developmental and metabolic shift in crypt-like organoids, including enrichment of amino acid metabolism pathways and activation of fetal-associated transcription factors and morphology. Integrated multiomic profiling r"
+  },
+  {
+   "accession": "OSD-1015",
+   "title": "Distinct Sets of lncRNAs are Differentially Modulated after Exposure to High and Low Doses of X Rays.",
+   "description": "High- and low-dose X rays are used in medicine as therapeutic and diagnostic tools, respectively. While the cellular response to high-dose radiation is well known, studies on the effects of low-dose radiation and its ability to trigger a proper DNA damage response have had contradictory results. The functions of many signaling and effector proteins of the DNA damage response (DDR) have been described, and are attributed to well-known DDR pathways. However, there has been little known about the contribution of long noncoding RNAs (lncRNAs) to DDR, although there is recent evidence that lncRNAs "
+  }
+ ]
+}

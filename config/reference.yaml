@@ -1,0 +1,895 @@
+# Crew Health Hub - single source of truth for every value, threshold, rule and
+# recommendation used by the app.
+#
+# Every entry has `source` and `verified`:
+#   verified: true  -> value taken from the reference list in the project brief
+#                      (npj Microgravity 2020/2023, NASA NTRS reports, NASA wearable tech).
+#   verified: false -> simulation design assumption or typical clinical range that has
+#                      NOT been checked against a NASA source. Shown with an "unverified"
+#                      tag in the UI and listed in the README.
+#
+# THIS IS A DECISION-SUPPORT DEMO WITH SIMULATED DATA. NOT A MEDICAL DEVICE.
+
+meta:
+  app_name: Crew Health Hub
+  disclaimer: >-
+    Decision-support demo with simulated data. Not a medical device and not for
+    clinical use.
+
+# ---------------------------------------------------------------------------
+# Reference values from the project brief (all verified: true).
+# ---------------------------------------------------------------------------
+references:
+  - id: exercise_hours_per_day
+    label: In-flight exercise time
+    value: 2
+    unit: h/day
+    note: About 2 h/day including setup.
+    source: npj Microgravity (2020, 2023)
+    verified: true
+  - id: exercise_minutes_per_week
+    label: Weekly exercise across T2, CEVIS and ARED
+    value: 600
+    range: [450, 720]
+    unit: min/week
+    source: npj Microgravity (2020, 2023)
+    verified: true
+  - id: ared_peak_load
+    label: ARED peak load
+    value: 272
+    unit: kg
+    source: npj Microgravity (2020, 2023)
+    verified: true
+  - id: t2_peak_speed
+    label: T2 treadmill peak speed
+    value: 19.3
+    unit: km/h
+    source: npj Microgravity (2020, 2023)
+    verified: true
+  - id: energy_intake
+    label: Average energy intake
+    value: 2296
+    sd: 449
+    unit: kcal/day
+    source: npj Microgravity (2020, 2023)
+    verified: true
+  - id: sleep_in_flight
+    label: Sleep in flight
+    value: Crew sleep less in flight than before or after flight
+    unit: qualitative
+    source: NASA wearable technology (sleep studies)
+    verified: true
+  - id: urine_calcium_in_flight
+    label: Urine calcium in flight
+    value: up to ~50% higher than preflight
+    unit: qualitative
+    source: https://ntrs.nasa.gov/citations/20000084164 ; https://ntrs.nasa.gov/citations/20000020539
+    verified: true
+  - id: urine_lower_in_flight
+    label: Urine volume, pH and citrate in flight
+    value: lower than preflight
+    unit: qualitative
+    source: https://ntrs.nasa.gov/citations/20000084164 ; https://ntrs.nasa.gov/citations/20000020539
+    verified: true
+  - id: urine_volume_risk
+    label: Urine volume and stone risk
+    value: Risk higher under 2 L/day; lowest above 2.5 L/day
+    unit: L/day
+    source: https://ntrs.nasa.gov/citations/20000084164 ; https://ntrs.nasa.gov/citations/20000020539
+    verified: true
+  - id: k_citrate_dose
+    label: Potassium citrate dose
+    value: 20 mEq/day as two 10 mEq pills with the last meal
+    unit: mEq/day
+    source: https://ntrs.nasa.gov/citations/20090019087
+    verified: true
+  - id: k_citrate_citrate_effect
+    label: Expected urinary citrate rise on potassium citrate
+    value: +130 to +140
+    unit: mg/day
+    source: https://ntrs.nasa.gov/citations/20090019087
+    verified: true
+  - id: k_citrate_ph_effect
+    label: Expected urine pH rise on potassium citrate
+    value: +0.2 to +0.3
+    unit: pH
+    source: https://ntrs.nasa.gov/citations/20090019087
+    verified: true
+  - id: caox_ss_threshold
+    label: Calcium oxalate supersaturation risk threshold
+    value: above 2.0 means higher risk
+    unit: relative supersaturation
+    source: https://ntrs.nasa.gov/citations/20090019087
+    verified: true
+
+# Shared source labels for unverified items.
+sources:
+  sim: &sim Simulation design assumption
+  clinical: &clinical Typical clinical range (not checked against a NASA source)
+  brief: &brief Project brief (not in the reference list)
+  derived: &derived Derived from verified reference values
+
+# ---------------------------------------------------------------------------
+# Simulation
+# ---------------------------------------------------------------------------
+simulation:
+  seed: 42
+  preflight_days: 10
+  mission_days: 180
+  start_day: 30            # the demo opens on this mission day, with history before it
+  start_hour: 7.5          # 07:30 crew time
+  day_seconds_default: 60  # one mission day per 60 real seconds
+  day_seconds_options: [0, 120, 60, 20, 5]   # 0 = paused
+  workout_time_scale: 10   # live workout: 1 real second = 10 workout seconds
+  source: *sim
+  verified: false
+
+# Per-crew traits drive the scripted demo. All are simulation design choices.
+crew:
+  - id: c1
+    name: Lena Okafor
+    role: Commander
+    mass_kg: 64
+    hr_rest: 58
+    water_habit_l: 2.6
+    water_habit_inflight_l: 2.2 # drinks too little in flight -> high stone-risk crew member
+    urine: {calcium: 232, citrate: 520, oxalate: 36, uric_acid: 640, ph: 5.85, creatinine: 1250, sodium: 170, potassium: 65, magnesium: 105}
+    response_factor: 1.0
+    ared_squat_kg: 105
+    t2_speed_kmh: 9.5
+    cevis_watts: 140
+    sleep_h: 7.1
+    note: High kidney-stone-risk crew member (low fluid habit, high calcium, low citrate).
+  - id: c2
+    name: Marco Diaz
+    role: Pilot
+    mass_kg: 78
+    hr_rest: 62
+    water_habit_l: 3.1
+    urine: {calcium: 205, citrate: 640, oxalate: 34, uric_acid: 700, ph: 6.15, creatinine: 1700, sodium: 185, potassium: 72, magnesium: 120}
+    response_factor: 0.9
+    ared_squat_kg: 140
+    t2_speed_kmh: 11.0
+    cevis_watts: 180
+    sleep_h: 7.1
+    note: Scripted dehydration episode.
+  - id: c3
+    name: Yuki Tanaka
+    role: Flight Engineer
+    mass_kg: 61
+    hr_rest: 60
+    water_habit_l: 2.9
+    urine: {calcium: 230, citrate: 520, oxalate: 33, uric_acid: 560, ph: 5.95, creatinine: 1200, sodium: 160, potassium: 66, magnesium: 110}
+    response_factor: 0.25
+    ared_squat_kg: 95
+    t2_speed_kmh: 10.0
+    cevis_watts: 130
+    sleep_h: 7.3
+    note: Poor responder to potassium citrate (protocol started day 12) and a poor-sleep week.
+  - id: c4
+    name: Sam Novak
+    role: Mission Specialist
+    mass_kg: 82
+    hr_rest: 55
+    water_habit_l: 3.2
+    urine: {calcium: 215, citrate: 690, oxalate: 33, uric_acid: 720, ph: 6.25, creatinine: 1800, sodium: 190, potassium: 78, magnesium: 125}
+    response_factor: 1.1
+    ared_squat_kg: 155
+    t2_speed_kmh: 12.0
+    cevis_watts: 200
+    sleep_h: 7.1
+    note: Scripted missed-workout block (drives the bone-loss cross-source rule).
+
+# Scripted events for the default seed (mission days, inclusive).
+scripted_events:
+  - {crew: c3, kind: protocol_start, day: 12, protocol: potassium_citrate}
+  - {crew: c4, kind: missed_workouts, start: 20, end: 34}
+  - {crew: c2, kind: dehydration, start: 26, end: 32}
+  - {crew: c3, kind: poor_sleep, start: 27, end: 33}
+
+# Events that can be injected from the surgeon demo panel.
+injectable_events:
+  dehydration: {label: Dehydration, days: 5, water_factor: 0.6}
+  poor_sleep: {label: Poor sleep week, days: 7, sleep_delta_h: -2.0}
+  missed_workouts: {label: Missed workouts, days: 7, adherence: 0.15}
+  fever: {label: Fever, days: 2, core_temp_delta: 1.3}
+  co2_spike: {label: CO2 spike, days: 2, co2_delta_mmhg: 2.5}
+  solar_particle_event: {label: Solar particle event, days: 1, dose_msv: 20}
+
+# Physiology model coefficients (all simulation design assumptions).
+model:
+  source: *sim
+  verified: false
+  exercise_adherence: 0.95
+  supplement_adherence: 0.9
+  urine_volume: {water_coef: 0.8, food_water_l: 0.6, sweat_l_per_ex_hour: 0.35, inflight_shift_l: -0.2, noise_sd: 0.12}
+  calcium_inflight_max_rise: 0.5     # matches verified "up to ~50%" at full adherence
+  calcium_rise_tau_days: 25
+  calcium_low_resistance_extra: 0.35 # extra rise when ARED minutes fall to zero
+  citrate_inflight_drop: 0.15
+  ph_inflight_drop: 0.15
+  protocol_onset_alpha: 0.35         # EWMA of adherence -> pharmacological effect build-up
+  water_target_base_l: 2.8
+  water_target_per_ex_hour_l: 0.35
+  hr_per_watt: 0.38
+  hr_max_offset: 120
+  sleep_inflight_delta_h: -0.8       # direction verified (less sleep in flight); size is assumed
+  radiation_msv_per_day:
+    preflight: 0.008
+    iss: 0.5
+    gateway: 1.0
+    mars: 1.8
+  co2_mmhg: {preflight: 0.3, inflight: 2.4}
+
+# Exercise prescription (daily). Totals give ~595 min/week, inside the verified 450-720 range.
+prescription:
+  ared_min: 45
+  cardio_min: 40          # alternates T2 (even days) and CEVIS (odd days)
+  ared_exercises: [squat, deadlift, heel raise, bench press]
+  weekly_target_min: 600  # value verified (npj Microgravity); the daily split above is assumed
+  weekly_range_min: [450, 720]
+  source: "Weekly target: npj Microgravity (2020, 2023). Daily ARED/cardio split: simulation design assumption"
+  verified: false
+
+limits:
+  ared_peak_load_kg: 272
+  t2_peak_speed_kmh: 19.3
+  source: npj Microgravity (2020, 2023)
+  verified: true
+
+cevis_limits:
+  max_watts: 350
+  source: *sim
+  verified: false
+
+# ---------------------------------------------------------------------------
+# Metrics and per-metric rules.
+#   direction: high_bad | low_bad | both  (which deviation counts as worse)
+#   rules (evaluated on the EWMA-smoothed value):
+#     below / above        absolute threshold
+#     z_above / z_below    z-score of smoothed value vs personal preflight baseline
+#     pct_above / pct_below percent change of smoothed value vs baseline mean
+#     slope_above / slope_below  7-day slope (units per day)
+# ---------------------------------------------------------------------------
+defaults:
+  ewma_alpha: 0.3
+  anomaly_z: 3.0      # raw value this many baseline SDs away from the EWMA = anomaly
+  slope_days: 7
+  source: *sim
+  verified: false
+
+metrics:
+  # --- Sleep (wrist actigraph) ---
+  sleep_h:
+    label: Sleep duration
+    unit: h
+    group: sleep
+    device: actiwatch
+    decimals: 1
+    direction: low_bad
+    min_sd: 0.3
+    meaning: Hours asleep last night. Crew sleep less in flight than on the ground.
+    rules:
+      - {type: below, value: 6.0, level: amber, rec: sleep_protect, source: *clinical, verified: false}
+      - {type: below, value: 5.0, level: red, rec: reduce_intensity, source: *clinical, verified: false}
+  sleep_quality:
+    label: Sleep efficiency
+    unit: "%"
+    group: sleep
+    device: actiwatch
+    decimals: 0
+    direction: low_bad
+    min_sd: 2
+    meaning: Share of time in bed actually asleep.
+    rules:
+      - {type: below, value: 80, level: amber, rec: sleep_protect, source: *clinical, verified: false}
+  light_lux:
+    label: Daytime light exposure
+    unit: lux
+    group: sleep
+    device: actiwatch
+    decimals: 0
+    direction: low_bad
+    min_sd: 15
+    meaning: Average light at the wrist while awake. Bright days help the body clock.
+    rules: []
+
+  # --- Vitals (Bio-Monitor shirt + headband) ---
+  hr_rest:
+    label: Resting heart rate
+    unit: bpm
+    group: vitals
+    device: biomonitor
+    decimals: 0
+    direction: high_bad
+    min_sd: 2
+    meaning: Heart rate at rest. A rise above your baseline can mean fatigue, poor sleep or dehydration.
+    rules:
+      - {type: z_above, value: 2.0, level: amber, rec: reduce_intensity, source: *sim, verified: false}
+      - {type: z_above, value: 3.0, level: red, rec: contact_surgeon, source: *sim, verified: false}
+  resp_rate:
+    label: Breathing rate
+    unit: /min
+    group: vitals
+    device: biomonitor
+    decimals: 0
+    direction: high_bad
+    min_sd: 1
+    meaning: Breaths per minute at rest.
+    rules:
+      - {type: above, value: 20, level: amber, rec: contact_surgeon, source: *clinical, verified: false}
+  bp_sys:
+    label: Blood pressure (systolic)
+    unit: mmHg
+    group: vitals
+    device: biomonitor
+    decimals: 0
+    direction: high_bad
+    min_sd: 4
+    meaning: Top blood pressure number.
+    rules:
+      - {type: above, value: 135, level: amber, rec: contact_surgeon, source: *clinical, verified: false}
+  bp_dia:
+    label: Blood pressure (diastolic)
+    unit: mmHg
+    group: vitals
+    device: biomonitor
+    decimals: 0
+    direction: high_bad
+    min_sd: 3
+    meaning: Bottom blood pressure number.
+    rules:
+      - {type: above, value: 88, level: amber, rec: contact_surgeon, source: *clinical, verified: false}
+  skin_temp:
+    label: Skin temperature
+    unit: °C
+    group: vitals
+    device: biomonitor
+    decimals: 1
+    direction: both
+    min_sd: 0.2
+    meaning: Temperature at the skin surface; follows cabin temperature and activity.
+    rules: []
+  spo2:
+    label: Blood oxygen
+    unit: "%"
+    group: vitals
+    device: biomonitor
+    decimals: 0
+    direction: low_bad
+    min_sd: 0.5
+    meaning: How much oxygen your blood carries.
+    rules:
+      - {type: below, value: 95, level: amber, rec: contact_surgeon, source: *clinical, verified: false}
+      - {type: below, value: 92, level: red, rec: contact_surgeon, source: *clinical, verified: false}
+  activity:
+    label: Activity
+    unit: counts/min
+    group: vitals
+    device: biomonitor
+    decimals: 0
+    direction: low_bad
+    min_sd: 20
+    meaning: Movement measured by the shirt outside exercise sessions.
+    rules: []
+
+  # --- Core temperature (headband) ---
+  core_temp:
+    label: Core temperature
+    unit: °C
+    group: vitals
+    device: tmini
+    decimals: 2
+    direction: high_bad
+    min_sd: 0.1
+    meaning: Body core temperature. Above 38.0 °C may mean fever or heat strain.
+    rules:
+      - {type: above, value: 37.6, level: amber, rec: core_temp_check, source: *clinical, verified: false}
+      - {type: above, value: 38.0, level: red, rec: core_temp_check, source: *clinical, verified: false}
+
+  # --- Environment ---
+  co2_mmhg:
+    label: CO2 exposure
+    unit: mmHg
+    group: environment
+    device: co2
+    decimals: 1
+    direction: high_bad
+    min_sd: 0.2
+    meaning: Carbon dioxide you breathed today. High CO2 can cause headache and poor focus.
+    rules:
+      - {type: above, value: 3.0, level: amber, rec: check_co2, source: *clinical, verified: false}
+      - {type: above, value: 4.0, level: red, rec: check_co2, source: *clinical, verified: false}
+  rad_msv:
+    label: Radiation dose (day)
+    unit: mSv
+    group: environment
+    device: dosimeter
+    decimals: 2
+    direction: high_bad
+    min_sd: 0.05
+    meaning: Radiation dose received today.
+    rules:
+      - {type: above, value: 5.0, level: red, rec: radiation_shelter, source: *sim, verified: false}
+  rad_cum:
+    label: Mission radiation dose
+    unit: mSv
+    group: environment
+    device: dosimeter
+    decimals: 1
+    direction: high_bad
+    baseline: none
+    meaning: Total radiation dose since launch.
+    rules:
+      - {type: above, value: 250, level: amber, rec: contact_surgeon, source: *sim, verified: false}
+
+  # --- Urine (UWMS sensor bay, 24-hour totals) ---
+  u_volume:
+    label: Urine volume
+    unit: L/day
+    group: urine
+    device: uwms
+    decimals: 2
+    direction: low_bad
+    min_sd: 0.1
+    meaning: How much urine you made in 24 h. Under 2 L/day raises kidney-stone risk; above 2.5 L/day is lowest risk.
+    rules:
+      - {type: below, value: 2.5, level: amber, rec: hydrate, source: "https://ntrs.nasa.gov/citations/20000084164", verified: true}
+      - {type: below, value: 2.0, level: red, rec: hydrate, source: "https://ntrs.nasa.gov/citations/20000084164", verified: true}
+  u_calcium:
+    label: Urine calcium
+    unit: mg/day
+    group: urine
+    device: uwms
+    decimals: 0
+    direction: high_bad
+    min_sd: 8
+    meaning: Calcium leaving the body. Rises in flight (up to ~50%) as bone breaks down.
+    rules:
+      - {type: pct_above, value: 50, level: amber, rec: resume_resistance, source: "https://ntrs.nasa.gov/citations/20000084164", verified: true}
+      - {type: pct_above, value: 70, level: red, rec: contact_surgeon, source: *sim, verified: false}
+  u_citrate:
+    label: Urine citrate
+    unit: mg/day
+    group: urine
+    device: uwms
+    decimals: 0
+    direction: low_bad
+    min_sd: 15
+    meaning: Citrate blocks stone crystals. Lower in flight; potassium citrate raises it.
+    rules:
+      - {type: below, value: 450, level: amber, rec: start_k_citrate, source: *clinical, verified: false}
+  u_oxalate:
+    label: Urine oxalate
+    unit: mg/day
+    group: urine
+    device: uwms
+    decimals: 0
+    direction: high_bad
+    min_sd: 2
+    meaning: Oxalate joins calcium to form the most common stone.
+    rules:
+      - {type: above, value: 45, level: amber, rec: contact_surgeon, source: *clinical, verified: false}
+  u_uric_acid:
+    label: Urine uric acid
+    unit: mg/day
+    group: urine
+    device: uwms
+    decimals: 0
+    direction: high_bad
+    min_sd: 25
+    meaning: Uric acid can form its own stones, mostly in acidic urine.
+    rules:
+      - {type: above, value: 800, level: amber, rec: hydrate, source: *clinical, verified: false}
+  u_ph:
+    label: Urine pH
+    unit: pH
+    group: urine
+    device: uwms
+    decimals: 2
+    direction: low_bad
+    min_sd: 0.05
+    meaning: Acidity of urine. Lower in flight; low pH favours uric acid stones.
+    rules:
+      - {type: below, value: 5.5, level: amber, rec: start_k_citrate, source: *clinical, verified: false}
+  u_sg:
+    label: Specific gravity
+    unit: ""
+    group: urine
+    device: uwms
+    decimals: 3
+    direction: high_bad
+    min_sd: 0.001
+    meaning: How concentrated urine is. High means you need more water.
+    rules:
+      - {type: above, value: 1.025, level: amber, rec: hydrate, source: *clinical, verified: false}
+      - {type: above, value: 1.030, level: red, rec: hydrate, source: *clinical, verified: false}
+  u_creatinine:
+    label: Urine creatinine
+    unit: mg/day
+    group: urine
+    device: uwms
+    decimals: 0
+    direction: both
+    min_sd: 40
+    meaning: Tracks muscle mass and confirms a complete 24 h collection.
+    rules: []
+  u_sodium:
+    label: Urine sodium
+    unit: mEq/day
+    group: urine
+    device: uwms
+    decimals: 0
+    direction: high_bad
+    min_sd: 8
+    meaning: Salt intake. High sodium pushes more calcium into urine.
+    rules: []
+  u_potassium:
+    label: Urine potassium
+    unit: mEq/day
+    group: urine
+    device: uwms
+    decimals: 0
+    direction: both
+    min_sd: 4
+    meaning: Rises when you take potassium citrate.
+    rules: []
+  u_magnesium:
+    label: Urine magnesium
+    unit: mg/day
+    group: urine
+    device: uwms
+    decimals: 0
+    direction: low_bad
+    min_sd: 5
+    meaning: Magnesium also blocks stone crystals.
+    rules: []
+  caox_ss:
+    label: Stone risk (CaOx supersaturation)
+    unit: RS
+    group: urine
+    device: derived
+    decimals: 2
+    direction: high_bad
+    min_sd: 0.05
+    meaning: How likely calcium oxalate crystals form. Above 2.0 means higher kidney-stone risk.
+    estimate_note: Simplified estimate from calcium, oxalate, citrate, pH and volume; not the EQUIL2 program.
+    estimate_verified: false
+    rules:
+      - {type: above, value: 1.8, level: amber, rec: hydrate, source: *sim, verified: false}
+      - {type: above, value: 2.0, level: red, rec: start_k_citrate, source: "https://ntrs.nasa.gov/citations/20090019087", verified: true}
+
+  # --- Nutrition (manual entries + simulated meals) ---
+  kcal:
+    label: Energy intake
+    unit: kcal
+    group: nutrition
+    device: manual
+    decimals: 0
+    direction: low_bad
+    min_sd: 150
+    meaning: Calories eaten today. Flight average is 2296 ± 449 kcal/day.
+    rules:
+      - {type: below, value: 1847, level: amber, rec: eat_more, source: "npj Microgravity (2020, 2023): mean - 1 SD", verified: true}
+  water_l:
+    label: Water intake
+    unit: L
+    group: nutrition
+    device: manual
+    decimals: 2
+    direction: low_bad
+    min_sd: 0.15
+    meaning: Water you drank today (drinks plus rehydrated food water you logged).
+    rules:
+      - {type: below, value: 2.5, level: amber, rec: hydrate, source: *sim, verified: false}
+  protein_g:
+    label: Protein
+    unit: g
+    group: nutrition
+    device: manual
+    decimals: 0
+    direction: low_bad
+    min_sd: 8
+    meaning: Protein helps hold on to muscle.
+    rules:
+      - {type: below, value: 70, level: amber, rec: eat_more, source: *clinical, verified: false}
+  sodium_mg:
+    label: Sodium
+    unit: mg
+    group: nutrition
+    device: manual
+    decimals: 0
+    direction: high_bad
+    min_sd: 200
+    meaning: Salt eaten today. High salt raises urine calcium.
+    rules:
+      - {type: above, value: 4500, level: amber, rec: lower_salt, source: *clinical, verified: false}
+  calcium_mg:
+    label: Dietary calcium
+    unit: mg
+    group: nutrition
+    device: manual
+    decimals: 0
+    direction: both
+    min_sd: 60
+    meaning: Calcium eaten today.
+    rules: []
+  vitd_iu:
+    label: Vitamin D
+    unit: IU
+    group: nutrition
+    device: manual
+    decimals: 0
+    direction: low_bad
+    min_sd: 50
+    meaning: Vitamin D from food and supplements. Little sunlight reaches you in flight.
+    rules: []
+  feeling:
+    label: How I feel
+    unit: /5
+    group: nutrition
+    device: manual
+    decimals: 0
+    direction: low_bad
+    min_sd: 0.5
+    meaning: Your own 1-5 rating of how you feel today.
+    rules:
+      - {type: below, value: 2.5, level: amber, rec: contact_surgeon, source: *sim, verified: false}
+
+  # --- Exercise (ARED, T2, CEVIS) ---
+  ex_total_min:
+    label: Exercise today
+    unit: min
+    group: exercise
+    device: derived
+    decimals: 0
+    direction: low_bad
+    min_sd: 5
+    meaning: Minutes on all exercise machines today.
+    rules: []
+  ex_week_min:
+    label: Exercise this week
+    unit: min/week
+    group: exercise
+    device: derived
+    decimals: 0
+    direction: low_bad
+    min_sd: 20
+    baseline: none
+    meaning: Rolling 7-day total. Target ~600 min/week (range 450-720).
+    rules:
+      - {type: below, value: 450, level: amber, rec: resume_exercise, source: npj Microgravity (2020, 2023), verified: true}
+      - {type: above, value: 720, level: amber, rec: reduce_intensity, source: npj Microgravity (2020, 2023), verified: true}
+  ared_week_min:
+    label: Resistance exercise this week
+    unit: min/week
+    group: exercise
+    device: derived
+    decimals: 0
+    direction: low_bad
+    min_sd: 15
+    baseline: none
+    meaning: Rolling 7-day ARED minutes. Resistance work protects bone.
+    rules: []
+  ared_squat_kg:
+    label: ARED squat load
+    unit: kg
+    group: exercise
+    device: ared
+    decimals: 0
+    direction: low_bad
+    min_sd: 3
+    meaning: Heaviest squat load today. Peak ARED load is 272 kg.
+    rules: []
+  t2_speed_kmh:
+    label: T2 speed
+    unit: km/h
+    group: exercise
+    device: t2
+    decimals: 1
+    direction: low_bad
+    min_sd: 0.3
+    meaning: Average treadmill running speed. T2 peak speed is 19.3 km/h.
+    rules: []
+  cevis_watts:
+    label: CEVIS power
+    unit: W
+    group: exercise
+    device: cevis
+    decimals: 0
+    direction: low_bad
+    min_sd: 5
+    meaning: Average cycling power.
+    rules: []
+  hr_exercise:
+    label: Exercise heart rate
+    unit: bpm
+    group: exercise
+    device: biomonitor
+    decimals: 0
+    direction: both
+    min_sd: 4
+    meaning: Average heart rate during today's sessions.
+    rules: []
+
+# ---------------------------------------------------------------------------
+# Cross-source rules. All conditions must hold. Fields: value (latest raw), ewma,
+# z, slope (per day over slope_days), pct (% vs baseline).
+# ---------------------------------------------------------------------------
+cross_rules:
+  - id: stone_risk
+    title: Kidney-stone risk is high
+    level: red
+    when:
+      - {metric: caox_ss, field: ewma, op: ">", value: 2.0}
+      - {metric: u_volume, field: ewma, op: "<", value: 2.0}
+    recs: [hydrate, start_k_citrate]
+    reason: "Stone risk {caox_ss.ewma} is above 2.0 and urine volume {u_volume.ewma} L/day is under 2 L/day."
+    source: "https://ntrs.nasa.gov/citations/20090019087 ; https://ntrs.nasa.gov/citations/20000084164"
+    verified: true
+  - id: bone_loss
+    title: Bone-loss warning
+    level: red
+    when:
+      - {metric: ared_week_min, field: value, op: "<", value: 200}
+      - {metric: u_calcium, field: slope, op: ">", value: 1.0}
+    recs: [resume_resistance, contact_surgeon]
+    reason: "Resistance exercise is low ({ared_week_min.value} min this week) while urine calcium is rising ({u_calcium.slope} mg/day each day)."
+    source: *sim
+    verified: false
+  - id: exercise_dehydration
+    title: Not drinking enough for your exercise
+    level: amber
+    when:
+      - {metric: ex_total_min, field: value, op: ">", value: 60}
+      - {metric: water_l, field: ewma, op: "<", value: 2.6}
+      - {metric: u_sg, field: ewma, op: ">", value: 1.020}
+    recs: [hydrate]
+    reason: "You exercised {ex_total_min.value} min but drink {water_l.ewma} L/day and urine is concentrated (SG {u_sg.ewma})."
+    source: *sim
+    verified: false
+  - id: fatigue
+    title: Fatigue risk
+    level: amber
+    when:
+      - {metric: sleep_h, field: ewma, op: "<", value: 6.0}
+      - {metric: hr_rest, field: z, op: ">", value: 1.5}
+    recs: [reduce_intensity, sleep_protect]
+    reason: "Sleep averages {sleep_h.ewma} h and resting heart rate is {hr_rest.z} SD above your baseline."
+    source: *sim
+    verified: false
+
+# Protocol response rule: flags a protocol that is not working.
+protocol_rules:
+  min_days: 14
+  poor_response_below: 0.35
+  level: amber
+  recs: [contact_surgeon]
+  source: *sim
+  verified: false
+
+# ---------------------------------------------------------------------------
+# Fixed recommendation list.
+# ---------------------------------------------------------------------------
+recommendations:
+  hydrate:
+    text: Drink more water today. Aim for urine above 2.5 L/day.
+    source: https://ntrs.nasa.gov/citations/20000084164
+    verified: true
+  start_k_citrate:
+    text: "Start potassium citrate: 20 mEq/day, two 10 mEq pills with your last meal."
+    source: https://ntrs.nasa.gov/citations/20090019087
+    verified: true
+  resume_resistance:
+    text: Do today's ARED session. Resistance exercise slows bone loss.
+    source: *sim
+    verified: false
+  resume_exercise:
+    text: Get back to your exercise plan. Target is about 600 min/week.
+    source: npj Microgravity (2020, 2023)
+    verified: true
+  reduce_intensity:
+    text: Swap today's hard session for a moderate one and rest more.
+    source: *sim
+    verified: false
+  sleep_protect:
+    text: Protect tonight's sleep window. Dim lights and screens an hour before.
+    source: *sim
+    verified: false
+  core_temp_check:
+    text: Rest, drink water and recheck core temperature in 1 hour. Tell the surgeon if it stays above 38.0 °C.
+    source: *clinical
+    verified: false
+  check_co2:
+    text: Move to a well-ventilated module and report the CO2 reading.
+    source: *sim
+    verified: false
+  radiation_shelter:
+    text: Follow the radiation shelter procedure until the alert ends.
+    source: *sim
+    verified: false
+  eat_more:
+    text: Add a snack. Your intake is below the usual flight range.
+    source: npj Microgravity (2020, 2023)
+    verified: true
+  lower_salt:
+    text: Choose lower-salt foods today. Salt raises urine calcium.
+    source: *clinical
+    verified: false
+  contact_surgeon:
+    text: Flag this for the flight surgeon at the next link window.
+    source: *sim
+    verified: false
+
+# ---------------------------------------------------------------------------
+# Supplement protocols and their response targets.
+#   progress = 1 - |current - target| / |start - target|, clipped to 0..1,
+#   on EWMA-smoothed values. `stop_at_target: true` treats values past the
+#   target in the wanted direction as reached (progress 1).
+# ---------------------------------------------------------------------------
+protocols:
+  potassium_citrate:
+    label: Potassium citrate
+    dose_text: 10 mEq x 2 with the last meal (20 mEq/day)
+    dose_meq_per_day: 20
+    pills_per_day: 2
+    source: https://ntrs.nasa.gov/citations/20090019087
+    verified: true
+    effects:   # used by the simulator; scaled by adherence and personal response factor
+      citrate_mg: 135
+      ph: 0.25
+      potassium_meq: 16
+    targets:
+      - {metric: u_citrate, mode: delta, value: 135, direction: up, label: "Citrate +130-140 mg/day", source: "https://ntrs.nasa.gov/citations/20090019087", verified: true}
+      - {metric: u_ph, mode: delta, value: 0.25, direction: up, label: "pH +0.2-0.3", source: "https://ntrs.nasa.gov/citations/20090019087", verified: true}
+    stop_at_target: true
+    days_to_target_fraction: 0.9   # "reached" = 90% progress on the exponential fit (assumed)
+
+# ---------------------------------------------------------------------------
+# Food catalogue for manual entries (nutrient values are illustrative).
+# ---------------------------------------------------------------------------
+food_catalog:
+  source: *sim
+  verified: false
+  items:
+    - {id: breakfast, label: Breakfast tray, kcal: 550, protein_g: 25, sodium_mg: 900, calcium_mg: 250, vitd_iu: 40, water_l: 0.2}
+    - {id: lunch, label: Lunch tray, kcal: 750, protein_g: 35, sodium_mg: 1400, calcium_mg: 250, vitd_iu: 40, water_l: 0.3}
+    - {id: dinner, label: Dinner tray, kcal: 800, protein_g: 40, sodium_mg: 1500, calcium_mg: 300, vitd_iu: 40, water_l: 0.3}
+    - {id: snack, label: Snack bar, kcal: 250, protein_g: 10, sodium_mg: 150, calcium_mg: 100, vitd_iu: 0, water_l: 0.0}
+    - {id: vitd, label: Vitamin D tablet, kcal: 0, protein_g: 0, sodium_mg: 0, calcium_mg: 0, vitd_iu: 800, water_l: 0.0}
+
+nutrition_targets:
+  kcal: {value: 2296, range: [1847, 2745], source: "npj Microgravity (2020, 2023): mean ± 1 SD", verified: true}
+  protein_g: {value: 90, source: *clinical, verified: false}
+  sodium_mg: {value: 3500, max: true, source: *clinical, verified: false}
+  calcium_mg: {value: 1000, source: *clinical, verified: false}
+  vitd_iu: {value: 800, source: *clinical, verified: false}
+
+# ---------------------------------------------------------------------------
+# Ground link. Delays run in REAL time (not on the fast mission clock) so the
+# lag is visible in the demo.
+# ---------------------------------------------------------------------------
+link:
+  snapshot_every_s: 5
+  profiles:
+    iss:
+      label: ISS (near real time)
+      delay_s: 0.5
+      blackout: {period_s: 90, duration_s: 8}
+      source: *brief
+      verified: false
+    gateway:
+      label: Gateway (~1.3 s)
+      delay_s: 1.3
+      blackout: {period_s: 180, duration_s: 15}
+      source: *brief
+      verified: false
+    mars:
+      label: Mars (up to 22 min)
+      delay_s: 1320
+      delay_min_s: 20
+      delay_max_s: 1320
+      blackout: {period_s: 300, duration_s: 40}
+      source: *brief
+      verified: false
+  default_profile: iss

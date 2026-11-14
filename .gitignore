@@ -1,0 +1,11 @@
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+data/*.db
+data/*.db-*
+data/osdr_cache.json
+.DS_Store
