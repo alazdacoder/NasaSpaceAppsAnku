@@ -13,3 +13,11 @@ data/osdr_cache.json
 /build/
 /dist/
 /.build-venv/
+# Android: copies made by android/prepare.sh, and Gradle output
+android/app/src/main/python/app/
+android/app/src/main/python/config/
+android/app/src/main/python/frontend/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties

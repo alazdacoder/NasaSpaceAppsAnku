@@ -1,0 +1,14 @@
+# Python packages inside the Android app (Chaquopy, Python 3.12).
+# Chaquopy has no Android build of pydantic-core, so the phone uses FastAPI 0.110 with the
+# pure-Python pydantic 1.x, plain uvicorn (no C speedups) and wsproto for WebSockets.
+# numpy and PyYAML come from Chaquopy's own Android package index.
+# The desktop app keeps using backend/requirements.txt.
+fastapi==0.110.3
+starlette==0.37.2
+pydantic==1.10.18
+uvicorn==0.29.0
+wsproto==1.2.0
+h11==0.14.0
+anyio==4.4.0
+PyYAML==6.0.3
+numpy==1.26.2

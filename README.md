@@ -49,6 +49,15 @@ Requirements: Python 3.11+ and Node 18+. If `node` isn't on your PATH, `run.sh` 
 - the GitHub Actions workflow `.github/workflows/windows-exe.yml`, which builds it, runs the tests and a smoke test, and uploads it. Start it with **Run workflow**, or push a tag like `v1.1.0` to attach the `.exe` to a GitHub Release;
 - `packaging\build_windows.bat` on any Windows PC, which writes `dist\CrewHealthHub.exe`.
 
+### Android phone (APK)
+
+**Install:** download `CrewHealthHub.apk` on the phone from the repo's **Releases** page (or **Actions → Android APK → latest run → Artifacts**), open it, and allow your browser or file manager to "install unknown apps" when Android asks.
+- The whole app runs **on the phone**: the same simulator, both portals and both languages. No computer or internet is needed (only the live NASA OSDR list on *Data sources* uses the internet).
+- The first start takes up to a minute while the simulator builds its history. Needs a 64-bit ARM phone with Android 7 or newer.
+- If a newer APK won't install over an older one, uninstall the old app first.
+
+**How the APK is made.** [Chaquopy](https://chaquo.com/chaquopy/) puts Python 3.12 inside the app. `android/app/src/main/python/android_main.py` starts the same FastAPI server on `127.0.0.1`, and a WebView (`MainActivity.java`) shows it. Chaquopy has no Android build of pydantic-core, so the phone uses FastAPI 0.110 with the pure-Python pydantic 1.x (`android/app/requirements.txt`); the GitHub workflow runs the full test suite with those packages before building. To build it yourself (JDK 17, Android SDK, Python 3.12): `cd frontend && npm run build`, then `./android/prepare.sh` and `gradle -p android :app:assembleDebug`.
+
 Every start uses a fresh simulation with the default seed (42) and opens on mission day 30. The clock runs at 1 mission day per 60 s.
 
 ---

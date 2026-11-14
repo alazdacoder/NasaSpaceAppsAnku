@@ -14,6 +14,8 @@ FROZEN = bool(getattr(sys, "frozen", False))   # running as a PyInstaller execut
 
 def _resource_root() -> Path:
     """Folder holding config/ and frontend/dist (the unpacked bundle when frozen)."""
+    if os.environ.get("HUB_ROOT"):            # set by the Android app (android/app/src/main/python/android_main.py)
+        return Path(os.environ["HUB_ROOT"])
     if FROZEN:
         return Path(getattr(sys, "_MEIPASS", Path(sys.executable).parent))
     return Path(__file__).resolve().parents[2]
