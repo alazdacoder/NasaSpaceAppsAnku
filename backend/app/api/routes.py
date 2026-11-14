@@ -141,7 +141,7 @@ def clock_payload() -> dict:
 def live_now(cid: str) -> dict:
     w = W()
     out: dict[str, Any] = {}
-    for aid in ("biomonitor", "tmini", "co2"):
+    for aid in ("biomonitor", "tmini", "co2", "tonometer"):
         out.update(w.adapter_by_id[aid].live(cid, w.mission_t, w))
     return out
 
@@ -160,9 +160,9 @@ def alerts_for(ev: dict, groups: set[str]) -> list[dict]:
 async def meta():
     w = W()
     cfg = w.cfg
-    return {"app_name": cfg["meta"]["app_name"], "disclaimer": cfg["meta"]["disclaimer"],
+    return {"app_name": cfg["meta"]["app_name"], "app_name_tr": cfg["meta"].get("app_name_tr"), "disclaimer": cfg["meta"]["disclaimer"],
             "disclaimer_tr": cfg["meta"].get("disclaimer_tr"),
-            "crew": [{"id": c["id"], "name": c["name"], "role": c["role"], "role_tr": c.get("role_tr"), "sex": c.get("sex"),
+            "crew": [{"id": c["id"], "name": c["name"], "name_tr": c.get("name_tr"), "role": c["role"], "role_tr": c.get("role_tr"), "sex": c.get("sex"),
                       "birth": c.get("birth"), "flights": c.get("flights")} for c in w.crew],
             "clock": clock_payload(), "link": w.link.status(),
             "profiles": {k: {"label": v["label"], "label_tr": v.get("label_tr"), "delay_s": v["delay_s"],
@@ -191,6 +191,15 @@ async def today(cid: str):
     sleep = {k: metric_payload({}, k, w.last_closed_day, m.get(k)) for k in ("sleep_h", "sleep_quality")}
     for s in sleep.values():
         s.pop("points", None)
+    nights = [{"day": d, "value": x} for d, x in zip(*v.series.get("sleep_h", ([], [])))][-7:]
+
+    def base(mid: str):
+        return (m.get(mid) or {}).get("baseline_mean")
+
+    top = ev["alerts"][0] if ev["alerts"] else None
+    drivers = [{"metric": k, "label": m[k]["label"], "label_tr": m[k].get("label_tr"), "value": m[k]["ewma"],
+                "unit": m[k]["unit"], "unit_tr": m[k].get("unit_tr"), "decimals": m[k]["decimals"], "status": m[k]["status"]}
+               for k in (top["metrics"] if top else []) if k in m][:3]
     planned = sum(p["minutes"] for p in w.planned(cid))
     energy = w.energy_today(cid)
     entries = w.manual_today(cid)
@@ -200,9 +209,11 @@ async def today(cid: str):
         lv = m.get("vest_readiness")
         level = int(lv["value"]) if lv and lv["day"] >= w.landing_day else 0
         readiness = level_info(w.cfg, level)
-    return {"crew": {"id": cid, "name": prof["name"], "role": prof["role"], "role_tr": prof.get("role_tr")},
+    return {"crew": {"id": cid, "name": prof["name"], "name_tr": prof.get("name_tr"), "role": prof["role"], "role_tr": prof.get("role_tr")},
             "clock": clock_payload(), "overall": ev["overall"], "alerts": ev["alerts"], "tasks": w.tasks(cid),
-            "sleep": sleep, "water_target_l": water_target(w.cfg, planned),
+            "sleep": sleep, "sleep_nights": nights, "water_target_l": water_target(w.cfg, planned),
+            "baselines": {"hr": base("hr_rest"), "spo2": base("spo2"), "core_temp": base("core_temp"), "co2_mmhg": base("co2_mmhg")},
+            "alert_drivers": drivers,
             "protocols": [{k: p.get(k) for k in ("protocol_id", "label", "label_tr", "score", "days_since_start",
                                                   "days_to_target_left", "dose_text", "dose_text_tr")}
                           for p in ev["protocols"] if p["status"] == "active"],
@@ -211,6 +222,7 @@ async def today(cid: str):
             "mind": {"checkin": checkin, "wellbeing": m.get("wellbeing", {}).get("value"),
                      "stress": m.get("stress", {}).get("ewma")},
             "readiness": readiness,
+            "ocular": w.ocular_telemetry(cid),
             "live": live_now(cid), "autopilot": w.autopilot[cid], "workout_active": cid in w.live,
             "link": w.link.status()}
 
@@ -243,8 +255,44 @@ async def body(cid: str, side: str = "crew"):
     _crew(cid)
     v = View(cid, side)
     return {"live": v.live(), "vitals": v.metrics(mids_in("vitals")), "sleep": v.metrics(mids_in("sleep")),
+            "ocular": v.metrics(mids_in("ocular")), "fluid": v.metrics(mids_in("fluid")),
+            "ocular_telemetry": W().ocular_telemetry(cid),
             "kidney": v.metrics(["caox_ss", "u_volume"]), "environment": v.metrics(["co2_mmhg", "rad_cum"]),
-            "alerts": alerts_for(v.ev, {"vitals", "sleep"}), "clock": clock_payload(), "view": v.info()}
+            "alerts": alerts_for(v.ev, {"vitals", "sleep", "ocular", "fluid"}), "clock": clock_payload(), "view": v.info()}
+
+
+@router.get("/crew/{cid}/ocular")
+async def ocular_detail(cid: str, side: str = "crew"):
+    prof = _crew(cid)
+    w = W()
+    v = View(cid, side)
+    return {
+        "crew": {"id": cid, "name": prof["name"], "name_tr": prof.get("name_tr"), "role": prof["role"], "role_tr": prof.get("role_tr")},
+        "ocular": w.ocular_telemetry(cid),
+        "metrics": v.metrics(["iop_mmhg", "onsd_mm", "fluid_shift_ml", "icp_mmhg", "bp_sys", "bp_dia", "co2_mmhg", "water_l", "sodium_mg"]),
+        "alerts": alerts_for(v.ev, {"ocular", "fluid", "vitals", "environment"}),
+        "history": w.sos_history(cid, limit=25),
+        "clock": clock_payload(),
+        "link": w.link.status(),
+        "view": v.info(),
+    }
+
+
+@router.post("/crew/{cid}/ocular/scan")
+async def ocular_scan(cid: str, body: dict = Body(default={})):
+    _crew(cid)
+    mode = str(body.get("mode", "calibration"))
+    if mode not in ("calibration", "anomaly"):
+        raise HTTPException(400, "mode must be calibration or anomaly")
+    return W().run_ocular_scan(cid, mode=mode)
+
+
+@router.post("/crew/{cid}/emergency/sos")
+async def emergency_sos(cid: str, body: dict = Body(default={})):
+    _crew(cid)
+    reason = str(body.get("reason") or "Manual crew SOS trigger")
+    auto_failsafe = bool(body.get("auto_failsafe", False))
+    return W().trigger_emergency_sos(cid, reason=reason, auto_failsafe=auto_failsafe)
 
 
 @router.get("/crew/{cid}/exercise")
@@ -636,7 +684,7 @@ async def crew_lsah(cid: str, side: str = "crew"):
                       "detail_tr": t.get("detail_tr"), "metrics": t["metrics"], "category_id": t["category_id"],
                       "category": c.get("title"), "category_tr": c.get("title_tr"), "mrid": c.get("mrid"),
                       "sessions": sessions, "next": nxt})
-    return {"profile": {"name": prof["name"], "role": prof["role"], "role_tr": prof.get("role_tr"), "sex": prof.get("sex"),
+    return {"profile": {"name": prof["name"], "name_tr": prof.get("name_tr"), "role": prof["role"], "role_tr": prof.get("role_tr"), "sex": prof.get("sex"),
                         "birth": prof.get("birth"), "age": age_on(prof["birth"], today), "flights": prof.get("flights"),
                         "last_dxa_year": prof.get("last_dxa_year")},
             "annual": annual_plan(cfg, prof, today), "tests": tests, "metrics": v.metrics(LSAH_METRICS),
@@ -661,7 +709,7 @@ async def surgeon_overview():
     for c in w.crew:
         row = w.db.one("SELECT * FROM g_state WHERE crew_id=?", (c["id"],))
         last_day = w.db.one("SELECT MAX(day) d FROM g_samples WHERE crew_id=?", (c["id"],))
-        item = {"id": c["id"], "name": c["name"], "role": c["role"], "role_tr": c.get("role_tr"), "state": None,
+        item = {"id": c["id"], "name": c["name"], "name_tr": c.get("name_tr"), "role": c["role"], "role_tr": c.get("role_tr"), "state": None,
                 "ground_last_day": last_day["d"] if last_day else None}
         if row:
             item.update({"state": json.loads(row["payload"]), "data_mission_t": row["mission_t"],
@@ -669,6 +717,34 @@ async def surgeon_overview():
                          "seq": row["seq"]})
         crew.append(item)
     return {"crew": crew, "link": w.link.status(), "onboard_clock": clock_payload()}
+
+
+@router.get("/surgeon/ocular")
+async def surgeon_ocular():
+    w = W()
+    crew_list = []
+    for c in w.crew:
+        cid = c["id"]
+        v = View(cid, "ground")
+        oc = w.ocular_telemetry(cid)
+        m = v.metrics(["iop_mmhg", "onsd_mm", "fluid_shift_ml", "icp_mmhg"])
+        crew_list.append({
+            "id": cid,
+            "name": c["name"],
+            "name_tr": c.get("name_tr"),
+            "role": c["role"],
+            "role_tr": c.get("role_tr"),
+            "ocular": oc,
+            "metrics": m,
+            "alerts": alerts_for(v.ev, {"ocular", "fluid"}),
+            "view": v.info(),
+        })
+    return {
+        "crew": crew_list,
+        "history": w.sos_history(None, limit=40),
+        "link": w.link.status(),
+        "onboard_clock": clock_payload(),
+    }
 
 
 @router.get("/surgeon/crew/{cid}/series")
@@ -680,9 +756,9 @@ async def surgeon_series(cid: str, metrics: str = "u_volume,caox_ss,u_calcium,hr
     return {"metrics": {m: metric_payload(series, m, today) for m in mids}, "ground_last_day": today}
 
 
-DEFAULT_CORR = ["water_l", "u_volume", "u_sg", "caox_ss", "ex_total_min", "ared_week_min", "u_calcium",
-                "sleep_h", "hr_rest", "pvt_rt_ms", "stress", "workload_h", "core_temp", "co2_mmhg", "kcal", "kcal_out",
-                "feeling"]
+DEFAULT_CORR = ["iop_mmhg", "onsd_mm", "fluid_shift_ml", "icp_mmhg", "water_l", "u_volume", "u_sg", "caox_ss",
+                "ex_total_min", "ared_week_min", "u_calcium", "sleep_h", "hr_rest", "pvt_rt_ms", "stress",
+                "workload_h", "core_temp", "co2_mmhg", "kcal", "kcal_out", "feeling"]
 
 
 @router.get("/surgeon/correlations")
@@ -720,7 +796,7 @@ async def surgeon_events(limit: int = 120):
     w = W()
     now = w.real()
     rows = w.db.all("SELECT * FROM g_event_log ORDER BY seq DESC LIMIT ?", (limit,))
-    names = {c["id"]: c["name"] for c in w.crew}
+    names = {c["id"]: tr(c["name"], c.get("name_tr") or c["name"]) for c in w.crew}
     for r in rows:
         r["crew_name"] = names.get(r["crew_id"], tr("Mission", "Görev"))
         r["age_s"] = now - r["created_real"]

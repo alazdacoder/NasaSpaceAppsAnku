@@ -131,7 +131,7 @@ export default function Sources() {
                   <tr key={i} className="border-t border-ink-800">
                     <td className="py-1.5 pr-2">{x.label}{phaseWords(x.phases)}</td>
                     <td className="pr-2 font-mono">{x.rule} {x.unit}</td>
-                    <td className="pr-2" style={{ color: x.level === "red" ? "#f43f5e" : "#fbbf24" }}>{levelWord(x.level)}</td>
+                    <td className="pr-2" style={{ color: x.level === "red" ? "#FF5252" : "#FF9100" }}>{levelWord(x.level)}</td>
                     <td><SourceTag verified={x.verified} source={x.source} /></td>
                   </tr>
                 ))}
@@ -145,7 +145,7 @@ export default function Sources() {
               <li key={r.id} className="rounded-xl bg-ink-850 p-3">
                 <div className="flex items-center justify-between gap-2 font-semibold">{r.title}{phaseWords(r.phases)} <SourceTag verified={r.verified} source={r.source} /></div>
                 <div className="mt-1 font-mono text-sm text-slate-300">{r.when.map((c) => `${c.metric}.${c.field} ${c.op} ${c.value}`).join(t("  AND  "))}</div>
-                <div className="text-sm" style={{ color: r.level === "red" ? "#f43f5e" : "#fbbf24" }}>→ {levelWord(r.level)}</div>
+                <div className="text-sm" style={{ color: r.level === "red" ? "#FF5252" : "#FF9100" }}>→ {levelWord(r.level)}</div>
               </li>
             ))}
           </ul>

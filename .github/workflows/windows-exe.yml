@@ -7,6 +7,7 @@ name: Windows executable
 on:
   workflow_dispatch:
   push:
+    branches: ["main"]
     tags: ["v*"]
 
 permissions:
@@ -61,7 +62,7 @@ jobs:
           }
           if ($ok) {
             $ui = Invoke-WebRequest "http://127.0.0.1:8123/" -UseBasicParsing
-            if ($ui.Content -notmatch "Crew Health Hub") { $ok = $false }
+            if ($ui.Content -notmatch "SHMS") { $ok = $false }
           }
           Stop-Process -Id $p.Id -Force
           if (-not $ok) { throw "CrewHealthHub.exe did not start or serve the UI" }
@@ -80,6 +81,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || \
-            gh release create "$GITHUB_REF_NAME" --title "Crew Health Hub $GITHUB_REF_NAME" \
+            gh release create "$GITHUB_REF_NAME" --title "SHMS $GITHUB_REF_NAME" \
               --notes "Windows executable and Android APK. Simulated-data decision-support demo; not a medical device." || true
           gh release upload "$GITHUB_REF_NAME" dist/CrewHealthHub.exe --clobber

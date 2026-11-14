@@ -1,4 +1,4 @@
-# Crew Health Hub
+# SHMS — Space Health Management System
 
 **NASA Space Apps Challenge demo: a personal health hub for astronauts.** Each crew member sees their own health data in one place and gets one clear list of what to do today. The ground lab team sees everything in detail. The app runs entirely onboard and syncs with the ground whenever a link is available.
 
@@ -98,13 +98,13 @@ Every start uses a fresh simulation with the default seed (42) and opens on miss
 | Time | Where | Do / say |
 |---|---|---|
 | 0:00 | **Start page** → **TR** | Show the language switch (server text such as alerts and tips switches too). Back to **EN**, then **Astronaut**. |
-| 0:15 | **Today** (Elif) | Red status, *"Kidney-stone risk is high"* with its reason, today's tasks, **Energy today** (calories burned so far), the check-in prompt. |
+| 0:15 | **Today** (Astronaut 1) | Red status, *"Kidney-stone risk is high"* with its reason, today's tasks, **Energy today** (calories burned so far), the check-in prompt. |
 | 0:35 | **Today** → *T2 / CEVIS* → **Start live** | Heart rate climbs and **kcal** count up live; raise speed/watts and watch kcal/min rise. **Finish & log**: minutes, kcal, heart rate. |
 | 1:00 | **Energy** | The day as a timeline: each activity with the energy it burns, *NOW* marker, burned vs eaten. |
-| 1:15 | **Mind** | Do the 4-question check-in and the reaction test. Switch to **Sofia**: poor-sleep week → *"Slower reactions after poor sleep"*, advice to postpone critical tasks. |
-| 1:35 | **Portals → Lab team** | Overview: all five crew. Daniel *"Workload is driving stress up"*, Kenji *"Isolation strain"*. Open **Mental health** and **Exercise & energy** for the detail. |
-| 1:55 | **Lab team → Overview → Demo panel → R+1** | Fast-forward to the day after landing (a few seconds). **Vestibular**: Daniel (first flight) is at readiness 1, *"Post-flight vestibular dysfunction"*. |
-| 2:20 | **Astronaut portal → Balance** (Daniel) | What he may do today (✓ walk with a helper, ✕ stairs, ✕ drive), dizziness check, rehab task. Jump **R+3 / R+7**: levels rise as balance recovers; Elif (second flight) recovers fastest. **Lab team → LSAH tests** (Kenji): the post-flight DXA shows his larger hip bone loss. |
+| 1:15 | **Mind** | Do the 4-question check-in and the reaction test. Switch to **Astronaut 3**: poor-sleep week → *"Slower reactions after poor sleep"*, advice to postpone critical tasks. |
+| 1:35 | **Portals → Lab team** | Overview: all five crew. Astronaut 2 *"Workload is driving stress up"*, Astronaut 4 *"Isolation strain"*. Open **Mental health** and **Exercise & energy** for the detail. |
+| 1:55 | **Lab team → Overview → Demo panel → R+1** | Fast-forward to the day after landing (a few seconds). **Vestibular**: Astronaut 2 (first flight) is at readiness 1, *"Post-flight vestibular dysfunction"*. |
+| 2:20 | **Astronaut portal → Balance** (Astronaut 2) | What he may do today (✓ walk with a helper, ✕ stairs, ✕ drive), dizziness check, rehab task. Jump **R+3 / R+7**: levels rise as balance recovers; Astronaut 1 (second flight) recovers fastest. **Lab team → LSAH tests** (Astronaut 4): the post-flight DXA shows his larger hip bone loss. |
 | 2:45 | Demo panel → **Mars** profile | The lab views lag behind the crew by the link delay. The astronaut's **Mind** screen now says live calls home are impossible and suggests a video message; over the next week *Private calls* falls and raises an alert. |
 | 3:00 | **Data sources** | Every reference value with its source, the unverified list, live NASA OSDR studies. |
 
@@ -154,11 +154,11 @@ frontend/src/
 - **Return to Earth:** balance tests need gravity, so they run before launch (baseline) and after landing. The landing-day drop in balance score, tandem walk, dizziness and stand-test heart rate scales with mission length and personal susceptibility; pre-landing training (last 14 days) lowers it by up to 25 % and fitness lowers the stand-test rise. Everything fades with a personal time constant, a little faster with daily vestibular rehab.
 
 **The crew.** Five fictional astronauts (launch 1 March 2027, landing 28 August 2027). Age, sex, birth month and earlier flights matter, because the LSAH annual-exam rules depend on them. Scripted events with the default seed:
-- **Elif Aydın** (Commander, 45, 2nd flight): high stone risk; the fastest vestibular recovery.
-- **Daniel Mensah** (Pilot, 38, 1st flight): dehydration on days 26–32 and a high-workload week (27–33, overtime replaces free time and the family call); high susceptibility, so the slowest vestibular recovery.
-- **Sofia Lindqvist** (Flight Engineer, 42, 1st flight): poor-sleep week on days 27–33 (slower reaction times), a poor responder to potassium citrate from day 12, and she often skips the vitamin D tablet, so her blood vitamin D falls in flight.
-- **Kenji Watanabe** (Mission Specialist, 51, 3rd flight): missed workouts on days 20–34 and 100–120 (bone-loss rule, the largest hip bone loss on the post-flight DXA) and an isolation week on days 24–33.
-- **Ana Ribeiro** (Mission Specialist and crew medical officer, 36, 1st flight): two spacewalks (days 21 and 29); otherwise the healthy reference.
+- **Astronaut 1** (Commander, 45, 2nd flight): high stone risk; the fastest vestibular recovery.
+- **Astronaut 2** (Pilot, 38, 1st flight): dehydration on days 26–32 and a high-workload week (27–33, overtime replaces free time and the family call); high susceptibility, so the slowest vestibular recovery.
+- **Astronaut 3** (Flight Engineer, 42, 1st flight): poor-sleep week on days 27–33 (slower reaction times), a poor responder to potassium citrate from day 12, and she often skips the vitamin D tablet, so her blood vitamin D falls in flight.
+- **Astronaut 4** (Mission Specialist, 51, 3rd flight): missed workouts on days 20–34 and 100–120 (bone-loss rule, the largest hip bone loss on the post-flight DXA) and an isolation week on days 24–33.
+- **Astronaut 5** (Mission Specialist and crew medical officer, 36, 1st flight): two spacewalks (days 21 and 29); otherwise the healthy reference.
 
 The same seed and the same actions always give the same data. Tasks you don't confirm are completed by the simulated crew at their usual adherence ("demo autopilot", which can be switched per crew in the Demo panel).
 

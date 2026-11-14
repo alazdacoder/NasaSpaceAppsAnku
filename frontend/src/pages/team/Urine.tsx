@@ -12,7 +12,7 @@ interface LabData {
 
 export function ProtocolCard({ p }: { p: Protocol }) {
   const score = p.score ?? 0;
-  const color = score > 0.6 ? "#22c55e" : score > 0.3 ? "#fbbf24" : "#f43f5e";
+  const color = score > 0.6 ? "#00E676" : score > 0.3 ? "#FF9100" : "#FF5252";
   const rows = (p.targets[0]?.history ?? []).map((h, i) => {
     const r: Record<string, number> = { day: h.day };
     p.targets.forEach((x) => { if (x.history[i]) r[x.metric] = Math.round(x.history[i].progress * 100); });
@@ -57,10 +57,10 @@ export function ProtocolCard({ p }: { p: Protocol }) {
               <CartesianGrid stroke={GRID} vertical={false} />
               <XAxis dataKey="day" tick={AXIS} tickFormatter={dayTick} />
               <YAxis tick={AXIS} domain={[0, 100]} width={40} unit="%" />
-              <ReferenceLine y={90} stroke="#22c55e" strokeDasharray="4 4" />
+              <ReferenceLine y={90} stroke="#00E676" strokeDasharray="4 4" />
               <Tooltip contentStyle={TIP} labelFormatter={(d) => dayLabel(Number(d))} />
               <Line dataKey="score" name={t("Response score")} stroke={color} strokeWidth={3} dot={false} isAnimationActive={false} />
-              {p.targets.map((x, i) => <Line key={x.metric} dataKey={x.metric} name={x.label} stroke={i ? "#a78bfa" : "#38bdf8"} strokeDasharray="4 3" dot={false} isAnimationActive={false} />)}
+              {p.targets.map((x, i) => <Line key={x.metric} dataKey={x.metric} name={x.label} stroke={i ? "#B388FF" : "#00E5FF"} strokeDasharray="4 3" dot={false} isAnimationActive={false} />)}
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -93,7 +93,7 @@ export default function Urine() {
             <div className="grid gap-4 sm:grid-cols-[auto_1fr]">
               <div>
                 <div className="text-sm text-slate-400">{t("CaOx supersaturation (smoothed)")}</div>
-                <div className="text-6xl font-black tabular-nums" style={{ color: (ss.ewma ?? 0) > 2 ? "#f43f5e" : (ss.ewma ?? 0) > 1.8 ? "#fbbf24" : "#22c55e" }}>{fmt(ss.ewma, 2)}</div>
+                <div className="text-6xl font-black tabular-nums" style={{ color: (ss.ewma ?? 0) > 2 ? "#FF5252" : (ss.ewma ?? 0) > 1.8 ? "#FF9100" : "#00E676" }}>{fmt(ss.ewma, 2)}</div>
                 <div className="text-sm text-slate-400">{t("risk threshold 2.0")} <SourceTag verified source="https://ntrs.nasa.gov/citations/20090019087" /></div>
                 <div className="mt-1 text-sm text-slate-400">{t("preflight baseline {v}", { v: fmt(ss.baseline_mean, 2) })}</div>
                 <div className="mt-2"><Unverified source={ss.estimate_note ?? undefined} /> <span className="text-xs text-slate-500">{t("estimate, not EQUIL2")}</span></div>

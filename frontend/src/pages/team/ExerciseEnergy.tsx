@@ -24,8 +24,8 @@ interface EnergyData {
   view: ViewInfo;
 }
 
-const DEV_COLOR: Record<string, string> = { ared: "#38bdf8", t2: "#a78bfa", cevis: "#34d399", rehab: "#fb923c" };
-const EX_COLOR = ["#38bdf8", "#a78bfa", "#34d399", "#f472b6"];
+const DEV_COLOR: Record<string, string> = { ared: "#00E5FF", t2: "#B388FF", cevis: "#00E676", rehab: "#FF9100" };
+const EX_COLOR = ["#00E5FF", "#B388FF", "#00E676", "#FF9100"];
 const PART_KEYS = ["sleep", "hygiene", "meal", "planning", "science", "maintenance", "eva", "medical", "leisure", "family_call", "rest", "skipped", "vestibular_rehab", "ared", "t2", "cevis", "rehab"];
 const PART_LABEL: Record<string, string> = {
   sleep: "Sleep", hygiene: "Hygiene", meal: "Meal", planning: "Daily planning conference", science: "Science work", maintenance: "Maintenance",
@@ -76,7 +76,7 @@ export default function ExerciseEnergy() {
               <Tooltip contentStyle={TIP} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
               {parts.map((k) => <Bar key={k} dataKey={k} stackId="a" name={PART_LABEL[k] ? t(PART_LABEL[k]) : deviceName(k)} fill={ACT_COLOR[k] ?? "#64748b"} />)}
-              <Line dataKey="intake" name={t("Intake")} stroke="#22c55e" strokeWidth={3} dot={{ r: 3 }} isAnimationActive={false} />
+              <Line dataKey="intake" name={t("Intake")} stroke="#00E676" strokeWidth={3} dot={{ r: 3 }} isAnimationActive={false} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
@@ -130,7 +130,7 @@ export default function ExerciseEnergy() {
         <Card title={t("Last 7 days")} className="lg:col-span-1">
           <div className="text-5xl font-bold tabular-nums">{data.last7_min}<span className="ml-1 text-xl text-slate-400">{t("min")}</span></div>
           <div className="mt-1 text-slate-400">{t("target ~{n} (range {lo}–{hi})", { n: data.weekly_target_min, lo, hi })}</div>
-          <div className="mt-3"><ProgressBar value={data.last7_min / data.weekly_target_min} height={16} marker={lo / data.weekly_target_min} color={data.last7_min < lo ? "#fbbf24" : "#22c55e"} /></div>
+          <div className="mt-3"><ProgressBar value={data.last7_min / data.weekly_target_min} height={16} marker={lo / data.weekly_target_min} color={data.last7_min < lo ? "#FF9100" : "#00E676"} /></div>
           <p className="mt-2 text-xs text-slate-500">{t("Source: {s}", { s: data.limits.source })}</p>
         </Card>
         <Card title={t("Weekly minutes vs target")} className="lg:col-span-2">
@@ -140,8 +140,8 @@ export default function ExerciseEnergy() {
                 <CartesianGrid stroke={GRID} vertical={false} />
                 <XAxis dataKey="label" tick={AXIS} />
                 <YAxis tick={AXIS} width={44} />
-                <ReferenceArea y1={lo} y2={hi} fill="#22c55e" fillOpacity={0.08} />
-                <ReferenceLine y={data.weekly_target_min} stroke="#22c55e" strokeDasharray="5 5" label={{ value: t("{n} target", { n: data.weekly_target_min }), fill: "#22c55e", fontSize: 12, position: "insideTopLeft" }} />
+                <ReferenceArea y1={lo} y2={hi} fill="#00E676" fillOpacity={0.08} />
+                <ReferenceLine y={data.weekly_target_min} stroke="#00E676" strokeDasharray="5 5" label={{ value: t("{n} target", { n: data.weekly_target_min }), fill: "#00E676", fontSize: 12, position: "insideTopLeft" }} />
                 <Tooltip contentStyle={TIP} />
                 <Legend />
                 {(["ared", "t2", "cevis", "rehab"] as const).map((d) => <Bar key={d} dataKey={d} stackId="a" name={deviceName(d)} fill={DEV_COLOR[d]} />)}

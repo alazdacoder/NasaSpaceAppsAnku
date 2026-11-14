@@ -1,4 +1,4 @@
-"""Crew Health Hub - FastAPI entry point. Serves the API and the built React app."""
+"""Space Health Management System (SHMS) - FastAPI entry point. Serves the API and the built React app."""
 from __future__ import annotations
 
 import logging
@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     await state.stop()
 
 
-app = FastAPI(title="Crew Health Hub (simulated data)", lifespan=lifespan)
+app = FastAPI(title="Space Health Management System (SHMS) (simulated data)", lifespan=lifespan)
 app.add_middleware(LangMiddleware)
 app.include_router(routes.router)
 app.include_router(routes.ws_router)

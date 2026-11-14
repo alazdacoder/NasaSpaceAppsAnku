@@ -11,6 +11,7 @@ import CrewEnergy from "./pages/crew/Energy";
 import CrewExercise from "./pages/crew/Exercise";
 import CrewFood from "./pages/crew/Food";
 import CrewMind from "./pages/crew/Mind";
+import CrewOcular from "./pages/crew/Ocular";
 import CrewReturn from "./pages/crew/Return";
 import CrewToday from "./pages/crew/Today";
 import TeamDevices from "./pages/team/Devices";
@@ -19,6 +20,7 @@ import TeamExerciseEnergy from "./pages/team/ExerciseEnergy";
 import TeamLsah from "./pages/team/Lsah";
 import TeamMind from "./pages/team/Mind";
 import TeamNutrition from "./pages/team/Nutrition";
+import TeamOcular from "./pages/team/Ocular";
 import TeamOverview from "./pages/team/Overview";
 import TeamSources from "./pages/team/Sources";
 import TeamUrine from "./pages/team/Urine";
@@ -35,6 +37,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route index element={<Portal />} />
             <Route path="crew" element={<CrewLayout />}>
               <Route index element={<CrewToday />} />
+              <Route path="ocular" element={<CrewOcular />} />
               <Route path="exercise" element={<CrewExercise />} />
               <Route path="energy" element={<CrewEnergy />} />
               <Route path="body" element={<CrewBody />} />
@@ -46,6 +49,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             </Route>
             <Route path="team" element={<TeamLayout />}>
               <Route index element={<TeamOverview />} />
+              <Route path="ocular" element={<TeamOcular />} />
               <Route path="alerts" element={<AlertsPage side="ground" />} />
               <Route path="vitals" element={<TeamVitals />} />
               <Route path="exercise" element={<TeamExerciseEnergy />} />

@@ -47,6 +47,84 @@ export interface Protocol {
   source: string; verified: boolean;
 }
 
+export interface OcularTrendPoint {
+  hour_offset: number;
+  hour: string;
+  iop_mmhg: number;
+  icp_mmhg: number;
+  onsd_mm: number;
+  normal_max: number;
+  critical_min: number;
+}
+
+export interface AntigravityFluid {
+  fluid_shift_ml: number;
+  icp_mmhg: number;
+  iop_shift_delta_mmhg: number;
+  stabilization_pct: number;
+  stabilization_status: "stabilized" | "adapting" | "anomaly";
+  headward_distribution_pct: number;
+  lower_body_Countermeasure: "active" | "standby";
+}
+
+export interface EmergencyProtocol {
+  comm_link_state: "active" | "standby" | "blackout";
+  failsafe_armed: boolean;
+  failsafe_triggered: boolean;
+  risk_level: "normal" | "elevated" | "critical";
+  last_sos: {
+    packet_id: string;
+    crew_id?: string;
+    crew_name?: string;
+    mission_t?: number;
+    day?: number;
+    auto_failsafe?: boolean;
+    reason: string;
+    destination?: string;
+    tonometer: {
+      iop_mmhg: number;
+      iop_od_mmhg: number;
+      iop_os_mmhg: number;
+      onsd_mm: number;
+      safety_zone: string;
+      retinal_oct_scan: string;
+    };
+    status: string;
+  } | null;
+  delay_s: number;
+  profile: string;
+}
+
+export interface OcularTelemetry {
+  iop_mmhg: number;
+  iop_od_mmhg: number;
+  iop_os_mmhg: number;
+  onsd_mm: number;
+  icp_mmhg: number;
+  safety_zone: "normal" | "elevated" | "critical";
+  thresholds: { normal_max: number; elevated_max: number; critical_min: number };
+  trend_24h: OcularTrendPoint[];
+  last_scan: {
+    iop_mmhg: number;
+    iop_od_mmhg: number;
+    iop_os_mmhg: number;
+    onsd_mm: number;
+    icp_mmhg: number;
+    fluid_shift_ml: number;
+    mode: string;
+    mission_t: number;
+  } | null;
+  device: {
+    id: string;
+    name: string;
+    connected: boolean;
+    state: string;
+    battery_pct: number | null;
+  };
+  antigravity_fluid: AntigravityFluid;
+  emergency_protocol: EmergencyProtocol;
+}
+
 export class ApiError extends Error {
   constructor(public status: number, message: string) { super(message); }
 }
@@ -162,7 +240,7 @@ export function duration(s: number | null | undefined): string {
 export function levelText(l: Level): string {
   return { green: t("All good"), amber: t("Watch"), red: t("Act now") }[l];
 }
-export const LEVEL_COLOR: Record<Level, string> = { green: "#22c55e", amber: "#fbbf24", red: "#f43f5e" };
+export const LEVEL_COLOR: Record<Level, string> = { green: "#00E676", amber: "#FF9100", red: "#FF5252" };
 
 /** Machine names (ids from the server) */
 export function deviceName(d: string): string {

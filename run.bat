@@ -1,5 +1,5 @@
 @echo off
-rem Crew Health Hub - Windows launcher (from source).
+rem Space Health Management System (SHMS) - Windows launcher (from source).
 rem   run.bat          set up (first run), build the UI, start and open the browser
 rem   run.bat test     run the pytest suite
 rem   run.bat rebuild  rebuild the UI, then start

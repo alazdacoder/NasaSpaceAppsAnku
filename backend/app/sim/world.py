@@ -195,7 +195,7 @@ class World:
             if t and t["status"] == "done" and json.loads(t["payload"] or "{}").get("via") != "live":
                 done_slots.add(slot)
         water_extra, food, feeling, sup_manual = 0.0, [], None, set()
-        checkin = pvt = dizziness = None
+        checkin = pvt = dizziness = ocular_scan = None
         for e in self.db.all("SELECT kind, payload FROM manual_entries WHERE crew_id=? AND day=? ORDER BY id", (crew_id, day)):
             p = json.loads(e["payload"])
             if e["kind"] == "water":
@@ -210,6 +210,8 @@ class World:
                 pvt = p
             elif e["kind"] == "dizziness":
                 dizziness = float(p["value"])
+            elif e["kind"] == "ocular_scan":
+                ocular_scan = p
             elif e["kind"] == "supplement" and p.get("protocol_id"):
                 sup_manual.add(int(p["protocol_id"]))
         protocols = [{"id": p["id"], "type": p["type"], "start_day": p["start_day"]} for p in self.active_protocols(crew_id, day)]
@@ -234,6 +236,7 @@ class World:
             lsah_done={t["id"] for t in tests_on(self.cfg, day)
                        if tasks.get(f"lsah:{t['id']}", {}).get("status") == "done" or autopilot},
             protocols=protocols, doses_confirmed=confirmed, events=self._active_events(crew_id, day),
+            ocular_scan=ocular_scan,
             profile=self.link.profile, link_delay_s=self.link.delay_s())
 
     def _close_day(self, day: int) -> None:
@@ -578,6 +581,19 @@ class World:
             payload = {"value": v}
         elif kind == "supplement":
             payload = {"protocol_id": int(payload["protocol_id"])}
+        elif kind == "ocular_scan":
+            payload = {
+                "iop_mmhg": round(float(payload["iop_mmhg"]), 1),
+                "iop_od_mmhg": round(float(payload.get("iop_od_mmhg", payload["iop_mmhg"])), 1),
+                "iop_os_mmhg": round(float(payload.get("iop_os_mmhg", payload["iop_mmhg"])), 1),
+                "onsd_mm": round(float(payload.get("onsd_mm", 5.5)), 2),
+                "icp_mmhg": round(float(payload.get("icp_mmhg", 13.5)), 1),
+                "fluid_shift_ml": round(float(payload.get("fluid_shift_ml", 1650))),
+                "mode": str(payload.get("mode", "calibration")),
+                "mission_t": round(self.mission_t, 4),
+            }
+        elif kind == "emergency_sos":
+            payload = dict(payload)
         else:
             raise KeyError(kind)
         self.db.execute("INSERT INTO manual_entries(crew_id, day, kind, payload, created_real, mission_t) VALUES (?,?,?,?,?,?)",
@@ -626,6 +642,8 @@ class World:
                         (cid, kind, start, start + n - 1, dumps(params), "injected", self.real()))
         self.log(cid, "event", "warn", f"Injected event: {inj['label']} for {n} day(s) from day {start}",
                  f"Eklenen olay: {inj.get('label_tr', inj['label'])}, gün {start} itibarıyla {n} gün")
+        if kind == "ocular_spike":
+            self.run_ocular_scan(cid, mode="anomaly")
         return {"crew_id": cid, "kind": kind, "start_day": start, "end_day": start + n - 1}
 
     def events_for(self, cid: str | None = None) -> list[dict]:
@@ -659,7 +677,7 @@ class World:
     def snapshot(self, cid: str) -> dict:
         ev = self.evaluation(cid)
         live = {}
-        for aid in ("biomonitor", "tmini", "co2"):
+        for aid in ("biomonitor", "tmini", "co2", "tonometer"):
             live.update(self.adapter_by_id[aid].live(cid, self.mission_t, self))
         return {
             "crew_id": cid, "mission_t": self.mission_t, "today": self.today, "overall": ev["overall"],
@@ -675,6 +693,7 @@ class World:
                        "detail": t["detail"], "detail_tr": t["detail_tr"], "status": t["status"]} for t in self.tasks(cid)],
             "live": live, "workout_active": cid in self.live,
             "live_kcal": round(self.live[cid]["kcal"]) if cid in self.live else None,
+            "ocular": self.ocular_telemetry(cid),
             "metrics": {m: {"value": e["value"], "ewma": e["ewma"], "z": e["z"], "status": e["status"], "day": e["day"]}
                         for m, e in ev["metrics"].items()},
         }
@@ -907,3 +926,239 @@ class World:
 
     def cancel_workout(self, cid: str) -> None:
         self.live.pop(cid, None)
+
+    # ----------------------------------------- ocular & emergency ground protocol
+    def ocular_telemetry(self, cid: str) -> dict[str, Any]:
+        tonometer = self.adapter_by_id.get("tonometer")
+        live_oc = tonometer.live(cid, self.mission_t, self) if tonometer else {}
+        entries = self.manual_today(cid)
+        last_scan = next((e["payload"] for e in reversed(entries) if e["kind"] == "ocular_scan"), None)
+        last_sos = next((e["payload"] for e in reversed(entries) if e["kind"] == "emergency_sos"), None)
+        if last_scan:
+            iop = float(last_scan.get("iop_mmhg", live_oc.get("iop_mmhg", 18.4)))
+            od = float(last_scan.get("iop_od_mmhg", iop + 0.2))
+            os_val = float(last_scan.get("iop_os_mmhg", iop - 0.2))
+            onsd = float(last_scan.get("onsd_mm", live_oc.get("onsd_mm", 5.55)))
+            icp = float(last_scan.get("icp_mmhg", live_oc.get("icp_mmhg", 13.8)))
+            shift_ml = float(last_scan.get("fluid_shift_ml", live_oc.get("fluid_shift_ml", 1680)))
+        else:
+            iop = float(live_oc.get("iop_mmhg", 18.4))
+            od = float(live_oc.get("iop_od_mmhg", round(iop + 0.2, 1)))
+            os_val = float(live_oc.get("iop_os_mmhg", round(iop - 0.2, 1)))
+            onsd = float(live_oc.get("onsd_mm", 5.55))
+            icp = float(live_oc.get("icp_mmhg", 13.8))
+            shift_ml = float(live_oc.get("fluid_shift_ml", 1680))
+
+        # Safety zone classification for IOP (Normal < 20.5, Elevated 20.5-23.9, Critical >= 24.0)
+        if iop >= 24.0 or onsd >= 6.3 or icp >= 19.5:
+            safety_zone = "critical"
+        elif iop >= 20.5 or onsd >= 5.8 or icp >= 16.5:
+            safety_zone = "elevated"
+        else:
+            safety_zone = "normal"
+
+        # Fluid balance stabilization score (0..100%)
+        raw_stab = 94.0 - max(0.0, (shift_ml - 1450.0) / 16.0) - max(0.0, (iop - 17.5) * 4.2)
+        stab_pct = int(max(18, min(98, round(raw_stab))))
+        if safety_zone == "critical" or stab_pct < 52:
+            stab_status = "anomaly"
+        elif stab_pct < 76:
+            stab_status = "adapting"
+        else:
+            stab_status = "stabilized"
+
+        # Generate 24-hour historical IOP & optic nerve trend (hourly points)
+        cur_hour = int(((self.mission_t - self.today) * 24.0) % 24)
+        trend_24h = []
+        for h_offset in range(-23, 1):
+            h_clock = (cur_hour + h_offset) % 24
+            frac = h_clock / 24.0
+            circ = math.cos(2 * math.pi * (frac - 0.22))
+            r_h = rng_for(self.seed, self.crew_idx[cid], self.today * 24 + h_offset + 500, "ocular24")
+            # Smoothly approach current live IOP at h_offset == 0
+            weight_now = math.exp(h_offset / 6.0)
+            base_h = (iop - 0.8 * math.cos(2 * math.pi * ((cur_hour / 24.0) - 0.22))) * weight_now + 18.2 * (1 - weight_now)
+            pt_iop = round(base_h + 0.85 * circ + float(r_h.normal(0, 0.25)), 1)
+            if h_offset == 0:
+                pt_iop = round(iop, 1)
+            pt_icp = round(icp + 0.35 * circ + float(r_h.normal(0, 0.18)), 1)
+            pt_onsd = round(onsd + 0.03 * circ + float(r_h.normal(0, 0.02)), 2)
+            trend_24h.append({
+                "hour_offset": h_offset,
+                "hour": f"{h_clock:02d}:00",
+                "iop_mmhg": pt_iop,
+                "icp_mmhg": pt_icp,
+                "onsd_mm": pt_onsd,
+                "normal_max": 20.5,
+                "critical_min": 24.0,
+            })
+
+        dev_st = tonometer.status(cid, self.mission_t, self.real()) if tonometer else None
+        link_st = self.link.status()
+        failsafe_triggered = bool(safety_zone == "critical" or shift_ml >= 2250 or last_sos is not None)
+        if link_st.get("in_blackout"):
+            comm_mode = "blackout"
+        elif failsafe_triggered:
+            comm_mode = "active"
+        else:
+            comm_mode = "standby"
+
+        return {
+            "iop_mmhg": round(iop, 1),
+            "iop_od_mmhg": round(od, 1),
+            "iop_os_mmhg": round(os_val, 1),
+            "onsd_mm": round(onsd, 2),
+            "icp_mmhg": round(icp, 1),
+            "safety_zone": safety_zone,
+            "thresholds": {"normal_max": 20.5, "elevated_max": 24.0, "critical_min": 24.0},
+            "trend_24h": trend_24h,
+            "last_scan": last_scan,
+            "device": {
+                "id": "tonometer",
+                "name": tonometer.name if tonometer else "Space Ocular Tonometer",
+                "name_tr": tonometer.name_tr if tonometer else "Uzay Göz Tonometresi",
+                "connected": dev_st.connected if dev_st else True,
+                "state": dev_st.state if dev_st else "connected",
+                "battery_pct": dev_st.battery_pct if dev_st else 92,
+            },
+            "antigravity_fluid": {
+                "fluid_shift_ml": round(shift_ml),
+                "icp_mmhg": round(icp, 1),
+                "iop_shift_delta_mmhg": round(max(0.0, iop - (14.4 + self.crew_idx[cid] * 0.28)), 1),
+                "stabilization_pct": stab_pct,
+                "stabilization_status": stab_status,
+                "headward_distribution_pct": round(min(78.0, 52.0 + (shift_ml / 120.0)), 1),
+                "lower_body_Countermeasure": "active" if stab_status == "anomaly" else "standby",
+            },
+            "emergency_protocol": {
+                "comm_link_state": comm_mode,
+                "failsafe_armed": True,
+                "failsafe_triggered": failsafe_triggered,
+                "risk_level": safety_zone,
+                "last_sos": last_sos,
+                "delay_s": link_st.get("delay_s", 0.5),
+                "profile": link_st.get("profile", "iss"),
+            },
+        }
+
+    def run_ocular_scan(self, cid: str, mode: str = "calibration") -> dict[str, Any]:
+        cur = self.ocular_telemetry(cid)
+        r = rng_for(self.seed, self.crew_idx[cid], int(self.real() * 10) % 10000, "scan")
+        if mode == "anomaly":
+            iop = round(25.4 + float(r.uniform(-0.4, 1.2)), 1)
+            od = round(iop + 0.3, 1)
+            os_val = round(iop - 0.3, 1)
+            onsd = round(6.42 + float(r.uniform(-0.05, 0.12)), 2)
+            icp = round(20.4 + float(r.uniform(-0.3, 0.6)), 1)
+            shift_ml = round(2340 + float(r.uniform(-40, 80)))
+        else:
+            iop = round(float(cur["iop_mmhg"]) + float(r.normal(0, 0.15)), 1)
+            od = round(iop + 0.2, 1)
+            os_val = round(iop - 0.2, 1)
+            onsd = round(float(cur["onsd_mm"]) + float(r.normal(0, 0.02)), 2)
+            icp = round(float(cur["icp_mmhg"]) + float(r.normal(0, 0.1)), 1)
+            shift_ml = round(float(cur["antigravity_fluid"]["fluid_shift_ml"]))
+
+        scan_payload = {
+            "iop_mmhg": iop,
+            "iop_od_mmhg": od,
+            "iop_os_mmhg": os_val,
+            "onsd_mm": onsd,
+            "icp_mmhg": icp,
+            "fluid_shift_ml": shift_ml,
+            "mode": mode,
+        }
+        self.add_manual(cid, "ocular_scan", scan_payload)
+        self.db.put_samples(cid, self.last_closed_day, {
+            "iop_mmhg": iop, "onsd_mm": onsd, "icp_mmhg": icp, "fluid_shift_ml": shift_ml
+        }, "tonometer")
+        self._series.pop(cid, None)
+        self.version += 1
+        zone = "critical" if iop >= 24.0 else "elevated" if iop >= 20.5 else "normal"
+        self.log(
+            cid, "ocular", "red" if zone == "critical" else "warn" if zone == "elevated" else "info",
+            f"Ocular calibration scan completed: IOP {iop} mmHg (OD {od} / OS {os_val}), ONSD {onsd} mm [{zone.upper()}]",
+            f"Göz kalibrasyon taraması tamamlandı: GİB {iop} mmHg (OD {od} / OS {os_val}), ONSD {onsd} mm [{zone.upper()}]",
+        )
+        sos_packet = None
+        if zone == "critical":
+            sos_packet = self.trigger_emergency_sos(
+                cid,
+                reason=f"Auto-Failsafe: Critical IOP {iop} mmHg & ONSD {onsd} mm threshold exceeded",
+                auto_failsafe=True,
+            )
+        return {"ok": True, "scan": scan_payload, "ocular": self.ocular_telemetry(cid), "auto_sos": sos_packet}
+
+    def trigger_emergency_sos(self, cid: str, reason: str = "Manual crew SOS trigger",
+                              auto_failsafe: bool = False) -> dict[str, Any]:
+        oc = self.ocular_telemetry(cid)
+        prof = self.profiles[cid]
+        live_v = self.adapter_by_id["biomonitor"].live(cid, self.mission_t, self)
+        packet_id = f"SOS-D{self.today}-{cid.upper()}-{int(self.real() * 100) % 100000:05d}"
+        sos_payload = {
+            "packet_id": packet_id,
+            "crew_id": cid,
+            "crew_name": prof["name"],
+            "crew_name_tr": prof.get("name_tr", prof["name"]),
+            "mission_t": round(self.mission_t, 4),
+            "day": self.today,
+            "auto_failsafe": auto_failsafe,
+            "reason": reason,
+            "reason_tr": ("Otomatik güvenlik tetiklemesi: Kritik göz içi basıncı ve sıvı kayması eşiği aşıldı"
+                          if auto_failsafe else "Mürettebat acil durum yer-uzay bağlantısı tetiklemesi"),
+            "tonometer": {
+                "iop_mmhg": oc["iop_mmhg"],
+                "iop_od_mmhg": oc["iop_od_mmhg"],
+                "iop_os_mmhg": oc["iop_os_mmhg"],
+                "onsd_mm": oc["onsd_mm"],
+                "safety_zone": oc["safety_zone"],
+                "retinal_oct_scan": "INCLUDED (RNFL + Choroidal Folds Packet)",
+            },
+            "fluid_dynamics": oc["antigravity_fluid"],
+            "vitals_snapshot": {
+                "hr": live_v.get("hr"),
+                "bp_sys": live_v.get("bp_sys"),
+                "bp_dia": live_v.get("bp_dia"),
+                "spo2": live_v.get("spo2"),
+            },
+            "destination": "Earth Mission Control - Space Medicine & Ophthalmology Desk",
+            "destination_tr": "Dünya Görev Kontrol - Uzay Tıbbı ve Göz Sağlığı Masası",
+            "status": "transmitted",
+        }
+        self.add_manual(cid, "emergency_sos", sos_payload)
+        self.link.enqueue(cid, "emergency_sos", sos_payload, self.mission_t)
+        self.log(
+            cid, "emergency", "red",
+            f"EMERGENCY SOS [{packet_id}] beamed to Ground Control: IOP {oc['iop_mmhg']} mmHg, ICP {oc['icp_mmhg']} mmHg, Fluid Shift {oc['antigravity_fluid']['fluid_shift_ml']} mL",
+            f"ACİL SOS [{packet_id}] Yer Kontrol'e iletildi: GİB {oc['iop_mmhg']} mmHg, KİB {oc['icp_mmhg']} mmHg, Sıvı Kayması {oc['antigravity_fluid']['fluid_shift_ml']} mL",
+        )
+        return {"ok": True, "packet": sos_payload, "ocular": self.ocular_telemetry(cid), "link": self.link.status()}
+
+    def sos_history(self, cid: str | None = None, limit: int = 30) -> list[dict[str, Any]]:
+        if cid:
+            rows = self.db.all(
+                "SELECT id, crew_id, day, kind, payload, mission_t FROM manual_entries "
+                "WHERE crew_id=? AND kind IN ('emergency_sos', 'ocular_scan') ORDER BY id DESC LIMIT ?",
+                (cid, limit),
+            )
+        else:
+            rows = self.db.all(
+                "SELECT id, crew_id, day, kind, payload, mission_t FROM manual_entries "
+                "WHERE kind IN ('emergency_sos', 'ocular_scan') ORDER BY id DESC LIMIT ?",
+                (limit,),
+            )
+        out = []
+        for r in rows:
+            p = json.loads(r["payload"])
+            prof = self.profiles.get(r["crew_id"], {})
+            out.append({
+                "id": r["id"],
+                "crew_id": r["crew_id"],
+                "crew_name": prof.get("name", r["crew_id"]),
+                "crew_name_tr": prof.get("name_tr", prof.get("name", r["crew_id"])),
+                "day": r["day"],
+                "kind": r["kind"],
+                "mission_t": r["mission_t"],
+                "payload": p,
+            })
+        return out

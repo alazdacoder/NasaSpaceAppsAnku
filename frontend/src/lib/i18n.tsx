@@ -85,10 +85,10 @@ export function useLang(): LangCtx {
 export function LangSwitch({ className = "" }: { className?: string }) {
   const { lang, setLang } = useLang();
   return (
-    <div role="radiogroup" aria-label={t("Language")} className={`flex rounded-xl border border-ink-700 bg-ink-900 p-1 ${className}`}>
+    <div role="radiogroup" aria-label={t("Language")} className={`flex rounded-full bg-ink-850 p-1 ${className}`}>
       {LANGS.map((l) => (
         <button key={l.id} role="radio" aria-checked={lang === l.id} title={l.name} onClick={() => setLang(l.id)}
-          className={`min-h-[40px] min-w-[44px] rounded-lg px-2 text-sm font-bold transition ${lang === l.id ? "bg-accent text-ink-950" : "text-slate-300 hover:bg-ink-700"}`}>
+          className={`min-h-[40px] min-w-[44px] rounded-full px-2 text-sm font-bold transition ${lang === l.id ? "bg-slate-100 text-ink-950" : "text-slate-300 hover:bg-ink-700"}`}>
           {l.label}
         </button>
       ))}

@@ -99,6 +99,7 @@ class DayInputs:
     protocols: list[dict] = field(default_factory=list)        # active: {id, type, start_day}
     doses_confirmed: set = field(default_factory=set)          # protocol ids confirmed today
     events: list[dict] = field(default_factory=list)           # active events with params
+    ocular_scan: dict | None = None                            # calibrated tonometer reading if scanned today
     profile: str = "iss"
     link_delay_s: float = 0.5
 
@@ -606,11 +607,41 @@ def simulate_day(cfg: dict, seed: int, crew_idx: int, prof: dict, st: CrewState,
             elif m_id == "hemoglobin":
                 lsah[m_id] = base["hemoglobin"] * hb_factor + float(rl.normal(0, 0.2))
 
+    # ---- ocular telemetry & antigravity fluid dynamics ---------------------
+    ro = rng_for(seed, crew_idx, day, "ocular")
+    a_fluid = adaptation(day, 5.5, landing_day(cfg), 4.0)
+    spike = ev.get("ocular_spike", {})
+    iop_spike = float(spike.get("iop_delta_mmhg", 0.0))
+    shift_spike = float(spike.get("fluid_shift_delta_ml", 0.0))
+    co2_bump = max(0.0, co2 - 2.5) * 0.45
+    fluid_shift_ml = (140.0 + a_fluid * (1520.0 + (prof["mass_kg"] - 65.0) * 6.5)
+                      + co2_bump * 65.0 + shift_spike + float(ro.normal(0, 35.0)))
+    fluid_shift_ml = float(np.clip(fluid_shift_ml, 60.0, 2850.0))
+    icp_mmhg = (9.6 + crew_idx * 0.18 + a_fluid * 4.4 + co2_bump * 0.7
+                + iop_spike * 0.85 + float(ro.normal(0, 0.28)))
+    icp_mmhg = float(np.clip(icp_mmhg, 7.5, 26.0))
+    iop_base = 14.4 + crew_idx * 0.28
+    iop_mmhg = (iop_base + a_fluid * 4.1 + co2_bump * 0.55 + iop_spike
+                + (0.35 if sleep < 6.0 else 0.0) + float(ro.normal(0, 0.32)))
+    iop_mmhg = float(np.clip(iop_mmhg, 11.0, 34.0))
+    onsd_mm = (5.02 + crew_idx * 0.03 + a_fluid * 0.54 + co2_bump * 0.08
+               + iop_spike * 0.19 + float(ro.normal(0, 0.05)))
+    onsd_mm = float(np.clip(onsd_mm, 4.5, 7.4))
+    if inp.ocular_scan:
+        iop_mmhg = float(inp.ocular_scan.get("iop_mmhg", iop_mmhg))
+        onsd_mm = float(inp.ocular_scan.get("onsd_mm", onsd_mm))
+    ocular = {
+        "iop_mmhg": round(iop_mmhg, 1),
+        "onsd_mm": round(onsd_mm, 2),
+        "fluid_shift_ml": round(fluid_shift_ml),
+        "icp_mmhg": round(icp_mmhg, 1),
+    }
+
     return {
         "day": day, "phase": phase, "sessions": sessions, "ex_min": ex_min, "ared_min": ared_min, "t2_min": t2_min,
         "cevis_min": cevis_min, "rehab_min": rehab_min, "water_l": water, "water_target_l": target, "food": food,
         "doses": doses, "sleep": {"sleep_h": sleep, "sleep_quality": sleep_q, "light_lux": light},
         "vitals": vitals, "env": env, "urine": urine, "feeling": feeling, "mind": mind, "vest": vest,
-        "energy": energy, "activities": activities, "lsah": lsah,
+        "energy": energy, "activities": activities, "lsah": lsah, "ocular": ocular,
         "ared_week_min": sum(st.ared_7), "ex_week_min": sum(st.ex_7),
     }

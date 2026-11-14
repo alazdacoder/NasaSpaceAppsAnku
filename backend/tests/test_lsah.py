@@ -28,6 +28,8 @@ def test_five_fictional_crew_with_lsah_fields(cfg):
     assert len(crew) == 5
     old = {"Lena Okafor", "Marco Diaz", "Yuki Tanaka", "Sam Novak"}
     assert not old & {c["name"] for c in crew}
+    assert [c["name"] for c in crew] == [f"Astronaut {i}" for i in range(1, 6)]
+    assert [c["name_tr"] for c in crew] == [f"Astronot {i}" for i in range(1, 6)]
     for c in crew:
         assert c["sex"] in ("F", "M") and len(c["birth"]) == 7 and c["flights"] >= 1
         assert set(c["lsah"]) == {"bmd_hip", "vo2peak", "vitd_serum", "hemoglobin"}
@@ -87,10 +89,10 @@ def test_tests_run_only_on_their_days(cfg, landed):
 def test_lsah_tests_follow_the_crew_stories(landed):
     w = landed
     s = {cid: w.series(cid) for cid in w.crew_ids}
-    # Sofia (c3) skips the vitamin D tablet: lower in flight than before
+    # Astronaut 3 (c3) skips the vitamin D tablet: lower in flight than before
     vd = dict(zip(*s["c3"]["vitd_serum"]))
     assert vd[150] < vd[-9] - 3
-    # Kenji (c4) missed resistance exercise twice: the largest hip bone loss
+    # Astronaut 4 (c4) missed resistance exercise twice: the largest hip bone loss
     loss = {cid: 1 - w.state[cid].bmd_frac for cid in w.crew_ids}
     assert max(loss, key=loss.get) == "c4"
     assert any(a["id"] == "metric:bmd_hip" for a in w.evaluation("c4")["alerts"])

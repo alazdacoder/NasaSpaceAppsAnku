@@ -91,14 +91,16 @@ class CEVISAdapter(SimAdapter):
 class BioMonitorAdapter(SimAdapter):
     id, name, kind = "biomonitor", "Bio-Monitor smart shirt + headband", "wearable"
     name_tr = "Bio-Monitor akıllı tişört + kafa bandı"
-    description = "Heart rate / ECG, breathing rate, blood pressure, skin temperature, blood oxygen, activity."
-    description_tr = "Nabız / EKG, solunum hızı, kan basıncı, deri sıcaklığı, kan oksijeni, hareketlilik."
-    metrics = ("hr_rest", "resp_rate", "bp_sys", "bp_dia", "skin_temp", "spo2", "activity", "hr_exercise")
+    description = "Heart rate / ECG, breathing rate, blood pressure, skin temperature, blood oxygen, activity, cephalad fluid shift."
+    description_tr = "Nabız / EKG, solunum hızı, kan basıncı, deri sıcaklığı, kan oksijeni, hareketlilik, başa doğru sıvı kayması."
+    metrics = ("hr_rest", "resp_rate", "bp_sys", "bp_dia", "skin_temp", "spo2", "activity", "hr_exercise", "fluid_shift_ml")
     group = "vitals"
     battery_hours = 18
 
     def extract(self, truth: dict) -> dict[str, float]:
         v = {k: truth["vitals"][k] for k in self.metrics if k in truth["vitals"]}
+        if "fluid_shift_ml" in truth.get("ocular", {}):
+            v["fluid_shift_ml"] = truth["ocular"]["fluid_shift_ml"]
         hrs = [(s["avg_hr"], s["minutes"]) for s in truth["sessions"] if s.get("avg_hr")]
         if hrs:
             v["hr_exercise"] = sum(h * mnt for h, mnt in hrs) / max(1e-6, sum(mnt for _, mnt in hrs))
@@ -287,7 +289,60 @@ class BloodLabAdapter(SimAdapter):
     has_battery = False
 
 
+class SpaceTonometerAdapter(SimAdapter):
+    id, name, kind = "tonometer", "Space Ocular Tonometer & OCT Pod", "wearable"
+    name_tr = "Uzay Göz Tonometresi ve OCT Ünitesi"
+    description = ("Paired wireless rebound tonometer and optic nerve ultrasound pod: live intraocular pressure (IOP), "
+                   "optic nerve sheath diameter (ONSD) and non-invasive intracranial pressure (ICP).")
+    description_tr = ("Eşleştirilmiş kablosuz geri tepmeli tonometre ve optik sinir ultrason ünitesi: canlı göz içi basıncı (GİB), "
+                      "optik sinir kılıfı çapı (ONSD) ve invaziv olmayan kafa içi basınç (KİB).")
+    metrics = ("iop_mmhg", "onsd_mm", "icp_mmhg")
+    group = "ocular"
+    battery_hours = 36
+
+    def live(self, crew_id: str, mission_t: float, world: Any) -> dict[str, Any]:
+        base = world.last_truth(crew_id)
+        if base is None or not self.enabled:
+            return {}
+        oc = base.get("ocular", {})
+        frac = mission_t % 1.0
+        minute = int(mission_t * 1440)
+        # Supine/microgravity nocturnal & morning circadian IOP wave
+        circ = math.cos(2 * math.pi * (frac - 0.22))
+        ev_today = world._event_kinds(crew_id, world.today) if hasattr(world, "_event_kinds") else {}
+        spike = ev_today.get("ocular_spike", {})
+        iop_bump = float(spike.get("iop_delta_mmhg", 0.0))
+        shift_bump = float(spike.get("fluid_shift_delta_ml", 0.0))
+        iop_base = float(oc.get("iop_mmhg", 18.2))
+        # If ocular_spike started today and wasn't in yesterday's closed truth yet, apply it live
+        if iop_bump > 0 and iop_base < 23.0:
+            iop_base += iop_bump
+        iop = round(iop_base + 0.8 * circ + (_h(crew_id, minute, "iop") - 0.5) * 0.5, 1)
+        od = round(iop + (_h(crew_id, minute, "od") - 0.45) * 0.4, 1)
+        os_val = round(iop - (_h(crew_id, minute, "os") - 0.45) * 0.4, 1)
+        onsd_base = float(oc.get("onsd_mm", 5.52))
+        if iop_bump > 0 and onsd_base < 6.1:
+            onsd_base += iop_bump * 0.18
+        onsd = round(onsd_base + 0.04 * circ + (_h(crew_id, minute, "onsd") - 0.5) * 0.04, 2)
+        icp_base = float(oc.get("icp_mmhg", 13.8))
+        if iop_bump > 0 and icp_base < 18.0:
+            icp_base += iop_bump * 0.8
+        icp = round(icp_base + 0.4 * circ + (_h(crew_id, minute, "icp") - 0.5) * 0.3, 1)
+        shift_base = float(oc.get("fluid_shift_ml", 1680.0))
+        if shift_bump > 0 and shift_base < 2050.0:
+            shift_base += shift_bump
+        shift = round(shift_base + 35.0 * circ + (_h(crew_id, minute, "fshift") - 0.5) * 20.0)
+        return {
+            "iop_mmhg": iop,
+            "iop_od_mmhg": od,
+            "iop_os_mmhg": os_val,
+            "onsd_mm": onsd,
+            "icp_mmhg": icp,
+            "fluid_shift_ml": shift,
+        }
+
+
 def all_sim_adapters() -> list[DeviceAdapter]:
     return [AREDAdapter(), T2Adapter(), CEVISAdapter(), BioMonitorAdapter(), ActiwatchAdapter(),
             TMiniAdapter(), CO2Adapter(), DosimeterAdapter(), UWMSAdapter(), SLAMMDAdapter(), PVTAdapter(),
-            PosturographyAdapter(), DXAAdapter(), GXTAdapter(), BloodLabAdapter()]
+            PosturographyAdapter(), DXAAdapter(), GXTAdapter(), BloodLabAdapter(), SpaceTonometerAdapter()]

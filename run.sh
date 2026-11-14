@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Crew Health Hub - one command to set up and start everything.
+# Space Health Management System (SHMS) - one command to set up and start everything.
 #
 #   ./run.sh          set up (first run), build the UI, start on http://localhost:8000
 #   ./run.sh test     run the pytest suite
@@ -62,7 +62,7 @@ fi
 
 cd "$ROOT/backend"
 echo ""
-echo "  Crew Health Hub (SIMULATED DATA - decision-support demo, not a medical device)"
+echo "  Space Health Management System (SHMS) (SIMULATED DATA - decision-support demo, not a medical device)"
 echo "  Start page:        http://$HOST:$PORT/          (choose a portal, EN/TR switch)"
 echo "  Astronaut portal:  http://$HOST:$PORT/crew"
 echo "  Lab team portal:   http://$HOST:$PORT/team"

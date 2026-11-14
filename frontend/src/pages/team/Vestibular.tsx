@@ -77,7 +77,7 @@ export default function TeamVestibular() {
           : <EffectsTable e={data.prediction.if_all_training} title={t("Prediction if all pre-landing training is done")} />}
         <Card title={t("Pre-landing training")}>
           <div className="text-4xl font-bold">{data.prediction.training_done}<span className="text-lg text-slate-400">/{data.prediction.training_planned}</span></div>
-          <div className="my-2"><ProgressBar value={data.prediction.training_done / data.prediction.training_planned} color="#c084fc" /></div>
+          <div className="my-2"><ProgressBar value={data.prediction.training_done / data.prediction.training_planned} color="#B388FF" /></div>
           <p className="text-sm text-slate-300">{t("Window opens {d}. Full training lowers landing effects by {p}% in the model.", { d: dayLabel(data.prediction.training_window_start), p: Math.round(data.model.training_benefit * 100) })}</p>
           {data.recovery && (
             <div className="mt-3 rounded-xl bg-ink-850 p-3">
@@ -108,9 +108,9 @@ export default function TeamVestibular() {
                       <CartesianGrid stroke={GRID} vertical={false} />
                       <XAxis dataKey="day" tick={AXIS} tickFormatter={dayTick} />
                       <YAxis tick={AXIS} width={30} domain={[0, 4]} allowDecimals={false} />
-                      <ReferenceLine y={4} stroke="#22c55e" strokeDasharray="4 4" />
+                      <ReferenceLine y={4} stroke="#00E676" strokeDasharray="4 4" />
                       <Tooltip contentStyle={TIP} labelFormatter={(d) => dayLabel(Number(d))} />
-                      <Line type="stepAfter" dataKey="value" name={t("Level")} stroke="#c084fc" strokeWidth={3} dot={{ r: 4 }} isAnimationActive={false} />
+                      <Line type="stepAfter" dataKey="value" name={t("Level")} stroke="#B388FF" strokeWidth={3} dot={{ r: 4 }} isAnimationActive={false} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>

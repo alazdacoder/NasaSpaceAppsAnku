@@ -1,4 +1,4 @@
-"""Desktop launcher for Crew Health Hub (used for the Windows .exe).
+"""Desktop launcher for Space Health Management System (SHMS) (used for the Windows .exe).
 
 Starts the server on 127.0.0.1, picks a free port if 8000 is taken, waits until it
 answers, then opens the start page in the default browser. Close the window (or press
@@ -47,7 +47,7 @@ def main() -> None:
         sys.stdout.reconfigure(line_buffering=True)  # show the URL lines immediately
     except Exception:
         pass
-    ap = argparse.ArgumentParser(prog="CrewHealthHub", description="Crew Health Hub (simulated data demo)")
+    ap = argparse.ArgumentParser(prog="CrewHealthHub", description="Space Health Management System (SHMS) (simulated data demo)")
     ap.add_argument("--port", type=int, default=int(os.environ.get("PORT", 8000)))
     ap.add_argument("--seed", type=int, default=None, help="simulation seed (default 42)")
     ap.add_argument("--no-browser", action="store_true", help="do not open a browser window")
@@ -63,7 +63,7 @@ def main() -> None:
     port = free_port(args.port)
     url = f"http://127.0.0.1:{port}/"
     print("")
-    print("  Crew Health Hub  -  SIMULATED DATA - decision-support demo, not a medical device")
+    print("  Space Health Management System (SHMS)  -  SIMULATED DATA - decision-support demo, not a medical device")
     print(f"  Start page:        {url}")
     print(f"  Astronaut portal:  {url}crew")
     print(f"  Lab team portal:   {url}team")
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pass
     except Exception as exc:  # keep the console open so the user can read the error
-        print(f"\nCrew Health Hub could not start: {exc!r}")
+        print(f"\nSpace Health Management System (SHMS) could not start: {exc!r}")
         if getattr(sys, "frozen", False) and sys.platform == "win32":
             input("Press Enter to close...")
         raise

@@ -1,4 +1,4 @@
-"""Starts the Crew Health Hub server inside the Android app (Chaquopy).
+"""Starts the Space Health Management System (SHMS) server inside the Android app (Chaquopy).
 
 The whole app runs on the phone: this module starts the same FastAPI server as the
 desktop version on 127.0.0.1, and MainActivity shows it in a WebView. The build copies

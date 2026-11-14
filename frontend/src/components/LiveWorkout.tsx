@@ -114,15 +114,15 @@ export function LiveWorkout({ crewId, view, onFinish, exercises, limits }: {
       <div className="grid gap-4 lg:grid-cols-[1fr_1.4fr]">
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-2xl bg-ink-850 p-4">
-              <div className="text-sm text-slate-400">{t("Heart rate")} · {live.hr_source}</div>
-              <div className="text-6xl font-black tabular-nums text-rose-400">{live.hr}<span className="ml-1 text-xl font-semibold text-slate-400">{t("bpm")}</span></div>
-              <div className="text-sm text-slate-400">{t("target ≈ {n} bpm", { n: live.target_hr })}</div>
+            <div className="rounded-2xl border border-white/[0.06] bg-ink-850 p-4">
+              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t("Heart rate")} · {live.hr_source}</div>
+              <div className="mt-1 text-5xl font-black tabular-nums text-bad sm:text-6xl">{live.hr}<span className="ml-1 text-lg font-semibold text-slate-400">{t("bpm")}</span></div>
+              <div className="text-xs text-slate-400">{t("target ≈ {n} bpm", { n: live.target_hr })}</div>
             </div>
-            <div className="rounded-2xl bg-ink-850 p-4">
-              <div className="text-sm text-slate-400">{t("Energy burned")}</div>
-              <div className="text-6xl font-black tabular-nums text-orange-300">{fmt(live.kcal, 0)}<span className="ml-1 text-xl font-semibold text-slate-400">kcal</span></div>
-              <div className="text-sm text-slate-400">{t("{r} kcal/min · {m} MET", { r: fmt(live.kcal_min, 1), m: fmt(live.met, 1) })}</div>
+            <div className="rounded-2xl border border-white/[0.06] bg-ink-850 p-4">
+              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t("Energy burned")}</div>
+              <div className="mt-1 text-5xl font-black tabular-nums text-warn sm:text-6xl">{fmt(live.kcal, 0)}<span className="ml-1 text-lg font-semibold text-slate-400">kcal</span></div>
+              <div className="text-xs text-slate-400">{t("{r} kcal/min · {m} MET", { r: fmt(live.kcal_min, 1), m: fmt(live.met, 1) })}</div>
             </div>
           </div>
           <div className="flex items-center justify-between rounded-2xl bg-ink-850 px-4 py-3">
@@ -186,14 +186,14 @@ export function LiveWorkout({ crewId, view, onFinish, exercises, limits }: {
               <XAxis dataKey="t" tick={AXIS} tickFormatter={(x) => mmss(x)} type="number" domain={["dataMin", "dataMax"]} />
               <YAxis yAxisId="hr" tick={AXIS} domain={[50, 190]} width={40} />
               <YAxis yAxisId="kcal" orientation="right" tick={AXIS} width={44} domain={[0, "auto"]} />
-              {live.target_hr && <ReferenceLine yAxisId="hr" y={live.target_hr} stroke="#fbbf24" strokeDasharray="4 4" label={{ value: t("target"), fill: "#fbbf24", fontSize: 12 }} />}
-              <Line yAxisId="hr" type="monotone" dataKey="hr" name={t("Heart rate")} stroke="#fb7185" strokeWidth={3} dot={false} isAnimationActive={false} />
-              <Line yAxisId="kcal" type="monotone" dataKey="kcal" name="kcal" stroke="#fdba74" strokeWidth={2} strokeDasharray="5 3" dot={false} isAnimationActive={false} />
+              {live.target_hr && <ReferenceLine yAxisId="hr" y={live.target_hr} stroke="#FF9100" strokeDasharray="4 4" label={{ value: t("target"), fill: "#FF9100", fontSize: 12 }} />}
+              <Line yAxisId="hr" type="monotone" dataKey="hr" name={t("Heart rate")} stroke="#FF5252" strokeWidth={3} dot={false} isAnimationActive={false} />
+              <Line yAxisId="kcal" type="monotone" dataKey="kcal" name="kcal" stroke="#00E5FF" strokeWidth={2.5} strokeDasharray="5 3" dot={false} isAnimationActive={false} />
             </LineChart>
           </ResponsiveContainer>
           <div className="-mt-1 flex justify-center gap-4 text-xs text-slate-400">
-            <span><span className="text-rose-400">━</span> {t("heart rate (left)")}</span>
-            <span><span className="text-orange-300">┅</span> {t("kcal burned (right)")}</span>
+            <span><span className="text-bad">━</span> {t("heart rate (left)")}</span>
+            <span><span className="text-accent">┅</span> {t("kcal burned (right)")}</span>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-# Crew Health Hub - single source of truth for every value, threshold, rule and
+# Space Health Management System (SHMS) - single source of truth for every value, threshold, rule and
 # recommendation used by the app.
 #
 # Every entry has `source` and `verified`:
@@ -14,7 +14,8 @@
 # THIS IS A DECISION-SUPPORT DEMO WITH SIMULATED DATA. NOT A MEDICAL DEVICE.
 
 meta:
-  app_name: Crew Health Hub
+  app_name: Space Health Management System (SHMS)
+  app_name_tr: Uzay Sağlık Yönetim Sistemi (SHMS)
   disclaimer: >-
     Decision-support demo with simulated data. Not a medical device and not for
     clinical use.
@@ -175,7 +176,8 @@ simulation:
 #         density g/cm2, VO2peak ml/kg/min, serum 25-OH vitamin D ng/mL, hemoglobin g/dL)
 crew:
   - id: c1
-    name: Elif Aydın
+    name: Astronaut 1
+    name_tr: Astronot 1
     role: Commander
     role_tr: Komutan
     sex: F
@@ -198,7 +200,8 @@ crew:
     lsah: {bmd_hip: 0.98, vo2peak: 42.0, vitd_serum: 36, hemoglobin: 13.4}
     note: High kidney-stone risk (low fluid habit, high calcium, low citrate). Second flight, fast vestibular recovery.
   - id: c2
-    name: Daniel Mensah
+    name: Astronaut 2
+    name_tr: Astronot 2
     role: Pilot
     role_tr: Pilot
     sex: M
@@ -220,7 +223,8 @@ crew:
     lsah: {bmd_hip: 1.08, vo2peak: 48.0, vitd_serum: 35, hemoglobin: 15.1}
     note: Scripted dehydration episode and a high-workload week. First flight, slow vestibular recovery.
   - id: c3
-    name: Sofia Lindqvist
+    name: Astronaut 3
+    name_tr: Astronot 3
     role: Flight Engineer
     role_tr: Uçuş Mühendisi
     sex: F
@@ -242,7 +246,8 @@ crew:
     lsah: {bmd_hip: 0.95, vo2peak: 44.0, vitd_serum: 28, hemoglobin: 13.0}
     note: Poor responder to potassium citrate (protocol started day 12), a poor-sleep week, and often skips the vitamin D tablet.
   - id: c4
-    name: Kenji Watanabe
+    name: Astronaut 4
+    name_tr: Astronot 4
     role: Mission Specialist
     role_tr: Görev Uzmanı
     sex: M
@@ -264,7 +269,8 @@ crew:
     lsah: {bmd_hip: 1.02, vo2peak: 40.0, vitd_serum: 38, hemoglobin: 14.6}
     note: Two scripted missed-workout blocks (bone-loss rule; larger hip bone loss on the post-flight DXA) and an isolation week. Oldest crew member, third flight.
   - id: c5
-    name: Ana Ribeiro
+    name: Astronaut 5
+    name_tr: Astronot 5
     role: Mission Specialist (crew medical officer)
     role_tr: Görev Uzmanı (mürettebat sağlık sorumlusu)
     sex: F
@@ -309,6 +315,7 @@ injectable_events:
   eva: {label: Spacewalk (EVA), label_tr: Uzay yürüyüşü (EVA), days: 1}
   high_workload: {label: High workload, label_tr: Yoğun iş yükü, days: 7, overtime: true}
   isolation: {label: Isolation / bad news from home, label_tr: Yalnızlık / evden kötü haber, days: 7, connection_delta: -1.5}
+  ocular_spike: {label: Acute IOP & fluid shift spike, label_tr: Ani göz içi basıncı ve sıvı kayması artışı, days: 2, iop_delta_mmhg: 6.5, fluid_shift_delta_ml: 450}
 
 # Physiology model coefficients (all simulation design assumptions).
 model:
@@ -1363,6 +1370,65 @@ metrics:
     meaning_tr: Bugünkü seansların ortalama nabzı.
     rules: []
 
+  # --- Ocular Telemetry & Antigravity Fluid Dynamics (Space Tonometer + Bio-Monitor) ---
+  iop_mmhg:
+    label: Intraocular pressure (IOP)
+    label_tr: Göz içi basıncı (GİB)
+    unit: mmHg
+    group: ocular
+    device: tonometer
+    decimals: 1
+    direction: high_bad
+    min_sd: 0.8
+    meaning: Eye pressure measured by the paired space tonometer. Microgravity cephalad fluid shifts elevate IOP (SANS risk).
+    meaning_tr: Eşleştirilmiş uzay tonometresiyle ölçülen göz içi basıncı. Mikroçekimde başa doğru sıvı kayması GİB değerini yükseltir (SANS riski).
+    rules:
+      - {type: above, value: 21.0, level: amber, rec: ocular_calibration, source: *clinical, verified: false}
+      - {type: above, value: 24.0, level: red, rec: emergency_ground_sos, source: *clinical, verified: false}
+  onsd_mm:
+    label: Optic nerve sheath diameter
+    label_tr: Optik sinir kılıfı çapı
+    unit: mm
+    group: ocular
+    device: tonometer
+    decimals: 2
+    direction: high_bad
+    min_sd: 0.15
+    meaning: Optic nerve sheath diameter. Expansion above 5.8 mm signals elevated intracranial and ocular fluid pressure.
+    meaning_tr: Optik sinir kılıfı çapı. 5.8 mm üzerine genişleme kafa içi ve göz içi sıvı basıncı artışına işaret eder.
+    rules:
+      - {type: above, value: 5.8, level: amber, rec: countermeasure_lbnp, source: *clinical, verified: false}
+      - {type: above, value: 6.3, level: red, rec: emergency_ground_sos, source: *clinical, verified: false}
+  fluid_shift_ml:
+    label: Cephalad fluid shift
+    label_tr: Başa doğru sıvı kayması
+    unit: mL
+    group: fluid
+    device: biomonitor
+    decimals: 0
+    direction: high_bad
+    min_sd: 60
+    baseline: none
+    meaning: Volume of bodily fluid redistributed toward the head and thorax in microgravity.
+    meaning_tr: Mikroçekimde baş ve göğüs bölgesine doğru yeniden dağılan vücut sıvısı hacmi.
+    rules:
+      - {type: above, value: 1950, level: amber, rec: countermeasure_lbnp, source: *sim, verified: false}
+      - {type: above, value: 2250, level: red, rec: emergency_ground_sos, source: *sim, verified: false}
+  icp_mmhg:
+    label: Intracranial pressure (ICP)
+    label_tr: Kafa içi basınç (KİB)
+    unit: mmHg
+    group: fluid
+    device: tonometer
+    decimals: 1
+    direction: high_bad
+    min_sd: 0.6
+    meaning: Estimated non-invasive intracranial pressure driven by microgravity fluid redistribution.
+    meaning_tr: Mikroçekim sıvı yeniden dağılımıyla oluşan invaziv olmayan tahmini kafa içi basınç.
+    rules:
+      - {type: above, value: 16.5, level: amber, rec: countermeasure_lbnp, source: *clinical, verified: false}
+      - {type: above, value: 19.5, level: red, rec: emergency_ground_sos, source: *clinical, verified: false}
+
 # ---------------------------------------------------------------------------
 # Cross-source rules. All conditions must hold. Fields: value (latest raw), ewma,
 # z, slope (per day over slope_days), pct (% vs baseline), pct_abs (size of pct).
@@ -1490,6 +1556,19 @@ cross_rules:
     recs: [stand_slowly, hydrate]
     reason: "Heart rate jumps {ortho_hr_rise.value} bpm when you stand and dizziness is {vest_dizzy.value}/10."
     reason_tr: "Ayağa kalkınca nabzın {ortho_hr_rise.value} atım/dk artıyor ve baş dönmen {vest_dizzy.value}/10."
+    source: *sim
+    verified: false
+  - id: sans_ocular_emergency
+    title: Critical ocular & intracranial pressure shift
+    title_tr: Kritik göz içi ve kafa içi basınç kayması
+    level: red
+    phases: [inflight]
+    when:
+      - {metric: iop_mmhg, field: ewma, op: ">", value: 24.0}
+      - {metric: fluid_shift_ml, field: ewma, op: ">", value: 2100}
+    recs: [emergency_ground_sos, ocular_calibration, countermeasure_lbnp]
+    reason: "Intraocular pressure {iop_mmhg.ewma} mmHg is above 24.0 mmHg with cephalad fluid shift {fluid_shift_ml.ewma} mL."
+    reason_tr: "Göz içi basıncı {iop_mmhg.ewma} mmHg ile 24.0 mmHg üzerinde ve başa doğru sıvı kayması {fluid_shift_ml.ewma} mL."
     source: *sim
     verified: false
 
@@ -1624,6 +1703,21 @@ recommendations:
   prelanding_training:
     text: Do your pre-landing balance training. It shortens balance recovery after landing.
     text_tr: İniş öncesi denge antrenmanını yap. İnişten sonra dengenin toparlanmasını kısaltır.
+    source: *sim
+    verified: false
+  ocular_calibration:
+    text: Run a paired Space Tonometer calibration scan and log bilateral IOP & optic nerve sheath diameter.
+    text_tr: Eşleştirilmiş Uzay Tonometresi kalibrasyon taramasını çalıştır ve çift taraflı GİB ile optik sinir kılıfı çapını kaydet.
+    source: *clinical
+    verified: false
+  countermeasure_lbnp:
+    text: Initiate Lower Body Negative Pressure (LBNP) / thigh-cuff fluid countermeasure session for 45 min to draw cephalad fluid downward.
+    text_tr: Başa doğru kayan sıvıyı aşağı çekmek için 45 dakikalık Alt Vücut Negatif Basınç (LBNP) / uyluk manşonu karşı önlem seansını başlat.
+    source: *sim
+    verified: false
+  emergency_ground_sos:
+    text: Trigger Emergency Ground-to-Space Protocol immediately to transmit tonometer scans, fluid telemetry, and vitals to Earth-side medical control.
+    text_tr: Tonometre taramalarını, sıvı telemetrisini ve yaşamsal verileri Dünya tıbbi kontrol ekibine iletmek için Acil Yer-Uzay Protokolünü derhal tetikle.
     source: *sim
     verified: false
 
@@ -1844,7 +1938,7 @@ lsah:
       variables_tr: "Anket, görme keskinliği, kırma kusuru, otomatik görme alanı, Amsler ızgarası, pupil refleksleri, göz kası değerlendirmesi, biyomikroskopi, dilate fundus muayenesi, retina fotoğrafı, tonometri, OCT, MR, A-tarama ve 2B ultrason"
       phases: {pre: true, in: true, post: true, annual: "yes"}
       mrid: "1.10, MR014S/L"
-      app_metrics: []
+      app_metrics: ["iop_mmhg", "onsd_mm"]
     - id: 21
       title: "Audiometry"
       title_tr: "Odyometri"

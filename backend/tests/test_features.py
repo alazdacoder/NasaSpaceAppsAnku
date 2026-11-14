@@ -155,7 +155,7 @@ def test_balance_drops_on_landing_and_recovers(landed):
         ready = dict(zip(*s["vest_readiness"]))
         assert ready[L + 6] >= ready[L] and ready[L] <= 2
         assert "vest_sot" not in {m for m, (d, _) in s.items() if any(0 <= x < L for x in d)}   # no balance tests in flight
-    # Daniel (c2): first flight, high susceptibility -> slowest recovery
+    # Astronaut 2 (c2): first flight, high susceptibility -> slowest recovery
     slow = dict(zip(*w.series("c2")["vest_readiness"]))
     fast = dict(zip(*w.series("c1")["vest_readiness"]))
     assert sum(slow[L + i] for i in range(4)) < sum(fast[L + i] for i in range(4))
@@ -222,3 +222,33 @@ def test_api_speaks_turkish_and_lab_view_lags(tmp_path, monkeypatch):
         ground_view = c.get("/api/crew/c1/mind?side=ground").json()["view"]
         assert ground_view["side"] == "ground" and ground_view["data_day"] < crew_view["data_day"]
         c.post("/api/demo/profile", json={"profile": "iss"})
+
+
+def test_ocular_and_emergency_ground_protocol(tmp_path, monkeypatch):
+    monkeypatch.setenv("HUB_DB", str(tmp_path / "hub.db"))
+    from fastapi.testclient import TestClient
+    from app.main import app
+    with TestClient(app) as c:
+        c.post("/api/demo/speed", json={"day_seconds": 0})
+        today = c.get("/api/crew/c1/today").json()
+        assert today["crew"]["name"] == "Astronaut 1"
+        assert "ocular" in today
+        oc = today["ocular"]
+        assert len(oc["trend_24h"]) == 24
+        assert "antigravity_fluid" in oc and "emergency_protocol" in oc
+        assert oc["safety_zone"] in ("normal", "elevated", "critical")
+
+        # Initiate calibration scan
+        scan = c.post("/api/crew/c1/ocular/scan", json={"mode": "calibration"}).json()
+        assert scan["ok"] and scan["scan"]["mode"] == "calibration"
+
+        # Simulate anomaly scan -> triggers automatic emergency SOS packet
+        anom = c.post("/api/crew/c1/ocular/scan", json={"mode": "anomaly"}).json()
+        assert anom["ok"] and anom["ocular"]["safety_zone"] == "critical"
+        assert anom["auto_sos"] is not None
+        assert anom["ocular"]["emergency_protocol"]["failsafe_triggered"] is True
+
+        # Manual SOS transmission
+        sos = c.post("/api/crew/c2/emergency/sos", json={"reason": "Manual crew SOS test"}).json()
+        assert sos["ok"] and sos["packet"]["status"] == "transmitted"
+        assert sos["packet"]["crew_name"] == "Astronaut 2"

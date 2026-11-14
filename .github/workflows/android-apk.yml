@@ -7,6 +7,7 @@ name: Android APK
 on:
   workflow_dispatch:
   push:
+    branches: ["main"]
     tags: ["v*"]
 
 permissions:
@@ -80,6 +81,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || \
-            gh release create "$GITHUB_REF_NAME" --title "Crew Health Hub $GITHUB_REF_NAME" \
+            gh release create "$GITHUB_REF_NAME" --title "SHMS $GITHUB_REF_NAME" \
               --notes "Windows executable and Android APK. Simulated-data decision-support demo; not a medical device." || true
           gh release upload "$GITHUB_REF_NAME" out/CrewHealthHub.apk --clobber

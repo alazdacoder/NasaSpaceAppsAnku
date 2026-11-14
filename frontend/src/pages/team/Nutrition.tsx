@@ -37,7 +37,7 @@ export default function TeamNutrition() {
               <div key={key} className="rounded-xl bg-ink-850 p-3">
                 <div className="flex items-center justify-between"><span className="font-semibold">{label}</span>{tg && <SourceTag verified={tg.verified} source={tg.source} />}</div>
                 <div className="mt-1 text-2xl font-bold tabular-nums">{fmt(v, 0)} <span className="text-base font-normal text-slate-400">/ {tg?.max ? t("max") + " " : ""}{tg?.value} {unit}</span></div>
-                <div className="my-2"><ProgressBar value={Math.min(ratio, 1.3) / 1.3} marker={1 / 1.3} color={inRange ? "#22c55e" : "#fbbf24"} /></div>
+                <div className="my-2"><ProgressBar value={Math.min(ratio, 1.3) / 1.3} marker={1 / 1.3} color={inRange ? "#00E676" : "#FF9100"} /></div>
                 <div className="text-xs text-slate-400">{tg?.range ? t("Flight range {a}–{b} {u}. ", { a: tg.range[0], b: tg.range[1], u: unit }) : ""}{t("baseline {v} {u}", { v: fmt(mm?.baseline_mean, 0), u: unit })}</div>
                 <div className="mt-1 text-sm text-slate-300">{mm?.meaning}</div>
               </div>
@@ -47,7 +47,7 @@ export default function TeamNutrition() {
             <div className="rounded-xl bg-ink-850 p-3">
               <div className="flex items-center justify-between"><span className="font-semibold">{t("Water")}</span><Unverified source="Water target model is a simulation assumption" /></div>
               <div className="mt-1 text-2xl font-bold">{fmt(m.water_l.value, 2)} <span className="text-base font-normal text-slate-400">/ {data.water_target_l} L</span></div>
-              <div className="my-2"><ProgressBar value={(m.water_l.value ?? 0) / data.water_target_l} color={(m.water_l.value ?? 0) >= data.water_target_l ? "#22c55e" : "#fbbf24"} /></div>
+              <div className="my-2"><ProgressBar value={(m.water_l.value ?? 0) / data.water_target_l} color={(m.water_l.value ?? 0) >= data.water_target_l ? "#00E676" : "#FF9100"} /></div>
               <div className="text-sm text-slate-300">{m.water_l.meaning}</div>
             </div>
           )}

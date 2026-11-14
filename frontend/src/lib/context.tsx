@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { api, setLandingDay, usePoll, type Clock, type LinkStatus } from "./api";
+import { t, useLang } from "./i18n";
 
 export interface Meta {
   app_name: string; disclaimer: string;
@@ -25,9 +26,15 @@ function readCrew(): string {
   try { return localStorage.getItem("crewId") || "c1"; } catch { return "c1"; }
 }
 
+export function crewLabel(id: string, idx?: number): string {
+  const n = idx !== undefined ? idx + 1 : Number(String(id).replace(/\D+/g, "")) || 1;
+  return t("Astronaut {n}", { n });
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [meta, setMeta] = useState<Meta | null>(null);
   const [crewId, setCrew] = useState<string>(readCrew);
+  const { lang } = useLang();
   const { data, refresh } = usePoll<Clock & { link: LinkStatus }>("/api/clock", 1000);
 
   useEffect(() => {
@@ -35,11 +42,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const load = () => api<Meta>("/api/meta").then((m) => {
       if (!alive) return;
       setLandingDay(m.clock.landing_day);
-      setMeta(m);
+      const normalizedCrew = (m.crew ?? []).map((c, idx) => ({
+        ...c,
+        name: crewLabel(c.id, idx),
+      }));
+      const injectable = { ...(m.injectable_events ?? {}) };
+      if (!injectable.ocular_spike) {
+        injectable.ocular_spike = { label: t("Acute Ocular & Biologic Liquid Shift Spike"), days: 2 };
+      }
+      setMeta({ ...m, crew: normalizedCrew, injectable_events: injectable });
     }).catch(() => setTimeout(load, 1500));
     load();
     return () => { alive = false; };
-  }, []);
+  }, [lang]);
 
   useEffect(() => {
     if (data?.landing_day) setLandingDay(data.landing_day);
@@ -65,5 +80,5 @@ export function useApp(): Ctx {
 
 export function useCrewName(): string {
   const { meta, crewId } = useApp();
-  return meta?.crew.find((c) => c.id === crewId)?.name ?? "";
+  return meta?.crew.find((c) => c.id === crewId)?.name ?? crewLabel(crewId);
 }
