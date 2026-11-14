@@ -11,8 +11,13 @@ from .base import DeviceAdapter, DeviceStatus
 
 class ManualAdapter(DeviceAdapter):
     id, name, kind = "manual", "Manual entries", "manual"
-    description = "Food, water, supplements taken and how I feel (1-5), entered on the tablet. Galley meals are auto-logged."
-    metrics = ("kcal", "water_l", "protein_g", "sodium_mg", "calcium_mg", "vitd_iu", "feeling")
+    name_tr = "Elle girişler"
+    description = ("Food, water, supplements taken, the daily check-in (feeling, stress, tiredness, connection) "
+                   "and dizziness, entered on the tablet. Galley meals are auto-logged.")
+    description_tr = ("Tablette girilen yemek, su, alınan takviyeler, günlük durum bildirimi (his, stres, yorgunluk, "
+                      "bağlılık) ve baş dönmesi. Mutfak öğünleri otomatik kaydedilir.")
+    metrics = ("kcal", "water_l", "protein_g", "sodium_mg", "calcium_mg", "vitd_iu", "feeling", "stress",
+               "tiredness", "connection", "vest_dizzy")
     simulated = True
     has_battery = False
 
@@ -23,17 +28,22 @@ class ManualAdapter(DeviceAdapter):
         self.last_sync[crew_id] = day + 1.0
         out = dict(truth["food"])
         out["water_l"] = truth["water_l"]
-        out["feeling"] = truth["feeling"]
+        for k in ("feeling", "stress", "tiredness", "connection"):
+            out[k] = truth["mind"][k]
+        if "vest_dizzy" in truth["vest"]:
+            out["vest_dizzy"] = truth["vest"]["vest_dizzy"]
         return out
 
     def status(self, crew_id: str, mission_t: float, real_t: float) -> DeviceStatus:
-        return DeviceStatus(self.id, True, None, self.last_sync.get(crew_id), "connected", "Tablet input")
+        return DeviceStatus(self.id, True, None, self.last_sync.get(crew_id), "connected", "Tablet input", "Tablet girişi")
 
 
 class CSVImportAdapter(DeviceAdapter):
     """Imports rows `crew_id,day,metric,value` - e.g. data exported from a real device."""
     id, name, kind = "csv", "CSV import", "manual"
+    name_tr = "CSV içe aktarma"
     description = "Upload a CSV with columns crew_id, day, metric, value."
+    description_tr = "crew_id, day, metric, value sütunları olan bir CSV yükle."
     metrics = ()
     simulated = False
     has_battery = False
@@ -68,4 +78,4 @@ class CSVImportAdapter(DeviceAdapter):
 
     def status(self, crew_id: str, mission_t: float, real_t: float) -> DeviceStatus:
         return DeviceStatus(self.id, True, None, self.last_sync.get(crew_id), "connected",
-                            f"{self.imported_rows} rows imported")
+                            f"{self.imported_rows} rows imported", f"{self.imported_rows} satır içe aktarıldı")

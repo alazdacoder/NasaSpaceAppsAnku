@@ -41,7 +41,8 @@ def test_shape_4_crew_10_baseline_days(world, cfg):
     days, _ = world.db.series("c1")["u_volume"]
     assert days[0] == -10 and days[-1] == cfg["simulation"]["start_day"] - 1
     assert world.today == cfg["simulation"]["start_day"]
-    assert world.last_day == 179
+    assert world.landing_day == 180                        # in flight: days 0..179
+    assert world.last_day == 180 + cfg["simulation"]["postflight_days"] - 1   # R+0 .. R+20 after landing
 
 
 def test_flight_changes_match_reference_directions(world):

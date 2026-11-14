@@ -35,7 +35,7 @@ class SimAdapter(DeviceAdapter):
     def status(self, crew_id: str, mission_t: float, real_t: float) -> DeviceStatus:
         if not self.enabled:
             return DeviceStatus(self.id, False, None, self.last_sync.get(crew_id), "disabled",
-                                "Disabled from the Devices screen")
+                                "Disabled from the Devices screen", "Cihazlar ekranından devre dışı bırakıldı")
         battery = None
         if self.has_battery:
             period = self.battery_hours * 60.0       # demo: one full cycle per battery_hours real minutes
@@ -43,13 +43,16 @@ class SimAdapter(DeviceAdapter):
             battery = round(100 - 85 * phase)
         last = max(self.last_sync.get(crew_id, 0.0), mission_t - (_h(self.id, crew_id, int(real_t // 7)) * 0.02))
         state = "syncing" if _h(self.id, crew_id, int(real_t // 3)) < 0.06 else "connected"
-        note = "Charging" if battery is not None and battery > 97 else ""
-        return DeviceStatus(self.id, True, battery, last, state, note)
+        charging = battery is not None and battery > 97
+        return DeviceStatus(self.id, True, battery, last, state, "Charging" if charging else "",
+                            "Şarj oluyor" if charging else "")
 
 
 class AREDAdapter(SimAdapter):
     id, name, kind = "ared", "ARED (Advanced Resistive Exercise Device)", "exercise"
+    name_tr = "ARED (gelişmiş direnç egzersiz cihazı)"
     description = "Resistance exercise: exercise, load, sets and reps. Peak load 272 kg."
+    description_tr = "Direnç egzersizi: hareket, yük, set ve tekrar. Tepe yük 272 kg."
     metrics = ("ared_squat_kg",)
     has_battery = False
 
@@ -61,7 +64,9 @@ class AREDAdapter(SimAdapter):
 
 class T2Adapter(SimAdapter):
     id, name, kind = "t2", "T2 treadmill", "exercise"
+    name_tr = "T2 koşu bandı"
     description = "Running: speed, time and harness load. Peak speed 19.3 km/h."
+    description_tr = "Koşu: hız, süre ve kemer yükü. Tepe hız 19.3 km/sa."
     metrics = ("t2_speed_kmh",)
     has_battery = False
 
@@ -72,7 +77,9 @@ class T2Adapter(SimAdapter):
 
 class CEVISAdapter(SimAdapter):
     id, name, kind = "cevis", "CEVIS cycle ergometer", "exercise"
+    name_tr = "CEVIS bisiklet ergometresi"
     description = "Cycling: power (watts) and time."
+    description_tr = "Pedal: güç (watt) ve süre."
     metrics = ("cevis_watts",)
     has_battery = False
 
@@ -83,7 +90,9 @@ class CEVISAdapter(SimAdapter):
 
 class BioMonitorAdapter(SimAdapter):
     id, name, kind = "biomonitor", "Bio-Monitor smart shirt + headband", "wearable"
+    name_tr = "Bio-Monitor akıllı tişört + kafa bandı"
     description = "Heart rate / ECG, breathing rate, blood pressure, skin temperature, blood oxygen, activity."
+    description_tr = "Nabız / EKG, solunum hızı, kan basıncı, deri sıcaklığı, kan oksijeni, hareketlilik."
     metrics = ("hr_rest", "resp_rate", "bp_sys", "bp_dia", "skin_temp", "spo2", "activity", "hr_exercise")
     group = "vitals"
     battery_hours = 18
@@ -122,7 +131,9 @@ class BioMonitorAdapter(SimAdapter):
 
 class ActiwatchAdapter(SimAdapter):
     id, name, kind = "actiwatch", "Wrist actigraph (Actiwatch type)", "wearable"
+    name_tr = "Bilek aktigrafı (Actiwatch tipi)"
     description = "Sleep duration and quality, light exposure."
+    description_tr = "Uyku süresi ve kalitesi, ışık maruziyeti."
     metrics = ("sleep_h", "sleep_quality", "light_lux")
     group = "sleep"
     battery_hours = 40
@@ -130,7 +141,9 @@ class ActiwatchAdapter(SimAdapter):
 
 class TMiniAdapter(SimAdapter):
     id, name, kind = "tmini", "Core temperature headband (T-Mini type)", "wearable"
+    name_tr = "Vücut iç sıcaklığı bandı (T-Mini tipi)"
     description = "Core body temperature from a heat-flux sensor."
+    description_tr = "Isı akışı sensörüyle vücut iç sıcaklığı."
     metrics = ("core_temp",)
     group = "vitals"
     battery_hours = 20
@@ -147,7 +160,9 @@ class TMiniAdapter(SimAdapter):
 
 class CO2Adapter(SimAdapter):
     id, name, kind = "co2", "Personal CO2 monitor", "environment"
+    name_tr = "Kişisel CO2 monitörü"
     description = "CO2 partial pressure in the air you breathe."
+    description_tr = "Soluduğun havadaki CO2 kısmi basıncı."
     metrics = ("co2_mmhg",)
     group = "env"
     battery_hours = 30
@@ -162,7 +177,9 @@ class CO2Adapter(SimAdapter):
 
 class DosimeterAdapter(SimAdapter):
     id, name, kind = "dosimeter", "Personal radiation dosimeter", "environment"
+    name_tr = "Kişisel radyasyon dozimetresi"
     description = "Daily and cumulative radiation dose."
+    description_tr = "Günlük ve toplam radyasyon dozu."
     metrics = ("rad_msv", "rad_cum")
     group = "env"
     battery_hours = 60
@@ -170,15 +187,65 @@ class DosimeterAdapter(SimAdapter):
 
 class UWMSAdapter(SimAdapter):
     id, name, kind = "uwms", "Urine sensor bay (UWMS, before the UPA)", "lab"
+    name_tr = "İdrar sensör bölmesi (UWMS, UPA öncesi)"
     description = ("24 h urine chemistry sampled in the toilet before the Urine Processor Assembly: "
                    "calcium, citrate, oxalate, uric acid, pH, specific gravity, volume, creatinine, "
                    "sodium, potassium, magnesium.")
+    description_tr = ("Tuvalette, İdrar İşleme Ünitesi'nden (UPA) önce alınan 24 saatlik idrar kimyası: "
+                      "kalsiyum, sitrat, oksalat, ürik asit, pH, özgül ağırlık, hacim, kreatinin, "
+                      "sodyum, potasyum, magnezyum.")
     metrics = ("u_volume", "u_calcium", "u_citrate", "u_oxalate", "u_uric_acid", "u_ph", "u_sg",
                "u_creatinine", "u_sodium", "u_potassium", "u_magnesium")
     group = "urine"
     has_battery = False
 
 
+class SLAMMDAdapter(SimAdapter):
+    id, name, kind = "slammd", "SLAMMD body-mass device", "lab"
+    name_tr = "SLAMMD vücut kütlesi ölçer"
+    description = ("Space Linear Acceleration Mass Measurement Device: body mass from the acceleration a known "
+                   "force produces (scales do not work in weightlessness).")
+    description_tr = ("Uzay Doğrusal İvme Kütle Ölçüm Cihazı: bilinen bir kuvvetin oluşturduğu ivmeden vücut "
+                      "kütlesini ölçer (ağırlıksızlıkta tartı çalışmaz).")
+    metrics = ("mass_kg",)
+    has_battery = False
+
+    def extract(self, truth: dict) -> dict[str, float]:
+        return {"mass_kg": truth["energy"]["mass_kg"]}
+
+
+class PVTAdapter(SimAdapter):
+    id, name, kind = "pvt", "Reaction test (PVT, tablet app)", "app"
+    name_tr = "Tepki testi (PVT, tablet uygulaması)"
+    description = "3-minute psychomotor vigilance test: reaction time and attention lapses. The crew can also take it on the Mind screen."
+    description_tr = "3 dakikalık psikomotor dikkat testi: tepki süresi ve dikkat kaymaları. Mürettebat Zihin ekranında da yapabilir."
+    metrics = ("pvt_rt_ms", "pvt_lapses")
+    group = "mind"
+    has_battery = False
+
+
+class PosturographyAdapter(SimAdapter):
+    id, name, kind = "posturography", "Balance clinic (posturography, tandem walk, stand test)", "clinic"
+    name_tr = "Denge kliniği (postürografi, tandem yürüyüş, ayağa kalkma testi)"
+    description = ("Ground clinic tests before launch and after landing: computerized dynamic posturography "
+                   "(SOT), tandem walk with eyes closed and a stand test for heart-rate rise.")
+    description_tr = ("Fırlatmadan önce ve inişten sonra yer kliniği testleri: bilgisayarlı dinamik postürografi "
+                      "(SOT), gözler kapalı tandem yürüyüş ve nabız artışı için ayağa kalkma testi.")
+    metrics = ("vest_sot", "vest_tandem", "ortho_hr_rise")
+    group = "vest"
+    has_battery = False
+
+    def status(self, crew_id: str, mission_t: float, real_t: float) -> DeviceStatus:
+        st = super().status(crew_id, mission_t, real_t)
+        cfg_landing = getattr(self, "landing_day", 180)
+        if st.connected and 0 <= mission_t < cfg_landing:
+            return DeviceStatus(self.id, True, None, self.last_sync.get(crew_id), "standby",
+                                "On the ground: used before launch and after landing",
+                                "Yerde: fırlatmadan önce ve inişten sonra kullanılır")
+        return st
+
+
 def all_sim_adapters() -> list[DeviceAdapter]:
     return [AREDAdapter(), T2Adapter(), CEVISAdapter(), BioMonitorAdapter(), ActiwatchAdapter(),
-            TMiniAdapter(), CO2Adapter(), DosimeterAdapter(), UWMSAdapter()]
+            TMiniAdapter(), CO2Adapter(), DosimeterAdapter(), UWMSAdapter(), SLAMMDAdapter(), PVTAdapter(),
+            PosturographyAdapter()]

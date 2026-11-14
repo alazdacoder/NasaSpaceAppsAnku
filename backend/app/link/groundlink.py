@@ -125,9 +125,10 @@ class GroundLink:
                     (r["crew_id"], r["payload"], r["mission_t"], r["created_real"], received, r["seq"]))
         elif kind == "event":
             self.db.execute(
-                "INSERT INTO g_event_log(seq, crew_id, mission_t, created_real, received_real, kind, level, text) VALUES (?,?,?,?,?,?,?,?)",
+                "INSERT INTO g_event_log(seq, crew_id, mission_t, created_real, received_real, kind, level, text, text_tr) "
+                "VALUES (?,?,?,?,?,?,?,?,?)",
                 (r["seq"], r["crew_id"], r["mission_t"], r["created_real"], received, payload.get("kind"),
-                 payload.get("level"), payload.get("text")))
+                 payload.get("level"), payload.get("text"), payload.get("text_tr")))
 
     # -- status -------------------------------------------------------------
     def status(self) -> dict[str, Any]:
@@ -143,7 +144,8 @@ class GroundLink:
         pdef = self.cfg["profiles"][self.profile]
         blackout = self.in_blackout(now)
         return {
-            "profile": self.profile, "profile_label": pdef["label"], "delay_s": self.delay_s(),
+            "profile": self.profile, "profile_label": pdef["label"], "profile_label_tr": pdef.get("label_tr"),
+            "delay_s": self.delay_s(),
             "delay_min_s": pdef.get("delay_min_s", pdef["delay_s"]), "delay_max_s": pdef.get("delay_max_s", pdef["delay_s"]),
             "blackout": blackout, "forced_blackout": self.forced_blackout,
             "window_change_in_s": self.next_window_change(now) if not self.forced_blackout else None,

@@ -16,16 +16,19 @@ class DeviceStatus:
     connected: bool
     battery_pct: float | None
     last_sync_mission_t: float | None
-    state: str = "connected"          # connected | syncing | offline | disabled
+    state: str = "connected"          # connected | syncing | offline | disabled | standby
     note: str = ""
+    note_tr: str = ""
     extra: dict[str, Any] = field(default_factory=dict)
 
 
 class DeviceAdapter(ABC):
     id: str = ""
     name: str = ""
-    kind: str = ""                     # exercise | wearable | environment | lab | manual
+    name_tr: str = ""
+    kind: str = ""                     # exercise | wearable | environment | lab | manual | app | clinic
     description: str = ""
+    description_tr: str = ""
     metrics: tuple[str, ...] = ()
     simulated: bool = True
     has_battery: bool = True
@@ -47,5 +50,6 @@ class DeviceAdapter(ABC):
         """Connection status, battery and last sync."""
 
     def info(self) -> dict[str, Any]:
-        return {"id": self.id, "name": self.name, "kind": self.kind, "description": self.description,
+        return {"id": self.id, "name": self.name, "name_tr": self.name_tr or self.name, "kind": self.kind,
+                "description": self.description, "description_tr": self.description_tr or self.description,
                 "metrics": list(self.metrics), "simulated": self.simulated, "enabled": self.enabled}

@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 
 from .api import routes
 from .config import ROOT
+from .i18n import LangMiddleware
 from .state import AppState
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -26,6 +27,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Crew Health Hub (simulated data)", lifespan=lifespan)
+app.add_middleware(LangMiddleware)
 app.include_router(routes.router)
 app.include_router(routes.ws_router)
 

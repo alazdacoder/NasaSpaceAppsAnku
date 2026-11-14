@@ -1,7 +1,7 @@
 """Desktop launcher for Crew Health Hub (used for the Windows .exe).
 
 Starts the server on 127.0.0.1, picks a free port if 8000 is taken, waits until it
-answers, then opens the crew app in the default browser. Close the window (or press
+answers, then opens the start page in the default browser. Close the window (or press
 Ctrl+C) to stop.
 
     CrewHealthHub.exe [--port 8000] [--seed 42] [--no-browser]
@@ -64,8 +64,9 @@ def main() -> None:
     url = f"http://127.0.0.1:{port}/"
     print("")
     print("  Crew Health Hub  -  SIMULATED DATA - decision-support demo, not a medical device")
-    print(f"  Crew app:      {url}")
-    print(f"  Surgeon view:  {url}surgeon")
+    print(f"  Start page:        {url}")
+    print(f"  Astronaut portal:  {url}crew")
+    print(f"  Lab team portal:   {url}team")
     print(f"  Data folder:   {DATA_DIR}")
     print("  Close this window or press Ctrl+C to stop.")
     print("")

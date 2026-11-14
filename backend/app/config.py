@@ -68,7 +68,8 @@ def _validate(cfg: dict[str, Any]) -> None:
             need(t, f"protocols.{pid}.targets.{t['metric']}")
     for pid, p in cfg["link"]["profiles"].items():
         need(p, f"link.profiles.{pid}")
-    for key in ("simulation", "model", "prescription", "limits", "cevis_limits", "food_catalog"):
+    for key in ("simulation", "model", "prescription", "limits", "cevis_limits", "food_catalog", "energy",
+                "schedule", "mind", "vestibular", "readiness"):
         need(cfg[key], key)
     for nid, n in cfg["nutrition_targets"].items():
         need(n, f"nutrition_targets.{nid}")
@@ -84,39 +85,75 @@ def crew_defs() -> list[dict[str, Any]]:
     return load_config()["crew"]
 
 
+def phase_of(cfg: dict[str, Any], day: int) -> str:
+    """preflight (day < 0) | inflight (0 .. mission_days-1) | postflight (landing day onward)."""
+    if day < 0:
+        return "preflight"
+    return "inflight" if day < int(cfg["simulation"]["mission_days"]) else "postflight"
+
+
+def rule_text_tr(t: str, value: Any) -> str:
+    """Turkish word order for a rule, e.g. 'below 80' -> '80 altında', 'pct_above 50' -> '%50 üstünde'."""
+    word = "altında" if t.endswith("below") else "üstünde"
+    if t.startswith("pct"):
+        return f"%{abs(value)} {word}"
+    if t.startswith("z"):
+        return f"z {value} {word}"
+    if t.startswith("slope"):
+        return f"eğim {value} {word}"
+    return f"{value} {word}"
+
+
+LEVEL_TR = {"green": "yeşil", "amber": "sarı", "red": "kırmızı"}
+
+
 def unverified_items(cfg: dict[str, Any] | None = None) -> list[dict[str, str]]:
     """Flat list of every value marked verified: false (for README and the Sources page)."""
     cfg = cfg or load_config()
     out: list[dict[str, str]] = []
 
-    def add(kind: str, ident: str, desc: str, source: str) -> None:
-        out.append({"kind": kind, "id": ident, "description": desc, "source": source})
+    def add(kind: str, ident: str, desc: str, source: str, desc_tr: str | None = None) -> None:
+        out.append({"kind": kind, "id": ident, "description": desc, "description_tr": desc_tr or desc, "source": source})
 
-    for key, label in (("simulation", "Simulation settings"), ("model", "Physiology model coefficients"),
-                       ("prescription", "Daily ARED / cardio split of the exercise prescription"),
-                       ("cevis_limits", "CEVIS maximum power"),
-                       ("food_catalog", "Food catalogue nutrient values")):
+    for key, label, label_tr in (
+            ("simulation", "Simulation settings", "Simülasyon ayarları"),
+            ("model", "Physiology model coefficients", "Fizyoloji modeli katsayıları"),
+            ("prescription", "Daily ARED / cardio split of the exercise prescription", "Egzersiz reçetesinin günlük ARED / kardiyo dağılımı"),
+            ("cevis_limits", "CEVIS maximum power", "CEVIS en yüksek gücü"),
+            ("food_catalog", "Food catalogue nutrient values", "Yemek kataloğu besin değerleri"),
+            ("energy", "Energy cost of each activity (MET values, ACSM equations)", "Her etkinliğin enerji maliyeti (MET değerleri, ACSM denklemleri)"),
+            ("schedule", "Crew day schedule (activity times)", "Mürettebat günlük programı (etkinlik saatleri)"),
+            ("mind", "Behavioural health model (stress, tiredness, reaction time)", "Davranışsal sağlık modeli (stres, yorgunluk, tepki süresi)"),
+            ("vestibular", "Post-flight vestibular model (balance drop and recovery)", "Uçuş sonrası vestibüler model (denge kaybı ve toparlanma)"),
+            ("readiness", "Return-to-Earth readiness levels and allowed activities", "Dünya'ya uyum seviyeleri ve izin verilen etkinlikler")):
         if not cfg[key]["verified"]:
-            add("model", key, label, cfg[key]["source"])
+            add("model", key, label, cfg[key]["source"], label_tr)
     for mid, m in cfg["metrics"].items():
         for r in m.get("rules", []):
             if not r["verified"]:
-                add("threshold", mid, f"{m['label']}: {r['type']} {r['value']} -> {r['level']}", r["source"])
+                add("threshold", mid, f"{m['label']}: {r['type']} {r['value']} -> {r['level']}", r["source"],
+                    f"{m.get('label_tr', m['label'])}: {rule_text_tr(r['type'], r['value'])} -> "
+                    f"{LEVEL_TR.get(r['level'], r['level'])}")
         if m.get("estimate_verified") is False:
-            add("estimate", mid, f"{m['label']}: {m.get('estimate_note', '')}", cfg["sources"]["sim"])
+            add("estimate", mid, f"{m['label']}: {m.get('estimate_note', '')}", cfg["sources"]["sim"],
+                f"{m.get('label_tr', m['label'])}: {m.get('estimate_note_tr', m.get('estimate_note', ''))}")
     for r in cfg["cross_rules"]:
         if not r["verified"]:
-            add("cross_rule", r["id"], r["title"], r["source"])
+            add("cross_rule", r["id"], r["title"], r["source"], r.get("title_tr"))
     if not cfg["protocol_rules"]["verified"]:
         pr = cfg["protocol_rules"]
-        add("protocol_rule", "poor_response", f"Response score below {pr['poor_response_below']} after {pr['min_days']} days", pr["source"])
+        add("protocol_rule", "poor_response", f"Response score below {pr['poor_response_below']} after {pr['min_days']} days",
+            pr["source"], f"{pr['min_days']} gün sonra yanıt puanı {pr['poor_response_below']} altında")
     for rid, r in cfg["recommendations"].items():
         if not r["verified"]:
-            add("recommendation", rid, r["text"], r["source"])
+            add("recommendation", rid, r["text"], r["source"], r.get("text_tr"))
     for nid, n in cfg["nutrition_targets"].items():
         if not n["verified"]:
-            add("nutrition_target", nid, f"{nid} target {n['value']}", n["source"])
+            add("nutrition_target", nid, f"{nid} target {n['value']}", n["source"], f"{nid} hedefi {n['value']}")
     for pid, p in cfg["link"]["profiles"].items():
         if not p["verified"]:
-            add("link", pid, f"{p['label']}: delay {p['delay_s']} s, blackout {p['blackout']['duration_s']} s every {p['blackout']['period_s']} s", p["source"])
+            b = p["blackout"]
+            add("link", pid, f"{p['label']}: delay {p['delay_s']} s, blackout {b['duration_s']} s every {b['period_s']} s",
+                p["source"], f"{p.get('label_tr', p['label'])}: gecikme {p['delay_s']} sn, her {b['period_s']} sn'de "
+                f"{b['duration_s']} sn kesinti")
     return out

@@ -8,6 +8,9 @@
 #                      NOT been checked against a NASA source. Shown with an "unverified"
 #                      tag in the UI and listed in the README.
 #
+# Text shown to people has an English value and a Turkish `<key>_tr` twin. The API
+# returns one language per request (header X-Lang: en | tr).
+#
 # THIS IS A DECISION-SUPPORT DEMO WITH SIMULATED DATA. NOT A MEDICAL DEVICE.
 
 meta:
@@ -15,6 +18,9 @@ meta:
   disclaimer: >-
     Decision-support demo with simulated data. Not a medical device and not for
     clinical use.
+  disclaimer_tr: >-
+    Simüle verilerle çalışan karar destek demosu. Tıbbi cihaz değildir ve klinik
+    kullanım için uygun değildir.
 
 # ---------------------------------------------------------------------------
 # Reference values from the project brief (all verified: true).
@@ -22,83 +28,116 @@ meta:
 references:
   - id: exercise_hours_per_day
     label: In-flight exercise time
+    label_tr: Uçuşta egzersiz süresi
     value: 2
     unit: h/day
+    unit_tr: sa/gün
     note: About 2 h/day including setup.
+    note_tr: Hazırlık dahil günde yaklaşık 2 saat.
     source: npj Microgravity (2020, 2023)
     verified: true
   - id: exercise_minutes_per_week
     label: Weekly exercise across T2, CEVIS and ARED
+    label_tr: T2, CEVIS ve ARED'de haftalık egzersiz
     value: 600
     range: [450, 720]
     unit: min/week
+    unit_tr: dk/hafta
     source: npj Microgravity (2020, 2023)
     verified: true
   - id: ared_peak_load
     label: ARED peak load
+    label_tr: ARED tepe yükü
     value: 272
     unit: kg
     source: npj Microgravity (2020, 2023)
     verified: true
   - id: t2_peak_speed
     label: T2 treadmill peak speed
+    label_tr: T2 koşu bandı tepe hızı
     value: 19.3
     unit: km/h
+    unit_tr: km/sa
     source: npj Microgravity (2020, 2023)
     verified: true
   - id: energy_intake
     label: Average energy intake
+    label_tr: Ortalama enerji alımı
     value: 2296
     sd: 449
     unit: kcal/day
+    unit_tr: kcal/gün
     source: npj Microgravity (2020, 2023)
     verified: true
   - id: sleep_in_flight
     label: Sleep in flight
+    label_tr: Uçuşta uyku
     value: Crew sleep less in flight than before or after flight
+    value_tr: Mürettebat uçuşta, uçuş öncesi ve sonrasına göre daha az uyur
     unit: qualitative
+    unit_tr: nitel
     source: NASA wearable technology (sleep studies)
     verified: true
   - id: urine_calcium_in_flight
     label: Urine calcium in flight
+    label_tr: Uçuşta idrar kalsiyumu
     value: up to ~50% higher than preflight
+    value_tr: uçuş öncesine göre ~%50'ye kadar yüksek
     unit: qualitative
+    unit_tr: nitel
     source: https://ntrs.nasa.gov/citations/20000084164 ; https://ntrs.nasa.gov/citations/20000020539
     verified: true
   - id: urine_lower_in_flight
     label: Urine volume, pH and citrate in flight
+    label_tr: Uçuşta idrar hacmi, pH ve sitrat
     value: lower than preflight
+    value_tr: uçuş öncesine göre düşük
     unit: qualitative
+    unit_tr: nitel
     source: https://ntrs.nasa.gov/citations/20000084164 ; https://ntrs.nasa.gov/citations/20000020539
     verified: true
   - id: urine_volume_risk
     label: Urine volume and stone risk
+    label_tr: İdrar hacmi ve taş riski
     value: Risk higher under 2 L/day; lowest above 2.5 L/day
+    value_tr: 2 L/gün altında risk yüksek; 2.5 L/gün üzerinde en düşük
     unit: L/day
+    unit_tr: L/gün
     source: https://ntrs.nasa.gov/citations/20000084164 ; https://ntrs.nasa.gov/citations/20000020539
     verified: true
   - id: k_citrate_dose
     label: Potassium citrate dose
+    label_tr: Potasyum sitrat dozu
     value: 20 mEq/day as two 10 mEq pills with the last meal
+    value_tr: Son öğünle iki adet 10 mEq tablet olarak günde 20 mEq
     unit: mEq/day
+    unit_tr: mEq/gün
     source: https://ntrs.nasa.gov/citations/20090019087
     verified: true
   - id: k_citrate_citrate_effect
     label: Expected urinary citrate rise on potassium citrate
+    label_tr: Potasyum sitratla beklenen idrar sitratı artışı
     value: +130 to +140
+    value_tr: +130 ile +140 arası
     unit: mg/day
+    unit_tr: mg/gün
     source: https://ntrs.nasa.gov/citations/20090019087
     verified: true
   - id: k_citrate_ph_effect
     label: Expected urine pH rise on potassium citrate
+    label_tr: Potasyum sitratla beklenen idrar pH artışı
     value: +0.2 to +0.3
+    value_tr: +0.2 ile +0.3 arası
     unit: pH
     source: https://ntrs.nasa.gov/citations/20090019087
     verified: true
   - id: caox_ss_threshold
     label: Calcium oxalate supersaturation risk threshold
+    label_tr: Kalsiyum oksalat süperdoygunluğu risk eşiği
     value: above 2.0 means higher risk
+    value_tr: 2.0 üzeri daha yüksek risk demektir
     unit: relative supersaturation
+    unit_tr: göreli süperdoygunluk
     source: https://ntrs.nasa.gov/citations/20090019087
     verified: true
 
@@ -108,6 +147,7 @@ sources:
   clinical: &clinical Typical clinical range (not checked against a NASA source)
   brief: &brief Project brief (not in the reference list)
   derived: &derived Derived from verified reference values
+  energy: &energy Compendium of Physical Activities MET values and ACSM metabolic equations (not checked against a NASA source)
 
 # ---------------------------------------------------------------------------
 # Simulation
@@ -115,7 +155,8 @@ sources:
 simulation:
   seed: 42
   preflight_days: 10
-  mission_days: 180
+  mission_days: 180        # in flight: days 0..179; landing on day 180 (R+0)
+  postflight_days: 21      # after landing: R+0..R+20 (vestibular recovery)
   start_day: 30            # the demo opens on this mission day, with history before it
   start_hour: 7.5          # 07:30 crew time
   day_seconds_default: 60  # one mission day per 60 real seconds
@@ -129,6 +170,7 @@ crew:
   - id: c1
     name: Lena Okafor
     role: Commander
+    role_tr: Komutan
     mass_kg: 64
     hr_rest: 58
     water_habit_l: 2.6
@@ -139,10 +181,14 @@ crew:
     t2_speed_kmh: 9.5
     cevis_watts: 140
     sleep_h: 7.1
-    note: High kidney-stone-risk crew member (low fluid habit, high calcium, low citrate).
+    pvt_base_ms: 255
+    flights: 2
+    vestibular: {sot_base: 81, tandem_base: 9.3, susceptibility: 0.8, tau_days: 2.5}
+    note: High kidney-stone-risk crew member (low fluid habit, high calcium, low citrate). Second flight, fast vestibular recovery.
   - id: c2
     name: Marco Diaz
     role: Pilot
+    role_tr: Pilot
     mass_kg: 78
     hr_rest: 62
     water_habit_l: 3.1
@@ -152,10 +198,14 @@ crew:
     t2_speed_kmh: 11.0
     cevis_watts: 180
     sleep_h: 7.1
-    note: Scripted dehydration episode.
+    pvt_base_ms: 240
+    flights: 1
+    vestibular: {sot_base: 79, tandem_base: 9.0, susceptibility: 1.45, tau_days: 4.5}
+    note: Scripted dehydration episode and a high-workload week. First flight, slow vestibular recovery.
   - id: c3
     name: Yuki Tanaka
     role: Flight Engineer
+    role_tr: Uçuş Mühendisi
     mass_kg: 61
     hr_rest: 60
     water_habit_l: 2.9
@@ -165,10 +215,14 @@ crew:
     t2_speed_kmh: 10.0
     cevis_watts: 130
     sleep_h: 7.3
-    note: Poor responder to potassium citrate (protocol started day 12) and a poor-sleep week.
+    pvt_base_ms: 250
+    flights: 1
+    vestibular: {sot_base: 82, tandem_base: 9.4, susceptibility: 1.0, tau_days: 3.0}
+    note: Poor responder to potassium citrate (protocol started day 12) and a poor-sleep week (slower reaction times).
   - id: c4
     name: Sam Novak
     role: Mission Specialist
+    role_tr: Görev Uzmanı
     mass_kg: 82
     hr_rest: 55
     water_habit_l: 3.2
@@ -178,7 +232,10 @@ crew:
     t2_speed_kmh: 12.0
     cevis_watts: 200
     sleep_h: 7.1
-    note: Scripted missed-workout block (drives the bone-loss cross-source rule).
+    pvt_base_ms: 265
+    flights: 1
+    vestibular: {sot_base: 78, tandem_base: 9.0, susceptibility: 1.1, tau_days: 3.5}
+    note: Scripted missed-workout block (drives the bone-loss cross-source rule) and an isolation week.
 
 # Scripted events for the default seed (mission days, inclusive).
 scripted_events:
@@ -186,15 +243,20 @@ scripted_events:
   - {crew: c4, kind: missed_workouts, start: 20, end: 34}
   - {crew: c2, kind: dehydration, start: 26, end: 32}
   - {crew: c3, kind: poor_sleep, start: 27, end: 33}
+  - {crew: c2, kind: high_workload, start: 27, end: 33}
+  - {crew: c4, kind: isolation, start: 24, end: 33}
 
-# Events that can be injected from the surgeon demo panel.
+# Events that can be injected from the lab-team demo panel.
 injectable_events:
-  dehydration: {label: Dehydration, days: 5, water_factor: 0.6}
-  poor_sleep: {label: Poor sleep week, days: 7, sleep_delta_h: -2.0}
-  missed_workouts: {label: Missed workouts, days: 7, adherence: 0.15}
-  fever: {label: Fever, days: 2, core_temp_delta: 1.3}
-  co2_spike: {label: CO2 spike, days: 2, co2_delta_mmhg: 2.5}
-  solar_particle_event: {label: Solar particle event, days: 1, dose_msv: 20}
+  dehydration: {label: Dehydration, label_tr: Susuzluk, days: 5, water_factor: 0.6}
+  poor_sleep: {label: Poor sleep week, label_tr: Kötü uyku haftası, days: 7, sleep_delta_h: -2.0}
+  missed_workouts: {label: Missed workouts, label_tr: Kaçırılan egzersizler, days: 7, adherence: 0.15}
+  fever: {label: Fever, label_tr: Ateş, days: 2, core_temp_delta: 1.3}
+  co2_spike: {label: CO2 spike, label_tr: CO2 artışı, days: 2, co2_delta_mmhg: 2.5}
+  solar_particle_event: {label: Solar particle event, label_tr: Güneş parçacık olayı, days: 1, dose_msv: 20}
+  eva: {label: Spacewalk (EVA), label_tr: Uzay yürüyüşü (EVA), days: 1}
+  high_workload: {label: High workload, label_tr: Yoğun iş yükü, days: 7, overtime: true}
+  isolation: {label: Isolation / bad news from home, label_tr: Yalnızlık / evden kötü haber, days: 7, connection_delta: -1.5}
 
 # Physiology model coefficients (all simulation design assumptions).
 model:
@@ -202,9 +264,11 @@ model:
   verified: false
   exercise_adherence: 0.95
   supplement_adherence: 0.9
+  checkin_adherence: 0.9
   urine_volume: {water_coef: 0.8, food_water_l: 0.6, sweat_l_per_ex_hour: 0.35, inflight_shift_l: -0.2, noise_sd: 0.12}
   calcium_inflight_max_rise: 0.5     # matches verified "up to ~50%" at full adherence
   calcium_rise_tau_days: 25
+  calcium_recovery_tau_days: 12      # after landing, flight changes fade with this time constant
   calcium_low_resistance_extra: 0.35 # extra rise when ARED minutes fall to zero
   citrate_inflight_drop: 0.15
   ph_inflight_drop: 0.15
@@ -213,6 +277,7 @@ model:
   water_target_per_ex_hour_l: 0.35
   hr_per_watt: 0.38
   hr_max_offset: 120
+  hr_postflight_rise: 7              # resting heart rate after landing (deconditioning), fades
   sleep_inflight_delta_h: -0.8       # direction verified (less sleep in flight); size is assumed
   radiation_msv_per_day:
     preflight: 0.008
@@ -225,7 +290,9 @@ model:
 prescription:
   ared_min: 45
   cardio_min: 40          # alternates T2 (even days) and CEVIS (odd days)
+  rehab_min: 60           # after landing: ground reconditioning with a trainer
   ared_exercises: [squat, deadlift, heel raise, bench press]
+  ared_exercises_tr: [squat, deadlift, topuk kaldırma, bench press]
   weekly_target_min: 600  # value verified (npj Microgravity); the daily split above is assumed
   weekly_range_min: [450, 720]
   source: "Weekly target: npj Microgravity (2020, 2023). Daily ARED/cardio split: simulation design assumption"
@@ -243,6 +310,128 @@ cevis_limits:
   verified: false
 
 # ---------------------------------------------------------------------------
+# Energy: what each activity costs. 1 MET = 1 kcal per kg of body mass per hour.
+# ---------------------------------------------------------------------------
+energy:
+  source: *energy
+  verified: false
+  met:                          # weightlessness removes the cost of standing and walking, so these sit low
+    sleep: 0.9
+    hygiene: 1.2
+    meal: 1.2
+    planning: 1.2
+    science: 1.3
+    maintenance: 1.6
+    leisure: 1.1
+    family_call: 1.1
+    medical: 1.4
+    vestibular_rehab: 2.0
+    eva: 3.2
+    rest: 1.1
+  ared_met: [3.0, 5.0]          # light -> heavy load (load / (2 x body mass), capped at 1)
+  rehab_met: 3.5
+  t2: {resting_ml_kg_min: 3.5, ml_per_m: 0.2}   # ACSM running equation, net part scaled by harness load / body mass
+  cevis_gross_efficiency: 0.21
+  kcal_per_l_o2: 5.0
+  kcal_per_kg_body_mass: 7700
+  intake_kcal_per_kg: 35        # simulated intake rises with body mass around the verified 2296 kcal/day mean
+
+# Crew day template (crew time, hours). Exercise slots are filled from the prescription.
+schedule:
+  source: *sim
+  verified: false
+  work_kinds: [planning, science, maintenance, eva, medical]
+  inflight:
+    - {kind: sleep, start: 0.0, end: 6.0}
+    - {kind: hygiene, start: 6.0, end: 6.5}
+    - {kind: meal, start: 6.5, end: 7.0}
+    - {kind: planning, start: 7.0, end: 7.5}
+    - {kind: science, start: 7.5, end: 11.5}
+    - {kind: exercise, slot: ared, start: 11.5, end: 12.25}
+    - {kind: meal, start: 12.25, end: 13.25}
+    - {kind: maintenance, start: 13.25, end: 16.25}
+    - {kind: exercise, slot: cardio, start: 16.25, end: 16.9167}
+    - {kind: science, start: 16.9167, end: 18.5}
+    - {kind: meal, start: 18.5, end: 19.5}
+    - {kind: leisure, start: 19.5, end: 21.0}
+    - {kind: hygiene, start: 21.0, end: 21.5}
+    - {kind: sleep, start: 21.5, end: 24.0}
+  postflight:
+    - {kind: sleep, start: 0.0, end: 7.0}
+    - {kind: hygiene, start: 7.0, end: 7.5}
+    - {kind: meal, start: 7.5, end: 8.0}
+    - {kind: medical, start: 8.0, end: 10.0}
+    - {kind: exercise, slot: rehab, start: 10.0, end: 11.0}
+    - {kind: rest, start: 11.0, end: 12.0}
+    - {kind: meal, start: 12.0, end: 13.0}
+    - {kind: medical, start: 13.0, end: 15.0}
+    - {kind: vestibular_rehab, start: 15.0, end: 15.3333}
+    - {kind: rest, start: 15.3333, end: 18.5}
+    - {kind: meal, start: 18.5, end: 19.5}
+    - {kind: leisure, start: 19.5, end: 21.5}
+    - {kind: hygiene, start: 21.5, end: 22.0}
+    - {kind: sleep, start: 22.0, end: 24.0}
+  eva: {start: 7.5, end: 14.0}  # an EVA day replaces everything in this window (including ARED)
+  family_call_min: 45           # weekly private family conference, at the start of leisure
+  live_call_max_delay_s: 10     # live calls need a short link delay (not possible on Mars)
+
+# Behavioural health model (all simulation design assumptions).
+mind:
+  source: *sim
+  verified: false
+  sleep_need_h: 7.0
+  workload_ref_h: 9.0
+  stress_base: 2.0
+  stress_per_work_h: 1.0        # per hour above workload_ref_h
+  stress_per_sleep_debt_h: 0.3
+  stress_exercise_relief: 0.4
+  tiredness_base: 2.0
+  tiredness_per_sleep_debt_h: 0.6
+  connection_base: 4.0
+  contact_ref_min_week: 45
+  connection_no_contact_drop: 1.3
+  pvt_ms_per_sleep_debt_h: 12
+  pvt_ms_per_co2_mmhg: 8        # above 2.5 mmHg
+  pvt_ms_per_tiredness: 5
+  lapse_rate_base: 0.6
+  lapse_per_sleep_debt_h: 1.2
+
+# Vestibular / sensorimotor model for the return to Earth (all assumptions).
+vestibular:
+  source: *sim
+  verified: false
+  sot_landing_drop: 0.30        # share of the balance score lost on landing day (average crew member, 180-day flight)
+  tandem_landing_drop: 4.5      # correct steps lost on landing day
+  dizzy_landing: 5.5            # 0-10 rating on landing day
+  ortho_base_bpm: 12
+  ortho_landing_rise: 22        # extra stand-test heart-rate rise on landing day
+  ortho_tau_days: 2.5
+  duration_ref_days: 180        # landing effects scale with sqrt(mission days / 180)
+  training_benefit: 0.25        # full pre-landing training lowers landing effects by 25%
+  prelanding_training_days: 14
+  sas_days: 3                   # space motion sickness in the first days of flight
+  sas_peak: 4.0
+  recovered_within_pct: 5       # "back to baseline" = balance within 5% of preflight
+
+# Return-to-Earth readiness: the highest level whose conditions all hold
+# (balance score % vs preflight baseline, tandem-walk steps, dizziness 0-10).
+readiness:
+  source: *sim
+  verified: false
+  levels:
+    - {level: 0, label: Assisted only, label_tr: Yalnızca yardımla, sot_pct_min: -100, tandem_min: 0, dizzy_max: 10}
+    - {level: 1, label: Walk with support, label_tr: Destekle yürüme, sot_pct_min: -35, tandem_min: 3, dizzy_max: 7}
+    - {level: 2, label: Walk alone indoors, label_tr: İç mekânda tek başına yürüme, sot_pct_min: -20, tandem_min: 6, dizzy_max: 4}
+    - {level: 3, label: Normal daily activities, label_tr: Normal günlük işler, sot_pct_min: -10, tandem_min: 7, dizzy_max: 2}
+    - {level: 4, label: Ready for driving clearance, label_tr: Araç kullanma onayına hazır, sot_pct_min: -5, tandem_min: 8, dizzy_max: 1}
+  activities:
+    - {id: walk_assisted, label: Walk with a helper, label_tr: Biriyle birlikte yürümek, min_level: 1}
+    - {id: walk_alone, label: Walk alone indoors, label_tr: İç mekânda tek başına yürümek, min_level: 2}
+    - {id: stairs, label: Use stairs, label_tr: Merdiven kullanmak, min_level: 3}
+    - {id: shower_standing, label: Shower standing up, label_tr: Ayakta duş almak, min_level: 3}
+    - {id: drive, label: Drive a car (after the flight surgeon clears you), label_tr: Araba kullanmak (uçuş hekimi onayından sonra), min_level: 4}
+
+# ---------------------------------------------------------------------------
 # Metrics and per-metric rules.
 #   direction: high_bad | low_bad | both  (which deviation counts as worse)
 #   rules (evaluated on the EWMA-smoothed value):
@@ -250,6 +439,7 @@ cevis_limits:
 #     z_above / z_below    z-score of smoothed value vs personal preflight baseline
 #     pct_above / pct_below percent change of smoothed value vs baseline mean
 #     slope_above / slope_below  7-day slope (units per day)
+#   optional `phases: [preflight, inflight, postflight]` limits when a rule applies.
 # ---------------------------------------------------------------------------
 defaults:
   ewma_alpha: 0.3
@@ -262,18 +452,22 @@ metrics:
   # --- Sleep (wrist actigraph) ---
   sleep_h:
     label: Sleep duration
+    label_tr: Uyku süresi
     unit: h
+    unit_tr: sa
     group: sleep
     device: actiwatch
     decimals: 1
     direction: low_bad
     min_sd: 0.3
     meaning: Hours asleep last night. Crew sleep less in flight than on the ground.
+    meaning_tr: Dün gece uyuduğun saat. Mürettebat uçuşta yerdekinden daha az uyur.
     rules:
       - {type: below, value: 6.0, level: amber, rec: sleep_protect, source: *clinical, verified: false}
       - {type: below, value: 5.0, level: red, rec: reduce_intensity, source: *clinical, verified: false}
   sleep_quality:
     label: Sleep efficiency
+    label_tr: Uyku verimi
     unit: "%"
     group: sleep
     device: actiwatch
@@ -281,45 +475,56 @@ metrics:
     direction: low_bad
     min_sd: 2
     meaning: Share of time in bed actually asleep.
+    meaning_tr: Yatakta geçen sürenin gerçekten uykuda geçen kısmı.
     rules:
       - {type: below, value: 80, level: amber, rec: sleep_protect, source: *clinical, verified: false}
   light_lux:
     label: Daytime light exposure
+    label_tr: Gündüz ışık maruziyeti
     unit: lux
+    unit_tr: lüks
     group: sleep
     device: actiwatch
     decimals: 0
     direction: low_bad
     min_sd: 15
     meaning: Average light at the wrist while awake. Bright days help the body clock.
+    meaning_tr: Uyanıkken bilekte ölçülen ortalama ışık. Aydınlık günler biyolojik saati destekler.
     rules: []
 
   # --- Vitals (Bio-Monitor shirt + headband) ---
   hr_rest:
     label: Resting heart rate
+    label_tr: Dinlenik nabız
     unit: bpm
+    unit_tr: atım/dk
     group: vitals
     device: biomonitor
     decimals: 0
     direction: high_bad
     min_sd: 2
     meaning: Heart rate at rest. A rise above your baseline can mean fatigue, poor sleep or dehydration.
+    meaning_tr: Dinlenirken kalp atım hızı. Kişisel referansının üzerine çıkması yorgunluk, kötü uyku ya da susuzluk belirtisi olabilir.
     rules:
       - {type: z_above, value: 2.0, level: amber, rec: reduce_intensity, source: *sim, verified: false}
       - {type: z_above, value: 3.0, level: red, rec: contact_surgeon, source: *sim, verified: false}
   resp_rate:
     label: Breathing rate
+    label_tr: Solunum hızı
     unit: /min
+    unit_tr: /dk
     group: vitals
     device: biomonitor
     decimals: 0
     direction: high_bad
     min_sd: 1
     meaning: Breaths per minute at rest.
+    meaning_tr: Dinlenirken dakikadaki nefes sayısı.
     rules:
       - {type: above, value: 20, level: amber, rec: contact_surgeon, source: *clinical, verified: false}
   bp_sys:
     label: Blood pressure (systolic)
+    label_tr: Kan basıncı (sistolik)
     unit: mmHg
     group: vitals
     device: biomonitor
@@ -327,10 +532,12 @@ metrics:
     direction: high_bad
     min_sd: 4
     meaning: Top blood pressure number.
+    meaning_tr: Büyük tansiyon değeri.
     rules:
       - {type: above, value: 135, level: amber, rec: contact_surgeon, source: *clinical, verified: false}
   bp_dia:
     label: Blood pressure (diastolic)
+    label_tr: Kan basıncı (diyastolik)
     unit: mmHg
     group: vitals
     device: biomonitor
@@ -338,10 +545,12 @@ metrics:
     direction: high_bad
     min_sd: 3
     meaning: Bottom blood pressure number.
+    meaning_tr: Küçük tansiyon değeri.
     rules:
       - {type: above, value: 88, level: amber, rec: contact_surgeon, source: *clinical, verified: false}
   skin_temp:
     label: Skin temperature
+    label_tr: Deri sıcaklığı
     unit: °C
     group: vitals
     device: biomonitor
@@ -349,9 +558,11 @@ metrics:
     direction: both
     min_sd: 0.2
     meaning: Temperature at the skin surface; follows cabin temperature and activity.
+    meaning_tr: Deri yüzeyindeki sıcaklık; kabin sıcaklığını ve hareketi izler.
     rules: []
   spo2:
     label: Blood oxygen
+    label_tr: Kan oksijeni
     unit: "%"
     group: vitals
     device: biomonitor
@@ -359,23 +570,28 @@ metrics:
     direction: low_bad
     min_sd: 0.5
     meaning: How much oxygen your blood carries.
+    meaning_tr: Kanının taşıdığı oksijen oranı.
     rules:
       - {type: below, value: 95, level: amber, rec: contact_surgeon, source: *clinical, verified: false}
       - {type: below, value: 92, level: red, rec: contact_surgeon, source: *clinical, verified: false}
   activity:
     label: Activity
+    label_tr: Hareketlilik
     unit: counts/min
+    unit_tr: sayım/dk
     group: vitals
     device: biomonitor
     decimals: 0
     direction: low_bad
     min_sd: 20
     meaning: Movement measured by the shirt outside exercise sessions.
+    meaning_tr: Egzersiz dışında tişörtün ölçtüğü hareket.
     rules: []
 
   # --- Core temperature (headband) ---
   core_temp:
     label: Core temperature
+    label_tr: Vücut iç sıcaklığı
     unit: °C
     group: vitals
     device: tmini
@@ -383,6 +599,7 @@ metrics:
     direction: high_bad
     min_sd: 0.1
     meaning: Body core temperature. Above 38.0 °C may mean fever or heat strain.
+    meaning_tr: Vücudun iç sıcaklığı. 38.0 °C üzeri ateş ya da ısı stresi anlamına gelebilir.
     rules:
       - {type: above, value: 37.6, level: amber, rec: core_temp_check, source: *clinical, verified: false}
       - {type: above, value: 38.0, level: red, rec: core_temp_check, source: *clinical, verified: false}
@@ -390,6 +607,7 @@ metrics:
   # --- Environment ---
   co2_mmhg:
     label: CO2 exposure
+    label_tr: CO2 maruziyeti
     unit: mmHg
     group: environment
     device: co2
@@ -397,11 +615,13 @@ metrics:
     direction: high_bad
     min_sd: 0.2
     meaning: Carbon dioxide you breathed today. High CO2 can cause headache and poor focus.
+    meaning_tr: Bugün soluduğun karbondioksit. Yüksek CO2 baş ağrısı ve dikkat dağınıklığı yapabilir.
     rules:
       - {type: above, value: 3.0, level: amber, rec: check_co2, source: *clinical, verified: false}
       - {type: above, value: 4.0, level: red, rec: check_co2, source: *clinical, verified: false}
   rad_msv:
     label: Radiation dose (day)
+    label_tr: Radyasyon dozu (gün)
     unit: mSv
     group: environment
     device: dosimeter
@@ -409,10 +629,12 @@ metrics:
     direction: high_bad
     min_sd: 0.05
     meaning: Radiation dose received today.
+    meaning_tr: Bugün aldığın radyasyon dozu.
     rules:
       - {type: above, value: 5.0, level: red, rec: radiation_shelter, source: *sim, verified: false}
   rad_cum:
     label: Mission radiation dose
+    label_tr: Görev radyasyon dozu
     unit: mSv
     group: environment
     device: dosimeter
@@ -420,69 +642,86 @@ metrics:
     direction: high_bad
     baseline: none
     meaning: Total radiation dose since launch.
+    meaning_tr: Fırlatmadan bu yana aldığın toplam radyasyon dozu.
     rules:
       - {type: above, value: 250, level: amber, rec: contact_surgeon, source: *sim, verified: false}
 
   # --- Urine (UWMS sensor bay, 24-hour totals) ---
   u_volume:
     label: Urine volume
+    label_tr: İdrar hacmi
     unit: L/day
+    unit_tr: L/gün
     group: urine
     device: uwms
     decimals: 2
     direction: low_bad
     min_sd: 0.1
     meaning: How much urine you made in 24 h. Under 2 L/day raises kidney-stone risk; above 2.5 L/day is lowest risk.
+    meaning_tr: 24 saatte ürettiğin idrar miktarı. Günde 2 L'nin altı böbrek taşı riskini artırır; 2.5 L/gün üzeri en düşük risktir.
     rules:
       - {type: below, value: 2.5, level: amber, rec: hydrate, source: "https://ntrs.nasa.gov/citations/20000084164", verified: true}
       - {type: below, value: 2.0, level: red, rec: hydrate, source: "https://ntrs.nasa.gov/citations/20000084164", verified: true}
   u_calcium:
     label: Urine calcium
+    label_tr: İdrar kalsiyumu
     unit: mg/day
+    unit_tr: mg/gün
     group: urine
     device: uwms
     decimals: 0
     direction: high_bad
     min_sd: 8
     meaning: Calcium leaving the body. Rises in flight (up to ~50%) as bone breaks down.
+    meaning_tr: Vücuttan atılan kalsiyum. Kemik yıkıldıkça uçuşta (~%50'ye kadar) artar.
     rules:
       - {type: pct_above, value: 50, level: amber, rec: resume_resistance, source: "https://ntrs.nasa.gov/citations/20000084164", verified: true}
       - {type: pct_above, value: 70, level: red, rec: contact_surgeon, source: *sim, verified: false}
   u_citrate:
     label: Urine citrate
+    label_tr: İdrar sitratı
     unit: mg/day
+    unit_tr: mg/gün
     group: urine
     device: uwms
     decimals: 0
     direction: low_bad
     min_sd: 15
     meaning: Citrate blocks stone crystals. Lower in flight; potassium citrate raises it.
+    meaning_tr: Sitrat taş kristallerini engeller. Uçuşta düşer; potasyum sitrat yükseltir.
     rules:
       - {type: below, value: 450, level: amber, rec: start_k_citrate, source: *clinical, verified: false}
   u_oxalate:
     label: Urine oxalate
+    label_tr: İdrar oksalatı
     unit: mg/day
+    unit_tr: mg/gün
     group: urine
     device: uwms
     decimals: 0
     direction: high_bad
     min_sd: 2
     meaning: Oxalate joins calcium to form the most common stone.
+    meaning_tr: Oksalat kalsiyumla birleşerek en sık görülen taşı oluşturur.
     rules:
       - {type: above, value: 45, level: amber, rec: contact_surgeon, source: *clinical, verified: false}
   u_uric_acid:
     label: Urine uric acid
+    label_tr: İdrar ürik asidi
     unit: mg/day
+    unit_tr: mg/gün
     group: urine
     device: uwms
     decimals: 0
     direction: high_bad
     min_sd: 25
     meaning: Uric acid can form its own stones, mostly in acidic urine.
+    meaning_tr: Ürik asit, çoğunlukla asidik idrarda kendi taşını oluşturabilir.
     rules:
       - {type: above, value: 800, level: amber, rec: hydrate, source: *clinical, verified: false}
   u_ph:
     label: Urine pH
+    label_tr: İdrar pH'ı
     unit: pH
     group: urine
     device: uwms
@@ -490,10 +729,12 @@ metrics:
     direction: low_bad
     min_sd: 0.05
     meaning: Acidity of urine. Lower in flight; low pH favours uric acid stones.
+    meaning_tr: İdrarın asitliği. Uçuşta düşer; düşük pH ürik asit taşlarını kolaylaştırır.
     rules:
       - {type: below, value: 5.5, level: amber, rec: start_k_citrate, source: *clinical, verified: false}
   u_sg:
     label: Specific gravity
+    label_tr: Özgül ağırlık
     unit: ""
     group: urine
     device: uwms
@@ -501,51 +742,65 @@ metrics:
     direction: high_bad
     min_sd: 0.001
     meaning: How concentrated urine is. High means you need more water.
+    meaning_tr: İdrarın ne kadar yoğun olduğu. Yüksekse daha çok su içmen gerekir.
     rules:
       - {type: above, value: 1.025, level: amber, rec: hydrate, source: *clinical, verified: false}
       - {type: above, value: 1.030, level: red, rec: hydrate, source: *clinical, verified: false}
   u_creatinine:
     label: Urine creatinine
+    label_tr: İdrar kreatinini
     unit: mg/day
+    unit_tr: mg/gün
     group: urine
     device: uwms
     decimals: 0
     direction: both
     min_sd: 40
     meaning: Tracks muscle mass and confirms a complete 24 h collection.
+    meaning_tr: Kas kütlesini izler ve 24 saatlik toplamanın eksiksiz olduğunu doğrular.
     rules: []
   u_sodium:
     label: Urine sodium
+    label_tr: İdrar sodyumu
     unit: mEq/day
+    unit_tr: mEq/gün
     group: urine
     device: uwms
     decimals: 0
     direction: high_bad
     min_sd: 8
     meaning: Salt intake. High sodium pushes more calcium into urine.
+    meaning_tr: Tuz alımı. Yüksek sodyum idrara daha çok kalsiyum geçirir.
     rules: []
   u_potassium:
     label: Urine potassium
+    label_tr: İdrar potasyumu
     unit: mEq/day
+    unit_tr: mEq/gün
     group: urine
     device: uwms
     decimals: 0
     direction: both
     min_sd: 4
     meaning: Rises when you take potassium citrate.
+    meaning_tr: Potasyum sitrat aldığında yükselir.
     rules: []
   u_magnesium:
     label: Urine magnesium
+    label_tr: İdrar magnezyumu
     unit: mg/day
+    unit_tr: mg/gün
     group: urine
     device: uwms
     decimals: 0
     direction: low_bad
     min_sd: 5
     meaning: Magnesium also blocks stone crystals.
+    meaning_tr: Magnezyum da taş kristallerini engeller.
     rules: []
   caox_ss:
     label: Stone risk (CaOx supersaturation)
+    label_tr: Taş riski (CaOx süperdoygunluğu)
     unit: RS
     group: urine
     device: derived
@@ -553,7 +808,9 @@ metrics:
     direction: high_bad
     min_sd: 0.05
     meaning: How likely calcium oxalate crystals form. Above 2.0 means higher kidney-stone risk.
+    meaning_tr: Kalsiyum oksalat kristallerinin oluşma olasılığı. 2.0 üzeri daha yüksek böbrek taşı riski demektir.
     estimate_note: Simplified estimate from calcium, oxalate, citrate, pH and volume; not the EQUIL2 program.
+    estimate_note_tr: Kalsiyum, oksalat, sitrat, pH ve hacimden basitleştirilmiş tahmin; EQUIL2 programı değildir.
     estimate_verified: false
     rules:
       - {type: above, value: 1.8, level: amber, rec: hydrate, source: *sim, verified: false}
@@ -562,6 +819,7 @@ metrics:
   # --- Nutrition (manual entries + simulated meals) ---
   kcal:
     label: Energy intake
+    label_tr: Enerji alımı
     unit: kcal
     group: nutrition
     device: manual
@@ -569,10 +827,12 @@ metrics:
     direction: low_bad
     min_sd: 150
     meaning: Calories eaten today. Flight average is 2296 ± 449 kcal/day.
+    meaning_tr: Bugün yediğin kalori. Uçuş ortalaması 2296 ± 449 kcal/gün.
     rules:
       - {type: below, value: 1847, level: amber, rec: eat_more, source: "npj Microgravity (2020, 2023): mean - 1 SD", verified: true}
   water_l:
     label: Water intake
+    label_tr: Su alımı
     unit: L
     group: nutrition
     device: manual
@@ -580,10 +840,12 @@ metrics:
     direction: low_bad
     min_sd: 0.15
     meaning: Water you drank today (drinks plus rehydrated food water you logged).
+    meaning_tr: Bugün içtiğin su (içecekler ve kaydettiğin yemeklerdeki su).
     rules:
       - {type: below, value: 2.5, level: amber, rec: hydrate, source: *sim, verified: false}
   protein_g:
     label: Protein
+    label_tr: Protein
     unit: g
     group: nutrition
     device: manual
@@ -591,10 +853,12 @@ metrics:
     direction: low_bad
     min_sd: 8
     meaning: Protein helps hold on to muscle.
+    meaning_tr: Protein kas kaybını azaltmaya yardım eder.
     rules:
       - {type: below, value: 70, level: amber, rec: eat_more, source: *clinical, verified: false}
   sodium_mg:
     label: Sodium
+    label_tr: Sodyum
     unit: mg
     group: nutrition
     device: manual
@@ -602,10 +866,12 @@ metrics:
     direction: high_bad
     min_sd: 200
     meaning: Salt eaten today. High salt raises urine calcium.
+    meaning_tr: Bugün yediğin tuz. Fazla tuz idrar kalsiyumunu artırır.
     rules:
       - {type: above, value: 4500, level: amber, rec: lower_salt, source: *clinical, verified: false}
   calcium_mg:
     label: Dietary calcium
+    label_tr: Besinsel kalsiyum
     unit: mg
     group: nutrition
     device: manual
@@ -613,9 +879,11 @@ metrics:
     direction: both
     min_sd: 60
     meaning: Calcium eaten today.
+    meaning_tr: Bugün yediğin kalsiyum.
     rules: []
   vitd_iu:
     label: Vitamin D
+    label_tr: D vitamini
     unit: IU
     group: nutrition
     device: manual
@@ -623,33 +891,280 @@ metrics:
     direction: low_bad
     min_sd: 50
     meaning: Vitamin D from food and supplements. Little sunlight reaches you in flight.
+    meaning_tr: Besin ve takviyelerden gelen D vitamini. Uçuşta sana çok az güneş ışığı ulaşır.
     rules: []
+
+  # --- Energy (derived from the activity schedule, machines and meals) ---
+  kcal_out:
+    label: Energy burned
+    label_tr: Harcanan enerji
+    unit: kcal
+    group: energy
+    device: derived
+    decimals: 0
+    direction: both
+    min_sd: 80
+    meaning: Total calories your body used today - sleep, work, meals and exercise.
+    meaning_tr: Vücudunun bugün kullandığı toplam kalori - uyku, çalışma, yemek ve egzersiz.
+    rules: []
+  kcal_exercise:
+    label: Exercise energy
+    label_tr: Egzersiz enerjisi
+    unit: kcal
+    group: energy
+    device: derived
+    decimals: 0
+    direction: both
+    min_sd: 40
+    meaning: Calories burned on the exercise machines today.
+    meaning_tr: Bugün egzersiz cihazlarında yakılan kalori.
+    rules: []
+  energy_balance:
+    label: Energy balance
+    label_tr: Enerji dengesi
+    unit: kcal
+    group: energy
+    device: derived
+    decimals: 0
+    direction: low_bad
+    min_sd: 100
+    meaning: Calories eaten minus calories burned. Staying below zero for long means weight loss.
+    meaning_tr: Yenen kalori eksi harcanan kalori. Uzun süre sıfırın altında kalmak kilo kaybı demektir.
+    rules:
+      - {type: below, value: -600, level: amber, rec: eat_more, source: *sim, verified: false}
+  mass_kg:
+    label: Body mass
+    label_tr: Vücut kütlesi
+    unit: kg
+    group: energy
+    device: slammd
+    decimals: 1
+    direction: low_bad
+    min_sd: 0.3
+    meaning: Measured on the SLAMMD device, because scales do not work in weightlessness.
+    meaning_tr: Ağırlıksızlıkta tartı çalışmadığı için SLAMMD cihazıyla ölçülür.
+    rules:
+      - {type: pct_below, value: 5, level: amber, rec: eat_more, source: *clinical, verified: false}
+
+  # --- Mental health (daily check-in, reaction test, schedule) ---
   feeling:
     label: How I feel
+    label_tr: Nasıl hissediyorum
     unit: /5
-    group: nutrition
+    group: mind
     device: manual
+    decimals: 1
+    direction: low_bad
+    min_sd: 0.5
+    meaning: Your own 1-5 rating of how you feel today (5 = great).
+    meaning_tr: Bugün kendini nasıl hissettiğine dair 1-5 arası kendi puanın (5 = harika).
+    rules:
+      - {type: below, value: 2.5, level: amber, rec: talk_psych, source: *sim, verified: false}
+  stress:
+    label: Stress
+    label_tr: Stres
+    unit: /5
+    group: mind
+    device: manual
+    decimals: 1
+    direction: high_bad
+    min_sd: 0.5
+    meaning: Your own 1-5 rating of stress today (5 = very stressed).
+    meaning_tr: Bugünkü stresine kendi verdiğin 1-5 puan (5 = çok stresli).
+    rules:
+      - {type: above, value: 3.5, level: amber, rec: take_break, source: *sim, verified: false}
+      - {type: above, value: 4.3, level: red, rec: talk_psych, source: *sim, verified: false}
+  tiredness:
+    label: Tiredness
+    label_tr: Yorgunluk
+    unit: /5
+    group: mind
+    device: manual
+    decimals: 1
+    direction: high_bad
+    min_sd: 0.5
+    meaning: Your own 1-5 rating of how tired you feel (5 = exhausted).
+    meaning_tr: Ne kadar yorgun hissettiğine dair 1-5 puanın (5 = bitkin).
+    rules:
+      - {type: above, value: 3.5, level: amber, rec: sleep_protect, source: *sim, verified: false}
+  connection:
+    label: Feeling connected
+    label_tr: Bağlı hissetme
+    unit: /5
+    group: mind
+    device: manual
+    decimals: 1
+    direction: low_bad
+    min_sd: 0.5
+    meaning: How connected you feel to family, friends and crew (1 = isolated, 5 = close).
+    meaning_tr: Ailene, arkadaşlarına ve ekibe ne kadar bağlı hissettiğin (1 = yalnız, 5 = çok yakın).
+    rules:
+      - {type: below, value: 2.5, level: amber, rec: family_contact, source: *sim, verified: false}
+  wellbeing:
+    label: Wellbeing index
+    label_tr: İyi oluş endeksi
+    unit: /100
+    group: mind
+    device: derived
+    decimals: 0
+    direction: low_bad
+    min_sd: 5
+    meaning: The four check-in answers turned into one 0-100 score (higher is better).
+    meaning_tr: Dört günlük durum cevabının tek bir 0-100 puana dönüşmüş hâli (yüksek daha iyi).
+    rules:
+      - {type: below, value: 50, level: amber, rec: talk_psych, source: *sim, verified: false}
+  pvt_rt_ms:
+    label: Reaction time
+    label_tr: Tepki süresi
+    unit: ms
+    group: mind
+    device: pvt
+    decimals: 0
+    direction: high_bad
+    min_sd: 8
+    meaning: Average reaction time on the alertness test (PVT). Slower than usual means tired or overloaded.
+    meaning_tr: Dikkat testinde (PVT) ortalama tepki süresi. Normalden yavaş olması yorgunluk ya da aşırı yük anlamına gelir.
+    rules:
+      - {type: z_above, value: 2.0, level: amber, rec: postpone_critical, source: *sim, verified: false}
+      - {type: z_above, value: 3.0, level: red, rec: postpone_critical, source: *sim, verified: false}
+  pvt_lapses:
+    label: Attention lapses
+    label_tr: Dikkat kaymaları
+    unit: ""
+    group: mind
+    device: pvt
+    decimals: 1
+    direction: high_bad
+    min_sd: 0.7
+    meaning: Reactions slower than 500 ms on the alertness test.
+    meaning_tr: Dikkat testinde 500 ms'den yavaş tepkiler.
+    rules:
+      - {type: above, value: 3, level: amber, rec: postpone_critical, source: *sim, verified: false}
+  workload_h:
+    label: Workload
+    label_tr: İş yükü
+    unit: h
+    unit_tr: sa
+    group: mind
+    device: derived
+    decimals: 1
+    direction: high_bad
+    min_sd: 0.3
+    meaning: Scheduled work hours today (science, maintenance, spacewalks, medical tests).
+    meaning_tr: Bugün planlanan çalışma saati (bilim, bakım, uzay yürüyüşü, tıbbi testler).
+    rules:
+      - {type: above, value: 10.5, level: amber, rec: reduce_workload, source: *sim, verified: false}
+  contact_week_min:
+    label: Private calls (7 days)
+    label_tr: Özel görüşmeler (7 gün)
+    unit: min/week
+    unit_tr: dk/hafta
+    group: mind
+    device: derived
+    decimals: 0
+    direction: low_bad
+    baseline: none
+    min_sd: 10
+    meaning: Live calls with family and friends in the last 7 days. Live calls are impossible with long Mars delays.
+    meaning_tr: Son 7 günde aile ve arkadaşlarla canlı görüşmeler. Mars'ın uzun gecikmesinde canlı görüşme yapılamaz.
+    rules:
+      - {type: below, value: 30, level: amber, rec: family_contact, source: *sim, verified: false, phases: [inflight]}
+
+  # --- Vestibular / return to Earth ---
+  vest_sot:
+    label: Balance score (SOT)
+    label_tr: Denge puanı (SOT)
+    unit: /100
+    group: vestibular
+    device: posturography
+    decimals: 0
+    direction: low_bad
+    min_sd: 2
+    ewma_alpha: 0.7
+    meaning: How steady you stand when your eyes and the floor give wrong cues (posturography). It drops after landing.
+    meaning_tr: Gözlerin ve zemin yanlış ipucu verdiğinde ne kadar dengede durduğun (postürografi). İnişten sonra düşer.
+    rules:
+      - {type: pct_below, value: 10, level: amber, rec: vestibular_rehab, source: *sim, verified: false}
+      - {type: pct_below, value: 25, level: red, rec: fall_precautions, source: *sim, verified: false}
+  vest_tandem:
+    label: Tandem walk (eyes closed)
+    label_tr: Tandem yürüyüş (gözler kapalı)
+    unit: /10
+    group: vestibular
+    device: posturography
     decimals: 0
     direction: low_bad
     min_sd: 0.5
-    meaning: Your own 1-5 rating of how you feel today.
+    ewma_alpha: 0.7
+    meaning: Correct heel-to-toe steps out of 10 with eyes closed.
+    meaning_tr: Gözler kapalıyken atılan 10 topuk-burun adımından doğru olanların sayısı.
     rules:
-      - {type: below, value: 2.5, level: amber, rec: contact_surgeon, source: *sim, verified: false}
+      - {type: below, value: 7, level: amber, rec: vestibular_rehab, source: *clinical, verified: false}
+      - {type: below, value: 5, level: red, rec: fall_precautions, source: *clinical, verified: false}
+  vest_dizzy:
+    label: Dizziness
+    label_tr: Baş dönmesi
+    unit: /10
+    group: vestibular
+    device: manual
+    decimals: 1
+    direction: high_bad
+    min_sd: 0.5
+    ewma_alpha: 0.7
+    meaning: Your own 0-10 rating of dizziness or motion sickness.
+    meaning_tr: Baş dönmesine ya da hareket hastalığına kendi verdiğin 0-10 puan.
+    rules:
+      - {type: above, value: 3, level: amber, rec: head_slow, source: *sim, verified: false}
+      - {type: above, value: 6, level: red, rec: fall_precautions, source: *sim, verified: false}
+  ortho_hr_rise:
+    label: Stand-test heart-rate rise
+    label_tr: Ayağa kalkma testi nabız artışı
+    unit: bpm
+    unit_tr: atım/dk
+    group: vestibular
+    device: posturography
+    decimals: 0
+    direction: high_bad
+    min_sd: 3
+    ewma_alpha: 0.7
+    meaning: How much your heart rate jumps when you stand up. A big jump means you may feel faint when standing.
+    meaning_tr: Ayağa kalktığında nabzının ne kadar arttığı. Büyük artış ayakta dururken bayılacak gibi hissedebileceğini gösterir.
+    rules:
+      - {type: above, value: 30, level: amber, rec: stand_slowly, source: *clinical, verified: false}
+  vest_readiness:
+    label: Return readiness level
+    label_tr: Dünya'ya uyum seviyesi
+    unit: /4
+    group: vestibular
+    device: derived
+    decimals: 0
+    direction: low_bad
+    baseline: none
+    min_sd: 0.5
+    ewma_alpha: 1.0
+    meaning: 0 = assisted only ... 4 = ready for driving clearance. Set from the balance, tandem-walk and dizziness results.
+    meaning_tr: 0 = yalnızca yardımla ... 4 = araç kullanma onayına hazır. Denge, tandem yürüyüş ve baş dönmesi sonuçlarından belirlenir.
+    rules: []
 
   # --- Exercise (ARED, T2, CEVIS) ---
   ex_total_min:
     label: Exercise today
+    label_tr: Bugünkü egzersiz
     unit: min
+    unit_tr: dk
     group: exercise
     device: derived
     decimals: 0
     direction: low_bad
     min_sd: 5
     meaning: Minutes on all exercise machines today.
+    meaning_tr: Bugün tüm egzersiz cihazlarında geçen dakika.
     rules: []
   ex_week_min:
     label: Exercise this week
+    label_tr: Bu haftaki egzersiz
     unit: min/week
+    unit_tr: dk/hafta
     group: exercise
     device: derived
     decimals: 0
@@ -657,12 +1172,15 @@ metrics:
     min_sd: 20
     baseline: none
     meaning: Rolling 7-day total. Target ~600 min/week (range 450-720).
+    meaning_tr: Son 7 günün toplamı. Hedef ~600 dk/hafta (aralık 450-720).
     rules:
-      - {type: below, value: 450, level: amber, rec: resume_exercise, source: npj Microgravity (2020, 2023), verified: true}
-      - {type: above, value: 720, level: amber, rec: reduce_intensity, source: npj Microgravity (2020, 2023), verified: true}
+      - {type: below, value: 450, level: amber, rec: resume_exercise, source: "npj Microgravity (2020, 2023)", verified: true, phases: [preflight, inflight]}
+      - {type: above, value: 720, level: amber, rec: reduce_intensity, source: "npj Microgravity (2020, 2023)", verified: true, phases: [preflight, inflight]}
   ared_week_min:
     label: Resistance exercise this week
+    label_tr: Bu haftaki direnç egzersizi
     unit: min/week
+    unit_tr: dk/hafta
     group: exercise
     device: derived
     decimals: 0
@@ -670,9 +1188,11 @@ metrics:
     min_sd: 15
     baseline: none
     meaning: Rolling 7-day ARED minutes. Resistance work protects bone.
+    meaning_tr: Son 7 gündeki ARED dakikası. Direnç çalışması kemiği korur.
     rules: []
   ared_squat_kg:
     label: ARED squat load
+    label_tr: ARED squat yükü
     unit: kg
     group: exercise
     device: ared
@@ -680,19 +1200,24 @@ metrics:
     direction: low_bad
     min_sd: 3
     meaning: Heaviest squat load today. Peak ARED load is 272 kg.
+    meaning_tr: Bugünkü en ağır squat yükü. ARED tepe yükü 272 kg.
     rules: []
   t2_speed_kmh:
     label: T2 speed
+    label_tr: T2 hızı
     unit: km/h
+    unit_tr: km/sa
     group: exercise
     device: t2
     decimals: 1
     direction: low_bad
     min_sd: 0.3
     meaning: Average treadmill running speed. T2 peak speed is 19.3 km/h.
+    meaning_tr: Ortalama koşu bandı hızı. T2 tepe hızı 19.3 km/sa.
     rules: []
   cevis_watts:
     label: CEVIS power
+    label_tr: CEVIS gücü
     unit: W
     group: exercise
     device: cevis
@@ -700,45 +1225,55 @@ metrics:
     direction: low_bad
     min_sd: 5
     meaning: Average cycling power.
+    meaning_tr: Ortalama pedal gücü.
     rules: []
   hr_exercise:
     label: Exercise heart rate
+    label_tr: Egzersiz nabzı
     unit: bpm
+    unit_tr: atım/dk
     group: exercise
     device: biomonitor
     decimals: 0
     direction: both
     min_sd: 4
     meaning: Average heart rate during today's sessions.
+    meaning_tr: Bugünkü seansların ortalama nabzı.
     rules: []
 
 # ---------------------------------------------------------------------------
 # Cross-source rules. All conditions must hold. Fields: value (latest raw), ewma,
-# z, slope (per day over slope_days), pct (% vs baseline).
+# z, slope (per day over slope_days), pct (% vs baseline), pct_abs (size of pct).
 # ---------------------------------------------------------------------------
 cross_rules:
   - id: stone_risk
     title: Kidney-stone risk is high
+    title_tr: Böbrek taşı riski yüksek
     level: red
     when:
       - {metric: caox_ss, field: ewma, op: ">", value: 2.0}
       - {metric: u_volume, field: ewma, op: "<", value: 2.0}
     recs: [hydrate, start_k_citrate]
     reason: "Stone risk {caox_ss.ewma} is above 2.0 and urine volume {u_volume.ewma} L/day is under 2 L/day."
+    reason_tr: "Taş riski {caox_ss.ewma} ile 2.0'ın üzerinde ve idrar hacmi {u_volume.ewma} L/gün ile 2 L/gün'ün altında."
     source: "https://ntrs.nasa.gov/citations/20090019087 ; https://ntrs.nasa.gov/citations/20000084164"
     verified: true
   - id: bone_loss
     title: Bone-loss warning
+    title_tr: Kemik kaybı uyarısı
     level: red
+    phases: [inflight]
     when:
       - {metric: ared_week_min, field: value, op: "<", value: 200}
       - {metric: u_calcium, field: slope, op: ">", value: 1.0}
     recs: [resume_resistance, contact_surgeon]
     reason: "Resistance exercise is low ({ared_week_min.value} min this week) while urine calcium is rising ({u_calcium.slope} mg/day each day)."
+    reason_tr: "Direnç egzersizi az (bu hafta {ared_week_min.value} dk) ve idrar kalsiyumu artıyor (her gün {u_calcium.slope} mg/gün)."
     source: *sim
     verified: false
   - id: exercise_dehydration
     title: Not drinking enough for your exercise
+    title_tr: Egzersizine göre yeterince su içmiyorsun
     level: amber
     when:
       - {metric: ex_total_min, field: value, op: ">", value: 60}
@@ -746,16 +1281,93 @@ cross_rules:
       - {metric: u_sg, field: ewma, op: ">", value: 1.020}
     recs: [hydrate]
     reason: "You exercised {ex_total_min.value} min but drink {water_l.ewma} L/day and urine is concentrated (SG {u_sg.ewma})."
+    reason_tr: "{ex_total_min.value} dk egzersiz yaptın ama günde {water_l.ewma} L içiyorsun ve idrarın yoğun (ÖA {u_sg.ewma})."
     source: *sim
     verified: false
   - id: fatigue
     title: Fatigue risk
+    title_tr: Yorgunluk riski
     level: amber
     when:
       - {metric: sleep_h, field: ewma, op: "<", value: 6.0}
       - {metric: hr_rest, field: z, op: ">", value: 1.5}
     recs: [reduce_intensity, sleep_protect]
     reason: "Sleep averages {sleep_h.ewma} h and resting heart rate is {hr_rest.z} SD above your baseline."
+    reason_tr: "Uyku ortalaman {sleep_h.ewma} sa ve dinlenik nabzın kişisel referansının {hr_rest.z} SS üzerinde."
+    source: *sim
+    verified: false
+  - id: energy_deficit
+    title: Burning more than you eat
+    title_tr: Yediğinden fazlasını harcıyorsun
+    level: amber
+    when:
+      - {metric: energy_balance, field: ewma, op: "<", value: -450}
+      - {metric: mass_kg, field: slope, op: "<", value: -0.03}
+    recs: [eat_more]
+    reason: "Energy balance averages {energy_balance.ewma} kcal/day and body mass is falling ({mass_kg.slope} kg/day)."
+    reason_tr: "Enerji dengen günde ortalama {energy_balance.ewma} kcal ve vücut kütlen azalıyor (günde {mass_kg.slope} kg)."
+    source: *sim
+    verified: false
+  - id: cognitive_fatigue
+    title: Slower reactions after poor sleep
+    title_tr: Kötü uykudan sonra tepkiler yavaşladı
+    level: amber
+    when:
+      - {metric: sleep_h, field: ewma, op: "<", value: 6.0}
+      - {metric: pvt_rt_ms, field: z, op: ">", value: 1.5}
+    recs: [postpone_critical, sleep_protect]
+    reason: "Sleep averages {sleep_h.ewma} h and reaction time is {pvt_rt_ms.z} SD slower than your baseline."
+    reason_tr: "Uyku ortalaman {sleep_h.ewma} sa ve tepki süren kişisel referansından {pvt_rt_ms.z} SS daha yavaş."
+    source: *sim
+    verified: false
+  - id: isolation_strain
+    title: Isolation strain
+    title_tr: Yalnızlık yükü
+    level: amber
+    when:
+      - {metric: connection, field: ewma, op: "<", value: 3.0}
+      - {metric: feeling, field: ewma, op: "<", value: 3.2}
+    recs: [family_contact, talk_psych]
+    reason: "Feeling connected averages {connection.ewma}/5 and mood {feeling.ewma}/5."
+    reason_tr: "Bağlı hissetme ortalaman {connection.ewma}/5 ve ruh halin {feeling.ewma}/5."
+    source: *sim
+    verified: false
+  - id: workload_stress
+    title: Workload is driving stress up
+    title_tr: İş yükü stresi artırıyor
+    level: amber
+    when:
+      - {metric: workload_h, field: ewma, op: ">", value: 10.0}
+      - {metric: stress, field: ewma, op: ">", value: 3.2}
+    recs: [reduce_workload, take_break]
+    reason: "Work averages {workload_h.ewma} h/day and stress {stress.ewma}/5."
+    reason_tr: "Çalışma günde ortalama {workload_h.ewma} sa ve stres {stress.ewma}/5."
+    source: *sim
+    verified: false
+  - id: vestibular_dysfunction
+    title: Post-flight vestibular dysfunction
+    title_tr: Uçuş sonrası vestibüler bozukluk
+    level: red
+    phases: [postflight]
+    when:
+      - {metric: vest_sot, field: pct, op: "<", value: -15}
+      - {metric: vest_dizzy, field: value, op: ">", value: 3}
+    recs: [fall_precautions, no_driving, vestibular_rehab]
+    reason: "Balance score is {vest_sot.pct_abs}% below your preflight baseline and dizziness is {vest_dizzy.value}/10."
+    reason_tr: "Denge puanın uçuş öncesi referansının %{vest_sot.pct_abs} altında ve baş dönmen {vest_dizzy.value}/10."
+    source: *sim
+    verified: false
+  - id: orthostatic_intolerance
+    title: Feeling faint when standing
+    title_tr: Ayakta dururken bayılma hissi
+    level: amber
+    phases: [postflight]
+    when:
+      - {metric: ortho_hr_rise, field: value, op: ">", value: 30}
+      - {metric: vest_dizzy, field: value, op: ">", value: 2}
+    recs: [stand_slowly, hydrate]
+    reason: "Heart rate jumps {ortho_hr_rise.value} bpm when you stand and dizziness is {vest_dizzy.value}/10."
+    reason_tr: "Ayağa kalkınca nabzın {ortho_hr_rise.value} atım/dk artıyor ve baş dönmen {vest_dizzy.value}/10."
     source: *sim
     verified: false
 
@@ -774,50 +1386,117 @@ protocol_rules:
 recommendations:
   hydrate:
     text: Drink more water today. Aim for urine above 2.5 L/day.
+    text_tr: Bugün daha fazla su iç. İdrarını günde 2.5 L'nin üzerinde tutmayı hedefle.
     source: https://ntrs.nasa.gov/citations/20000084164
     verified: true
   start_k_citrate:
     text: "Start potassium citrate: 20 mEq/day, two 10 mEq pills with your last meal."
+    text_tr: "Potasyum sitrata başla: günde 20 mEq, son öğünle birlikte iki adet 10 mEq tablet."
     source: https://ntrs.nasa.gov/citations/20090019087
     verified: true
   resume_resistance:
     text: Do today's ARED session. Resistance exercise slows bone loss.
+    text_tr: Bugünkü ARED seansını yap. Direnç egzersizi kemik kaybını yavaşlatır.
     source: *sim
     verified: false
   resume_exercise:
     text: Get back to your exercise plan. Target is about 600 min/week.
+    text_tr: Egzersiz planına geri dön. Hedef haftada yaklaşık 600 dakika.
     source: npj Microgravity (2020, 2023)
     verified: true
   reduce_intensity:
     text: Swap today's hard session for a moderate one and rest more.
+    text_tr: Bugünkü zorlu seansı orta tempolu bir seansla değiştir ve daha çok dinlen.
     source: *sim
     verified: false
   sleep_protect:
     text: Protect tonight's sleep window. Dim lights and screens an hour before.
+    text_tr: Bu geceki uyku saatini koru. Yatmadan bir saat önce ışıkları ve ekranları kıs.
     source: *sim
     verified: false
   core_temp_check:
     text: Rest, drink water and recheck core temperature in 1 hour. Tell the surgeon if it stays above 38.0 °C.
+    text_tr: Dinlen, su iç ve 1 saat sonra vücut sıcaklığını yeniden ölç. 38.0 °C'nin üzerinde kalırsa hekime bildir.
     source: *clinical
     verified: false
   check_co2:
     text: Move to a well-ventilated module and report the CO2 reading.
+    text_tr: İyi havalandırılan bir modüle geç ve CO2 değerini bildir.
     source: *sim
     verified: false
   radiation_shelter:
     text: Follow the radiation shelter procedure until the alert ends.
+    text_tr: Uyarı bitene kadar radyasyon sığınağı prosedürünü uygula.
     source: *sim
     verified: false
   eat_more:
-    text: Add a snack. Your intake is below the usual flight range.
+    text: Add a snack. You are eating less than the usual flight range or less than you burn.
+    text_tr: Bir ara öğün ekle. Olağan uçuş aralığından ya da harcadığından daha az yiyorsun.
     source: npj Microgravity (2020, 2023)
     verified: true
   lower_salt:
     text: Choose lower-salt foods today. Salt raises urine calcium.
+    text_tr: Bugün daha az tuzlu yiyecekler seç. Tuz idrar kalsiyumunu artırır.
     source: *clinical
     verified: false
   contact_surgeon:
     text: Flag this for the flight surgeon at the next link window.
+    text_tr: Bunu bir sonraki bağlantı penceresinde uçuş hekimine bildir.
+    source: *sim
+    verified: false
+  talk_psych:
+    text: Book a private conference with the crew psychologist at the next link window.
+    text_tr: Bir sonraki bağlantı penceresinde mürettebat psikoloğuyla özel görüşme planla.
+    source: *sim
+    verified: false
+  family_contact:
+    text: Plan a call with family or friends. On a Mars-delay mission, record a video message instead.
+    text_tr: Ailen ya da arkadaşlarınla bir görüşme planla. Mars gecikmeli görevde bunun yerine video mesaj kaydet.
+    source: *sim
+    verified: false
+  take_break:
+    text: Take 15-20 minutes for yourself today - music, the window view, or a chat with the crew.
+    text_tr: Bugün kendine 15-20 dakika ayır - müzik, pencereden manzara ya da ekiple sohbet.
+    source: *sim
+    verified: false
+  postpone_critical:
+    text: Postpone safety-critical tasks (spacewalk, robotic arm) until your reaction time recovers.
+    text_tr: Tepki süren düzelene kadar güvenlik açısından kritik görevleri (uzay yürüyüşü, robot kol) ertele.
+    source: *sim
+    verified: false
+  reduce_workload:
+    text: Ask mission control to move non-critical tasks off today's schedule.
+    text_tr: Görev kontrolünden kritik olmayan işleri bugünkü programdan çıkarmasını iste.
+    source: *sim
+    verified: false
+  fall_precautions:
+    text: High fall risk. Walk only with a helper or a handrail, and sit down to dress and shower.
+    text_tr: Düşme riski yüksek. Yalnızca biriyle ya da tutunarak yürü; giyinirken ve duş alırken otur.
+    source: *sim
+    verified: false
+  no_driving:
+    text: Do not drive, cycle or climb ladders until the flight surgeon clears you.
+    text_tr: Uçuş hekimi onay verene kadar araba kullanma, bisiklete binme ve merdivene tırmanma.
+    source: *sim
+    verified: false
+  vestibular_rehab:
+    text: "Do today's vestibular rehab: head turns while looking at a target, plus balance drills (20 min)."
+    text_tr: "Bugünkü vestibüler rehabilitasyonu yap: bir hedefe bakarken baş çevirme ve denge alıştırmaları (20 dk)."
+    source: *sim
+    verified: false
+  head_slow:
+    text: Move your head slowly. Avoid quick turns and bending down.
+    text_tr: Başını yavaş hareket ettir. Ani dönüşlerden ve öne eğilmekten kaçın.
+    source: *sim
+    verified: false
+  stand_slowly:
+    text: Stand up in stages - sit for a minute first, drink water, tense your leg muscles.
+    text_tr: Aşama aşama ayağa kalk - önce bir dakika otur, su iç, bacak kaslarını sık.
+    source: *sim
+    verified: false
+  prelanding_training:
+    text: Do your pre-landing balance training. It shortens balance recovery after landing.
+    text_tr: İniş öncesi denge antrenmanını yap. İnişten sonra dengenin toparlanmasını kısaltır.
     source: *sim
     verified: false
 
@@ -830,7 +1509,9 @@ recommendations:
 protocols:
   potassium_citrate:
     label: Potassium citrate
+    label_tr: Potasyum sitrat
     dose_text: 10 mEq x 2 with the last meal (20 mEq/day)
+    dose_text_tr: Son öğünle 10 mEq x 2 (günde 20 mEq)
     dose_meq_per_day: 20
     pills_per_day: 2
     source: https://ntrs.nasa.gov/citations/20090019087
@@ -840,8 +1521,8 @@ protocols:
       ph: 0.25
       potassium_meq: 16
     targets:
-      - {metric: u_citrate, mode: delta, value: 135, direction: up, label: "Citrate +130-140 mg/day", source: "https://ntrs.nasa.gov/citations/20090019087", verified: true}
-      - {metric: u_ph, mode: delta, value: 0.25, direction: up, label: "pH +0.2-0.3", source: "https://ntrs.nasa.gov/citations/20090019087", verified: true}
+      - {metric: u_citrate, mode: delta, value: 135, direction: up, label: "Citrate +130-140 mg/day", label_tr: "Sitrat +130-140 mg/gün", source: "https://ntrs.nasa.gov/citations/20090019087", verified: true}
+      - {metric: u_ph, mode: delta, value: 0.25, direction: up, label: "pH +0.2-0.3", label_tr: "pH +0.2-0.3", source: "https://ntrs.nasa.gov/citations/20090019087", verified: true}
     stop_at_target: true
     days_to_target_fraction: 0.9   # "reached" = 90% progress on the exponential fit (assumed)
 
@@ -852,11 +1533,11 @@ food_catalog:
   source: *sim
   verified: false
   items:
-    - {id: breakfast, label: Breakfast tray, kcal: 550, protein_g: 25, sodium_mg: 900, calcium_mg: 250, vitd_iu: 40, water_l: 0.2}
-    - {id: lunch, label: Lunch tray, kcal: 750, protein_g: 35, sodium_mg: 1400, calcium_mg: 250, vitd_iu: 40, water_l: 0.3}
-    - {id: dinner, label: Dinner tray, kcal: 800, protein_g: 40, sodium_mg: 1500, calcium_mg: 300, vitd_iu: 40, water_l: 0.3}
-    - {id: snack, label: Snack bar, kcal: 250, protein_g: 10, sodium_mg: 150, calcium_mg: 100, vitd_iu: 0, water_l: 0.0}
-    - {id: vitd, label: Vitamin D tablet, kcal: 0, protein_g: 0, sodium_mg: 0, calcium_mg: 0, vitd_iu: 800, water_l: 0.0}
+    - {id: breakfast, label: Breakfast tray, label_tr: Kahvaltı tepsisi, kcal: 550, protein_g: 25, sodium_mg: 900, calcium_mg: 250, vitd_iu: 40, water_l: 0.2}
+    - {id: lunch, label: Lunch tray, label_tr: Öğle yemeği tepsisi, kcal: 750, protein_g: 35, sodium_mg: 1400, calcium_mg: 250, vitd_iu: 40, water_l: 0.3}
+    - {id: dinner, label: Dinner tray, label_tr: Akşam yemeği tepsisi, kcal: 800, protein_g: 40, sodium_mg: 1500, calcium_mg: 300, vitd_iu: 40, water_l: 0.3}
+    - {id: snack, label: Snack bar, label_tr: Atıştırmalık bar, kcal: 250, protein_g: 10, sodium_mg: 150, calcium_mg: 100, vitd_iu: 0, water_l: 0.0}
+    - {id: vitd, label: Vitamin D tablet, label_tr: D vitamini tableti, kcal: 0, protein_g: 0, sodium_mg: 0, calcium_mg: 0, vitd_iu: 800, water_l: 0.0}
 
 nutrition_targets:
   kcal: {value: 2296, range: [1847, 2745], source: "npj Microgravity (2020, 2023): mean ± 1 SD", verified: true}
@@ -874,18 +1555,21 @@ link:
   profiles:
     iss:
       label: ISS (near real time)
+      label_tr: ISS (neredeyse gerçek zamanlı)
       delay_s: 0.5
       blackout: {period_s: 90, duration_s: 8}
       source: *brief
       verified: false
     gateway:
       label: Gateway (~1.3 s)
+      label_tr: Gateway (~1.3 sn)
       delay_s: 1.3
       blackout: {period_s: 180, duration_s: 15}
       source: *brief
       verified: false
     mars:
       label: Mars (up to 22 min)
+      label_tr: Mars (22 dakikaya kadar)
       delay_s: 1320
       delay_min_s: 20
       delay_max_s: 1320

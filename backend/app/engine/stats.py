@@ -17,6 +17,25 @@ def ewma(values: Sequence[float], alpha: float) -> list[float]:
     return out
 
 
+def ewma_days(days: Sequence[int], values: Sequence[float], alpha: float, max_gap: int = 7) -> list[float]:
+    """EWMA that restarts after a gap in the data longer than `max_gap` days.
+
+    Smoothing should not blend values measured months apart (e.g. preflight and
+    post-flight balance tests with no measurements in flight).
+    """
+    out: list[float] = []
+    s: float | None = None
+    prev: int | None = None
+    for d, x in zip(days, values):
+        if s is None or (prev is not None and d - prev > max_gap):
+            s = x
+        else:
+            s = alpha * x + (1 - alpha) * s
+        out.append(s)
+        prev = d
+    return out
+
+
 def mean_sd(values: Sequence[float], min_sd: float = 0.0) -> tuple[float, float]:
     """Mean and sample standard deviation, with a floor so tiny baselines don't explode z."""
     n = len(values)

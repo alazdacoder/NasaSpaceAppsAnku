@@ -41,7 +41,12 @@ CREATE TABLE IF NOT EXISTS events (
 );
 CREATE TABLE IF NOT EXISTS event_log (
     id INTEGER PRIMARY KEY AUTOINCREMENT, crew_id TEXT, mission_t REAL, created_real REAL,
-    kind TEXT, level TEXT, text TEXT
+    kind TEXT, level TEXT, text TEXT, text_tr TEXT
+);
+CREATE TABLE IF NOT EXISTS activities (
+    crew_id TEXT, day INTEGER, idx INTEGER, kind TEXT, device TEXT, start_h REAL, end_h REAL,
+    minutes REAL, met REAL, kcal REAL,
+    PRIMARY KEY (crew_id, day, idx)
 );
 CREATE TABLE IF NOT EXISTS outbox (
     seq INTEGER PRIMARY KEY, crew_id TEXT, kind TEXT, payload TEXT, mission_t REAL,
@@ -56,7 +61,7 @@ CREATE TABLE IF NOT EXISTS g_state (
 );
 CREATE TABLE IF NOT EXISTS g_event_log (
     seq INTEGER, crew_id TEXT, mission_t REAL, created_real REAL, received_real REAL,
-    kind TEXT, level TEXT, text TEXT
+    kind TEXT, level TEXT, text TEXT, text_tr TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_samples_cm ON samples(crew_id, metric, day);
 CREATE INDEX IF NOT EXISTS idx_gsamples_cm ON g_samples(crew_id, metric, day);
