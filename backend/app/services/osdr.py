@@ -15,12 +15,12 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-from ..config import ROOT
+from ..config import DATA_DIR, ROOT
 
 API = "https://visualization.osdr.nasa.gov/biodata/api/v2/query/datasets/"
 STUDY_URL = "https://osdr.nasa.gov/bio/repo/data/studies/{acc}"
 FALLBACK = ROOT / "config" / "osdr_fallback.json"
-CACHE = ROOT / "data" / "osdr_cache.json"
+CACHE = DATA_DIR / "osdr_cache.json"
 CACHE_TTL_S = 6 * 3600
 
 TOPICS = {

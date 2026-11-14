@@ -5,7 +5,7 @@ import asyncio
 import logging
 import os
 
-from .config import ROOT, load_config
+from .config import DATA_DIR, load_config
 from .db import DB
 from .sim.world import World
 
@@ -15,7 +15,7 @@ log = logging.getLogger("hub")
 class AppState:
     def __init__(self, db_path: str | None = None, seed: int | None = None, start_day: int | None = None):
         self.cfg = load_config()
-        self.db_path = db_path or os.environ.get("HUB_DB", str(ROOT / "data" / "hub.db"))
+        self.db_path = db_path or os.environ.get("HUB_DB", str(DATA_DIR / "hub.db"))
         self.start_day = start_day
         self.world = self._make(seed)
         self._task: asyncio.Task | None = None

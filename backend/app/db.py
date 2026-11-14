@@ -3,6 +3,7 @@ that arrived through the simulated ground link."""
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 from pathlib import Path
 from typing import Any, Iterable
@@ -69,8 +70,13 @@ class DB:
             p = Path(path)
             p.parent.mkdir(parents=True, exist_ok=True)
             if fresh:
-                for suffix in ("", "-wal", "-shm"):
-                    Path(str(p) + suffix).unlink(missing_ok=True)
+                try:
+                    for suffix in ("", "-wal", "-shm"):
+                        Path(str(p) + suffix).unlink(missing_ok=True)
+                except OSError:
+                    # Windows: another running copy still has the file open - use our own file.
+                    p = p.with_name(f"{p.stem}-{os.getpid()}{p.suffix}")
+            path = p
         self.conn = sqlite3.connect(str(path), check_same_thread=False, isolation_level=None)
         self.conn.row_factory = sqlite3.Row
         self.conn.executescript(SCHEMA)

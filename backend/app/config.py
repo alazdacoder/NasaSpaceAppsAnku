@@ -2,13 +2,35 @@
 from __future__ import annotations
 
 import os
+import sys
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
 import yaml
 
-ROOT = Path(__file__).resolve().parents[2]
+FROZEN = bool(getattr(sys, "frozen", False))   # running as a PyInstaller executable
+
+
+def _resource_root() -> Path:
+    """Folder holding config/ and frontend/dist (the unpacked bundle when frozen)."""
+    if FROZEN:
+        return Path(getattr(sys, "_MEIPASS", Path(sys.executable).parent))
+    return Path(__file__).resolve().parents[2]
+
+
+def _data_dir() -> Path:
+    """Writable folder for the database and the OSDR cache."""
+    if os.environ.get("HUB_DATA_DIR"):
+        return Path(os.environ["HUB_DATA_DIR"])
+    if FROZEN:
+        base = os.environ.get("LOCALAPPDATA") or os.path.join(Path.home(), ".local", "share")
+        return Path(base) / "CrewHealthHub"
+    return _resource_root() / "data"
+
+
+ROOT = _resource_root()
+DATA_DIR = _data_dir()
 CONFIG_PATH = Path(os.environ.get("HUB_CONFIG", ROOT / "config" / "reference.yaml"))
 
 

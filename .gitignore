@@ -9,3 +9,7 @@ data/*.db
 data/*.db-*
 data/osdr_cache.json
 .DS_Store
+# PyInstaller output
+/build/
+/dist/
+/.build-venv/

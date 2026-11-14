@@ -29,6 +29,21 @@ On the first run, `run.sh` creates a Python virtual environment, installs the Py
 
 Requirements: Python 3.11+ and Node 18+. If `node` isn't on your PATH, `run.sh` also looks in `~/.local/node/bin`.
 
+### Windows
+
+**Option A: `CrewHealthHub.exe` (no Python or Node needed).** Download it from the repo's **Releases** page, or from **Actions → Windows executable → latest run → Artifacts**, then double-click it.
+- A console window opens and shows the address, and your browser opens the crew app. If port 8000 is busy, it picks the next free port.
+- Close the console window to stop the app.
+- Windows SmartScreen may warn the first time because the file isn't code-signed. Click **More info → Run anyway**.
+- Each start is a fresh simulation. The database lives in `%LOCALAPPDATA%\CrewHealthHub`.
+- Options: `CrewHealthHub.exe --port 9000 --seed 7 --no-browser`
+
+**Option B: from source.** With Python 3.11+ and Node 18+ installed, double-click `run.bat` (or run it in a terminal). `run.bat test` runs the tests, and `run.bat rebuild` rebuilds the UI.
+
+**How the .exe is made.** PyInstaller bundles the backend, the built UI and the config into one file (`packaging/CrewHealthHub.spec`). A Windows `.exe` must be built on Windows, so there are two ways:
+- the GitHub Actions workflow `.github/workflows/windows-exe.yml`, which builds it, runs the tests and a smoke test, and uploads it. Start it with **Run workflow**, or push a tag like `v1.0.0` to attach the `.exe` to a GitHub Release;
+- `packaging\build_windows.bat` on any Windows PC, which writes `dist\CrewHealthHub.exe`.
+
 Every start uses a fresh simulation with the default seed (42) and opens on mission day 30. The clock runs at 1 mission day per 60 s.
 
 ---
@@ -57,6 +72,8 @@ Other things to show: **Inject event** (e.g. *Fever* or *CO2 spike*), **Devices 
 ```
 config/reference.yaml   every value, threshold, rule, recommendation and protocol, each with source + verified
 config/osdr_fallback.json   cached OSDR response used when the live API can't be reached
+backend/launcher.py      desktop launcher (used by the Windows .exe): free port, opens the browser
+packaging/              PyInstaller spec + Windows build script; .github/workflows/windows-exe.yml builds the .exe
 backend/app/
   sim/model.py          coupled physiology model (seeded, per crew per day)
   sim/world.py          mission clock, day cycle, tasks, protocols, live workouts, snapshots
