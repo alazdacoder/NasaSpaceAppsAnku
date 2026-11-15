@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "CrewHealthHub"
+rootProject.name = "SpaceHealthManagementSystem"
 include(":app")

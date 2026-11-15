@@ -23,13 +23,13 @@ def landed(cfg):
     return w
 
 
-def test_five_fictional_crew_with_lsah_fields(cfg):
+def test_three_crew_with_lsah_fields(cfg):
     crew = cfg["crew"]
-    assert len(crew) == 5
+    assert len(crew) == 3
     old = {"Lena Okafor", "Marco Diaz", "Yuki Tanaka", "Sam Novak"}
     assert not old & {c["name"] for c in crew}
-    assert [c["name"] for c in crew] == [f"Astronaut {i}" for i in range(1, 6)]
-    assert [c["name_tr"] for c in crew] == [f"Astronot {i}" for i in range(1, 6)]
+    assert [c["name"] for c in crew] == [f"Astronaut {i}" for i in range(1, 4)]
+    assert [c["name_tr"] for c in crew] == [f"Astronot {i}" for i in range(1, 4)]
     for c in crew:
         assert c["sex"] in ("F", "M") and len(c["birth"]) == 7 and c["flights"] >= 1
         assert set(c["lsah"]) == {"bmd_hip", "vo2peak", "vitd_serum", "hemoglobin"}
@@ -92,12 +92,12 @@ def test_lsah_tests_follow_the_crew_stories(landed):
     # Astronaut 3 (c3) skips the vitamin D tablet: lower in flight than before
     vd = dict(zip(*s["c3"]["vitd_serum"]))
     assert vd[150] < vd[-9] - 3
-    # Astronaut 4 (c4) missed resistance exercise twice: the largest hip bone loss
+    # Astronaut 2 (c2) missed resistance exercise twice: the largest hip bone loss
     loss = {cid: 1 - w.state[cid].bmd_frac for cid in w.crew_ids}
-    assert max(loss, key=loss.get) == "c4"
-    assert any(a["id"] == "metric:bmd_hip" for a in w.evaluation("c4")["alerts"])
+    assert max(loss, key=loss.get) == "c2"
+    assert any(a["id"] == "metric:bmd_hip" for a in w.evaluation("c2")["alerts"])
     # hemoglobin dips in flight ("space anemia") and recovers after landing
-    hb = dict(zip(*s["c5"]["hemoglobin"]))
+    hb = dict(zip(*s["c1"]["hemoglobin"]))
     assert hb[60] < hb[-9] and hb[w.landing_day + 14] > hb[w.landing_day]
 
 
@@ -109,9 +109,9 @@ def test_lsah_api(tmp_path, monkeypatch):
         c.post("/api/demo/speed", json={"day_seconds": 0})
         cat = c.get("/api/lsah", headers={"X-Lang": "tr"}).json()
         assert len(cat["catalog"]) == 50 and cat["catalog"][35]["title"] == "Kemik yoğunluğu ölçümü (DXA)"
-        r = c.get("/api/crew/c4/lsah").json()
-        assert r["profile"]["age"] == 51 and r["annual"]["month"] == "2027-06" and r["annual"]["in_flight"]
-        assert {"gxt", "psa", "dxa"} <= {i["id"] for i in r["annual"]["items"] if i["due"]}
+        r = c.get("/api/crew/c1/lsah").json()
+        assert r["profile"]["age"] == 45 and r["annual"]["month"] == "2027-04" and r["annual"]["in_flight"]
+        assert {"gxt", "psa"} <= {i["id"] for i in r["annual"]["items"] if i["due"]}
         blood = next(t for t in r["tests"] if t["id"] == "blood_draw")
         assert blood["next"]["day"] == 30 and blood["next"]["status"] == "today"
         assert c.get("/api/crew/c2/lsah?side=ground").status_code == 200

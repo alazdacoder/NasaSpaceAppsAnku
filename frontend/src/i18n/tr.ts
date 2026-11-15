@@ -980,7 +980,7 @@ export const TR: Record<string, string> = {
   "Mission Time": "Görev Zamanı",
   "Mission simulation controls: Mars delay, link blackout & event injection": "Görev simülasyon kontrolleri: Mars gecikmesi, bağlantı kesintisi ve olay enjeksiyonu",
   "No active clinical or ocular alerts. All biomarkers and tonometer readings are within safe flight zones.": "Aktif klinik veya göz uyarısı yok. Tüm biyobelirteçler ve tonometre ölçümleri güvenli uçuş bölgelerinde.",
-  "No emergency ocular alerts triggered yet. All 5 astronauts' space tonometers are streaming normally to Earth Mission Control.": "Henüz acil göz uyarısı tetiklenmedi. 5 astronotun uzay tonometreleri Dünya Görev Kontrol'e normal akış sağlıyor.",
+  "No emergency ocular alerts triggered yet. All astronauts' space tonometers are streaming normally to Earth Mission Control.": "Henüz acil göz uyarısı tetiklenmedi. Tüm astronotların uzay tonometreleri Dünya Görev Kontrol'e normal akış sağlıyor.",
   "Non-invasive cranial fluid": "Non-invaziv kafa sıvısı",
   "Normal (< 20.5 mmHg)": "Normal (< 20.5 mmHg)",
   "OD / OS": "Sağ (OD) / Sol (OS)",

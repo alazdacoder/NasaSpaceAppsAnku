@@ -4,7 +4,7 @@ Starts the server on 127.0.0.1, picks a free port if 8000 is taken, waits until 
 answers, then opens the start page in the default browser. Close the window (or press
 Ctrl+C) to stop.
 
-    CrewHealthHub.exe [--port 8000] [--seed 42] [--no-browser]
+    SpaceHealthManagementSystem.exe [--port 8000] [--seed 42] [--no-browser]
 """
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ def main() -> None:
         sys.stdout.reconfigure(line_buffering=True)  # show the URL lines immediately
     except Exception:
         pass
-    ap = argparse.ArgumentParser(prog="CrewHealthHub", description="Space Health Management System (SHMS) (simulated data demo)")
+    ap = argparse.ArgumentParser(prog="SpaceHealthManagementSystem", description="Space Health Management System (SHMS) (simulated data demo)")
     ap.add_argument("--port", type=int, default=int(os.environ.get("PORT", 8000)))
     ap.add_argument("--seed", type=int, default=None, help="simulation seed (default 42)")
     ap.add_argument("--no-browser", action="store_true", help="do not open a browser window")

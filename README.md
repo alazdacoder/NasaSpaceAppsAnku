@@ -36,22 +36,22 @@ Requirements: Python 3.11+ and Node 18+. If `node` isn't on your PATH, `run.sh` 
 
 ### Windows
 
-**Option A: `CrewHealthHub.exe` (no Python or Node needed).** Download it from the repo's **Releases** page, or from **Actions → Windows executable → latest run → Artifacts**, then double-click it.
+**Option A: `SpaceHealthManagementSystem.exe` (no Python or Node needed).** Download it from the repo's **Releases** page, or from **Actions → Windows executable → latest run → Artifacts**, then double-click it.
 - A console window opens and shows the address, and your browser opens the start page. If port 8000 is busy, it picks the next free port.
 - Close the console window to stop the app.
 - Windows SmartScreen may warn the first time because the file isn't code-signed. Click **More info → Run anyway**.
 - Each start is a fresh simulation. The database lives in `%LOCALAPPDATA%\CrewHealthHub`.
-- Options: `CrewHealthHub.exe --port 9000 --seed 7 --no-browser`
+- Options: `SpaceHealthManagementSystem.exe --port 9000 --seed 7 --no-browser`
 
 **Option B: from source.** With Python 3.11+ and Node 18+ installed, double-click `run.bat` (or run it in a terminal). `run.bat test` runs the tests, and `run.bat rebuild` rebuilds the UI.
 
-**How the .exe is made.** PyInstaller bundles the backend, the built UI and the config into one file (`packaging/CrewHealthHub.spec`). A Windows `.exe` must be built on Windows, so there are two ways:
+**How the .exe is made.** PyInstaller bundles the backend, the built UI and the config into one file (`packaging/SpaceHealthManagementSystem.spec`). A Windows `.exe` must be built on Windows, so there are two ways:
 - the GitHub Actions workflow `.github/workflows/windows-exe.yml`, which builds it, runs the tests and a smoke test, and uploads it. Start it with **Run workflow**, or push a tag like `v1.1.0` to attach the `.exe` to a GitHub Release;
-- `packaging\build_windows.bat` on any Windows PC, which writes `dist\CrewHealthHub.exe`.
+- `packaging\build_windows.bat` on any Windows PC, which writes `dist\SpaceHealthManagementSystem.exe`.
 
 ### Android phone (APK)
 
-**Install:** download `CrewHealthHub.apk` on the phone from the repo's **Releases** page (or **Actions → Android APK → latest run → Artifacts**), open it, and allow your browser or file manager to "install unknown apps" when Android asks.
+**Install:** download `SpaceHealthManagementSystem.apk` on the phone from the repo's **Releases** page (or **Actions → Android APK → latest run → Artifacts**), open it, and allow your browser or file manager to "install unknown apps" when Android asks.
 - The whole app runs **on the phone**: the same simulator, both portals and both languages. No computer or internet is needed (only the live NASA OSDR list on *Data sources* uses the internet).
 - The first start takes up to a minute while the simulator builds its history. Needs a 64-bit ARM phone with Android 7 or newer.
 - If a newer APK won't install over an older one, uninstall the old app first.
@@ -71,7 +71,7 @@ The app opens on a card reader screen. On an Android phone with NFC turned on, h
   | `MISSION-CTRL-99`, `TONOMETER-ADMIN-04` | Lab team |
 
 - **Cards with no text** (for example a transit or hotel card) are read by their chip number. The app shows it, as in "This card is not on the crew list · Card UID:04A1B2C3…". Add that `UID:…` value to `frontend/src/lib/cards.ts` to accept the card.
-- **No NFC:** on a PC, a browser or a phone without NFC, use the quiet *No card?* row (Astronaut 1–5, Lab team) or *Simulate a card tap*.
+- **No NFC:** on a PC, a browser or a phone without NFC, use the quiet *No card? Sign in another way* button (astronauts and lab team by name, plus *Simulate a card tap*).
 - **How it works:** Android WebView has no Web NFC, so `MainActivity.java` runs the phone's NFC reader (reader mode) while the app is open and passes each card to the page with `window.SHMS_onNfcTag(id)`; `frontend/src/lib/nfc.ts` and `cards.ts` decide who it is.
 - A card ID says who is holding the device. It is not a password: cards can be copied. That is fine for a demo, not for real medical data.
 
@@ -117,9 +117,9 @@ The app opens on a card reader screen. On an Android phone with NFC turned on, h
 | 0:35 | **Today** → *T2 / CEVIS* → **Start live** | Heart rate climbs and **kcal** count up live; raise speed/watts and watch kcal/min rise. **Finish & log**: minutes, kcal, heart rate. |
 | 1:00 | **Energy** | The day as a timeline: each activity with the energy it burns, *NOW* marker, burned vs eaten. |
 | 1:15 | **Mind** | Do the 4-question check-in and the reaction test. Switch to **Astronaut 3**: poor-sleep week → *"Slower reactions after poor sleep"*, advice to postpone critical tasks. |
-| 1:35 | **Portals → Lab team** | Overview: all five crew. Astronaut 2 *"Workload is driving stress up"*, Astronaut 4 *"Isolation strain"*. Open **Mental health** and **Exercise & energy** for the detail. |
+| 1:35 | **Portals → Lab team** | Overview: all three crew. Astronaut 2 *"Workload is driving stress up"* and *"Isolation strain"*. Open **Mental health** and **Exercise & energy** for the detail. |
 | 1:55 | **Lab team → Overview → Demo panel → R+1** | Fast-forward to the day after landing (a few seconds). **Vestibular**: Astronaut 2 (first flight) is at readiness 1, *"Post-flight vestibular dysfunction"*. |
-| 2:20 | **Astronaut portal → Balance** (Astronaut 2) | What he may do today (✓ walk with a helper, ✕ stairs, ✕ drive), dizziness check, rehab task. Jump **R+3 / R+7**: levels rise as balance recovers; Astronaut 1 (second flight) recovers fastest. **Lab team → LSAH tests** (Astronaut 4): the post-flight DXA shows his larger hip bone loss. |
+| 2:20 | **Astronaut portal → Balance** (Astronaut 2) | What he may do today (✓ walk with a helper, ✕ stairs, ✕ drive), dizziness check, rehab task. Jump **R+3 / R+7**: levels rise as balance recovers; Astronaut 1 (second flight) recovers fastest. **Lab team → LSAH tests** (Astronaut 2): the post-flight DXA shows his larger hip bone loss. |
 | 2:45 | Demo panel → **Mars** profile | The lab views lag behind the crew by the link delay. The astronaut's **Mind** screen now says live calls home are impossible and suggests a video message; over the next week *Private calls* falls and raises an alert. |
 | 3:00 | **Data sources** | Every reference value with its source, the unverified list, live NASA OSDR studies. |
 
@@ -168,12 +168,10 @@ frontend/src/
 - **Behavioural health:** sleep debt, workload above 9 h, CO₂ and isolation raise stress and tiredness; exercise lowers stress; live family calls (weekly, impossible with a Mars delay) keep the crew member connected. Reaction time slows with sleep debt, CO₂ and tiredness. The crew member's own check-in and reaction test replace the simulated values for that day.
 - **Return to Earth:** balance tests need gravity, so they run before launch (baseline) and after landing. The landing-day drop in balance score, tandem walk, dizziness and stand-test heart rate scales with mission length and personal susceptibility; pre-landing training (last 14 days) lowers it by up to 25 % and fitness lowers the stand-test rise. Everything fades with a personal time constant, a little faster with daily vestibular rehab.
 
-**The crew.** Five fictional astronauts (launch 1 March 2027, landing 28 August 2027). Age, sex, birth month and earlier flights matter, because the LSAH annual-exam rules depend on them. Scripted events with the default seed:
-- **Astronaut 1** (Commander, 45, 2nd flight): high stone risk; the fastest vestibular recovery.
-- **Astronaut 2** (Pilot, 38, 1st flight): dehydration on days 26–32 and a high-workload week (27–33, overtime replaces free time and the family call); high susceptibility, so the slowest vestibular recovery.
+**The crew.** Three astronauts (launch 1 March 2027, landing 28 August 2027). Each slot is opened by a team member's card and shows that person's name; all health data is simulated. Age, sex, birth month and earlier flights matter, because the LSAH annual-exam rules depend on them. Scripted events with the default seed:
+- **Astronaut 1** (Commander, 45, 2nd flight): high stone risk and two spacewalks (days 21 and 29); the fastest vestibular recovery.
+- **Astronaut 2** (Pilot, 38, 1st flight): dehydration on days 26–32, a high-workload week (27–33, overtime replaces free time and the family call), an isolation week on days 24–33 and missed workouts on days 20–34 and 100–120 (bone-loss rule, the largest hip bone loss on the post-flight DXA); high susceptibility, so the slowest vestibular recovery.
 - **Astronaut 3** (Flight Engineer, 42, 1st flight): poor-sleep week on days 27–33 (slower reaction times), a poor responder to potassium citrate from day 12, and she often skips the vitamin D tablet, so her blood vitamin D falls in flight.
-- **Astronaut 4** (Mission Specialist, 51, 3rd flight): missed workouts on days 20–34 and 100–120 (bone-loss rule, the largest hip bone loss on the post-flight DXA) and an isolation week on days 24–33.
-- **Astronaut 5** (Mission Specialist and crew medical officer, 36, 1st flight): two spacewalks (days 21 and 29); otherwise the healthy reference.
 
 The same seed and the same actions always give the same data. Tasks you don't confirm are completed by the simulated crew at their usual adherence ("demo autopilot", which can be switched per crew in the Demo panel).
 
@@ -213,7 +211,7 @@ Every alert shows its reason and a recommendation from the fixed list, in Englis
 - return to Earth: training and fitness effects, readiness levels, landing drop and recovery, post-flight rules and tasks
 - the rules: thresholds, z-score, slope, anomaly, cross-source and protocol rules, and config validation
 - the response score: formula, clipping and the exponential fit
-- LSAH: the five-crew roster, the 50-category bilingual catalog, every MR089S annual-exam rule, tests only on their days, the crew stories in the LSAH results, and the LSAH API
+- LSAH: the three-crew roster, the 50-category bilingual catalog, every MR089S annual-exam rule, tests only on their days, the crew stories in the LSAH results, and the LSAH API
 - languages: localization, Turkish text for every metric/rule/recommendation, Turkish API responses
 - API smoke tests, including the lab team's ground view lagging behind the crew with a Mars delay
 

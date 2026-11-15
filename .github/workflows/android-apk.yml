@@ -1,4 +1,4 @@
-# Builds CrewHealthHub.apk: the whole app (Python simulator + web UI) runs on the phone.
+# Builds SpaceHealthManagementSystem.apk: the whole app (Python simulator + web UI) runs on the phone.
 #  - Run it by hand: GitHub -> Actions -> "Android APK" -> Run workflow
 #    (download the APK from the run's "Artifacts" section).
 #  - Push a tag like v1.1.0 to also attach the APK to a GitHub Release.
@@ -66,13 +66,13 @@ jobs:
       - name: Name the APK
         run: |
           mkdir -p out
-          cp android/app/build/outputs/apk/debug/app-debug.apk out/CrewHealthHub.apk
+          cp android/app/build/outputs/apk/debug/app-debug.apk out/SpaceHealthManagementSystem.apk
           ls -lh out
 
       - uses: actions/upload-artifact@v4
         with:
-          name: CrewHealthHub-android
-          path: out/CrewHealthHub.apk
+          name: SpaceHealthManagementSystem-android
+          path: out/SpaceHealthManagementSystem.apk
           if-no-files-found: error
 
       - name: Attach to release (tags only)
@@ -83,4 +83,4 @@ jobs:
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || \
             gh release create "$GITHUB_REF_NAME" --title "SHMS $GITHUB_REF_NAME" \
               --notes "Windows executable and Android APK. Simulated-data decision-support demo; not a medical device." || true
-          gh release upload "$GITHUB_REF_NAME" out/CrewHealthHub.apk --clobber
+          gh release upload "$GITHUB_REF_NAME" out/SpaceHealthManagementSystem.apk --clobber

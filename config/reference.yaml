@@ -180,7 +180,7 @@ crew:
     name_tr: Astronot 1
     role: Commander
     role_tr: Komutan
-    sex: F
+    sex: M
     birth: "1981-04"
     flights: 2
     last_dxa_year: 2025
@@ -198,7 +198,7 @@ crew:
     vitd_supplement_adherence: 0.9
     vestibular: {sot_base: 82, tandem_base: 9.4, susceptibility: 0.8, tau_days: 2.4}
     lsah: {bmd_hip: 0.98, vo2peak: 42.0, vitd_serum: 36, hemoglobin: 13.4}
-    note: High kidney-stone risk (low fluid habit, high calcium, low citrate). Second flight, fast vestibular recovery.
+    note: High kidney-stone risk (low fluid habit, high calcium, low citrate) and two scheduled spacewalks (days 21 and 29). Second flight, fast vestibular recovery.
   - id: c2
     name: Astronaut 2
     name_tr: Astronot 2
@@ -221,7 +221,7 @@ crew:
     vitd_supplement_adherence: 0.85
     vestibular: {sot_base: 79, tandem_base: 9.0, susceptibility: 1.45, tau_days: 4.5}
     lsah: {bmd_hip: 1.08, vo2peak: 48.0, vitd_serum: 35, hemoglobin: 15.1}
-    note: Scripted dehydration episode and a high-workload week. First flight, slow vestibular recovery.
+    note: Scripted dehydration episode, a high-workload week, an isolation week and two missed-workout blocks (bone-loss rule; larger hip bone loss on the post-flight DXA). First flight, slow vestibular recovery.
   - id: c3
     name: Astronaut 3
     name_tr: Astronot 3
@@ -245,64 +245,18 @@ crew:
     vestibular: {sot_base: 81, tandem_base: 9.3, susceptibility: 1.0, tau_days: 3.0}
     lsah: {bmd_hip: 0.95, vo2peak: 44.0, vitd_serum: 28, hemoglobin: 13.0}
     note: Poor responder to potassium citrate (protocol started day 12), a poor-sleep week, and often skips the vitamin D tablet.
-  - id: c4
-    name: Astronaut 4
-    name_tr: Astronot 4
-    role: Mission Specialist
-    role_tr: Görev Uzmanı
-    sex: M
-    birth: "1975-06"
-    flights: 3
-    last_dxa_year: 2024
-    mass_kg: 76
-    hr_rest: 54
-    water_habit_l: 3.1
-    urine: {calcium: 220, citrate: 680, oxalate: 34, uric_acid: 700, ph: 6.20, creatinine: 1650, sodium: 185, potassium: 76, magnesium: 120}
-    response_factor: 1.1
-    ared_squat_kg: 150
-    t2_speed_kmh: 11.5
-    cevis_watts: 190
-    sleep_h: 7.0
-    pvt_base_ms: 268
-    vitd_supplement_adherence: 0.9
-    vestibular: {sot_base: 77, tandem_base: 8.8, susceptibility: 0.9, tau_days: 3.2}
-    lsah: {bmd_hip: 1.02, vo2peak: 40.0, vitd_serum: 38, hemoglobin: 14.6}
-    note: Two scripted missed-workout blocks (bone-loss rule; larger hip bone loss on the post-flight DXA) and an isolation week. Oldest crew member, third flight.
-  - id: c5
-    name: Astronaut 5
-    name_tr: Astronot 5
-    role: Mission Specialist (crew medical officer)
-    role_tr: Görev Uzmanı (mürettebat sağlık sorumlusu)
-    sex: F
-    birth: "1991-02"
-    flights: 1
-    last_dxa_year: 2026
-    mass_kg: 60
-    hr_rest: 59
-    water_habit_l: 3.0
-    urine: {calcium: 200, citrate: 620, oxalate: 31, uric_acid: 540, ph: 6.15, creatinine: 1100, sodium: 160, potassium: 66, magnesium: 112}
-    response_factor: 1.0
-    ared_squat_kg: 88
-    t2_speed_kmh: 10.5
-    cevis_watts: 130
-    sleep_h: 7.4
-    pvt_base_ms: 245
-    vitd_supplement_adherence: 0.95
-    vestibular: {sot_base: 83, tandem_base: 9.5, susceptibility: 1.1, tau_days: 3.2}
-    lsah: {bmd_hip: 1.00, vo2peak: 46.0, vitd_serum: 34, hemoglobin: 13.1}
-    note: Two scheduled spacewalks (days 21 and 29); otherwise the healthy reference crew member.
 
 # Scripted events for the default seed (mission days, inclusive).
 scripted_events:
   - {crew: c3, kind: protocol_start, day: 12, protocol: potassium_citrate}
-  - {crew: c4, kind: missed_workouts, start: 20, end: 34}
-  - {crew: c4, kind: missed_workouts, start: 100, end: 120}
+  - {crew: c2, kind: missed_workouts, start: 20, end: 34}
+  - {crew: c2, kind: missed_workouts, start: 100, end: 120}
   - {crew: c2, kind: dehydration, start: 26, end: 32}
   - {crew: c3, kind: poor_sleep, start: 27, end: 33}
   - {crew: c2, kind: high_workload, start: 27, end: 33}
-  - {crew: c4, kind: isolation, start: 24, end: 33}
-  - {crew: c5, kind: eva, day: 21}
-  - {crew: c5, kind: eva, day: 29}
+  - {crew: c2, kind: isolation, start: 24, end: 33}
+  - {crew: c1, kind: eva, day: 21}
+  - {crew: c1, kind: eva, day: 29}
 
 # Events that can be injected from the lab-team demo panel.
 injectable_events:

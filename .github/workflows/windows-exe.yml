@@ -1,4 +1,4 @@
-# Builds dist/CrewHealthHub.exe on Windows, smoke-tests it and uploads it.
+# Builds dist/SpaceHealthManagementSystem.exe on Windows, smoke-tests it and uploads it.
 #  - Run it by hand: GitHub -> Actions -> "Windows executable" -> Run workflow
 #    (download the .exe from the run's "Artifacts" section).
 #  - Push a tag like v1.0.0 to also attach the .exe to a GitHub Release.
@@ -45,13 +45,13 @@ jobs:
           npm run build
 
       - name: Build executable
-        run: pyinstaller --noconfirm packaging/CrewHealthHub.spec
+        run: pyinstaller --noconfirm packaging/SpaceHealthManagementSystem.spec
 
       - name: Smoke test the executable
         shell: pwsh
         run: |
           $env:HUB_DATA_DIR = "$env:RUNNER_TEMP\hubdata"
-          $p = Start-Process -FilePath "dist\CrewHealthHub.exe" -ArgumentList "--no-browser","--port","8123" -PassThru
+          $p = Start-Process -FilePath "dist\SpaceHealthManagementSystem.exe" -ArgumentList "--no-browser","--port","8123" -PassThru
           $ok = $false
           for ($i = 0; $i -lt 90; $i++) {
             try {
@@ -65,13 +65,13 @@ jobs:
             if ($ui.Content -notmatch "SHMS") { $ok = $false }
           }
           Stop-Process -Id $p.Id -Force
-          if (-not $ok) { throw "CrewHealthHub.exe did not start or serve the UI" }
+          if (-not $ok) { throw "SpaceHealthManagementSystem.exe did not start or serve the UI" }
           Write-Host "Smoke test passed"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: CrewHealthHub-windows
-          path: dist/CrewHealthHub.exe
+          name: SpaceHealthManagementSystem-windows
+          path: dist/SpaceHealthManagementSystem.exe
           if-no-files-found: error
 
       - name: Attach to release (tags only)
@@ -83,4 +83,4 @@ jobs:
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || \
             gh release create "$GITHUB_REF_NAME" --title "SHMS $GITHUB_REF_NAME" \
               --notes "Windows executable and Android APK. Simulated-data decision-support demo; not a medical device." || true
-          gh release upload "$GITHUB_REF_NAME" dist/CrewHealthHub.exe --clobber
+          gh release upload "$GITHUB_REF_NAME" dist/SpaceHealthManagementSystem.exe --clobber

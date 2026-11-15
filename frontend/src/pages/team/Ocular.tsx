@@ -142,7 +142,7 @@ export default function TeamOcular() {
       ...c,
       name: crewLabel(c.id, i),
     })) ??
-    (meta?.crew ?? ["c1", "c2", "c3", "c4", "c5"].map((id, i) => ({ id, name: crewLabel(id, i), role: "" }))).map(
+    (meta?.crew ?? ["c1", "c2", "c3"].map((id, i) => ({ id, name: crewLabel(id, i), role: "" }))).map(
       (c, i) => ({
         id: c.id,
         name: crewLabel(c.id, i),
@@ -544,7 +544,7 @@ export default function TeamOcular() {
         ) : (
           <p className="text-sm text-slate-400">
             {t(
-              "No emergency ocular alerts triggered yet. All 5 astronauts' space tonometers are streaming normally to Earth Mission Control.",
+              "No emergency ocular alerts triggered yet. All astronauts' space tonometers are streaming normally to Earth Mission Control.",
             )}
           </p>
         )}

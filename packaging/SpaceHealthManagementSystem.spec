@@ -1,7 +1,7 @@
 # PyInstaller spec: one-file executable with the backend, the built UI and the config.
 # Build (from the repo root, after `npm run build` in frontend/):
-#     pyinstaller --noconfirm packaging/CrewHealthHub.spec
-# Output: dist/CrewHealthHub(.exe)
+#     pyinstaller --noconfirm packaging/SpaceHealthManagementSystem.spec
+# Output: dist/SpaceHealthManagementSystem(.exe)
 import os
 from PyInstaller.utils.hooks import collect_submodules
 
@@ -33,7 +33,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name="CrewHealthHub",
+    name="SpaceHealthManagementSystem",
     console=True,          # the console window shows the URL; closing it stops the app
     upx=False,
     icon=os.path.join(SPECPATH, "icon.ico") if os.path.exists(os.path.join(SPECPATH, "icon.ico")) else None,

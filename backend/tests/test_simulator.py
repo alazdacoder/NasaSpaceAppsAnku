@@ -36,8 +36,8 @@ def test_seeded_runs_are_identical(cfg):
     assert c.db.series("c1") != a.db.series("c1")
 
 
-def test_shape_5_crew_10_baseline_days(world, cfg):
-    assert len(world.crew_ids) == 5
+def test_shape_3_crew_10_baseline_days(world, cfg):
+    assert len(world.crew_ids) == 3
     days, _ = world.db.series("c1")["u_volume"]
     assert days[0] == -10 and days[-1] == cfg["simulation"]["start_day"] - 1
     assert world.today == cfg["simulation"]["start_day"]
@@ -46,7 +46,7 @@ def test_shape_5_crew_10_baseline_days(world, cfg):
 
 
 def test_flight_changes_match_reference_directions(world):
-    for cid in ("c2", "c4"):
+    for cid in ("c1", "c2"):
         assert _mean(world, cid, "u_calcium", 20, 29) > _mean(world, cid, "u_calcium", -10, -1) * 1.2
         assert _mean(world, cid, "u_citrate", 20, 29) < _mean(world, cid, "u_citrate", -10, -1)
         assert _mean(world, cid, "u_ph", 20, 29) < _mean(world, cid, "u_ph", -10, -1)
@@ -108,7 +108,7 @@ def test_scripted_events_present(world):
     kinds = {(e["crew_id"], e["kind"]) for e in world.events_for()}
     assert ("c2", "dehydration") in kinds
     assert ("c3", "poor_sleep") in kinds
-    assert ("c4", "missed_workouts") in kinds
+    assert ("c2", "missed_workouts") in kinds
     # dehydration lowers c2 urine volume during the event
     assert _mean(world, "c2", "u_volume", 27, 29) < _mean(world, "c2", "u_volume", 10, 20) - 0.4
 
@@ -120,8 +120,8 @@ def test_default_seed_demo_states(world):
     c3 = world.evaluation("c3")
     assert c3["protocols"] and c3["protocols"][0]["score"] < 0.35               # poor responder
     assert any(a["id"] == "protocol:1" for a in c3["alerts"])
-    c4 = world.evaluation("c4")
-    assert any(a["id"] == "bone_loss" for a in c4["alerts"])                   # cross-source rule
+    c2 = world.evaluation("c2")
+    assert any(a["id"] == "bone_loss" for a in c2["alerts"])                   # cross-source rule
 
 
 def test_supplement_task_flow_raises_response_score(world):

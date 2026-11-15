@@ -29,7 +29,7 @@ SHMS (Space Health Management System) puts each astronaut's health data in one p
 ## Operating Context
 
 - Demo flow: a start page to pick a portal, then Today, Exercise (live workout with heart rate and calories), Energy, Body, Food & water, Mind (check-in, reaction test), Return to Earth (post-landing balance readiness), plus the lab-team pages and a demo panel (mission profile, clock speed, event injection, jump to landing).
-- Five fictional crew members named "Astronaut 1-5" (TR: "Astronot 1-5"), 10 preflight days, a 180-day mission and 21 days after landing, on a fast mission clock.
+- Three crew slots opened by team members' NFC cards (the slot shows the card holder's name; all health data is simulated), 10 preflight days, a 180-day mission and 21 days after landing, on a fast mission clock.
 
 ## Capabilities and Constraints
 

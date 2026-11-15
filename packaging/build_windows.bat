@@ -1,5 +1,5 @@
 @echo off
-rem Build dist\CrewHealthHub.exe on a Windows PC (the GitHub Actions workflow does the same).
+rem Build dist\SpaceHealthManagementSystem.exe on a Windows PC (the GitHub Actions workflow does the same).
 rem Needs Python 3.11+ and Node.js 18+.
 setlocal
 cd /d "%~dp0\.."
@@ -10,6 +10,6 @@ pushd frontend
 call npm ci --no-audit --no-fund || exit /b 1
 call npm run build || exit /b 1
 popd
-".build-venv\Scripts\pyinstaller.exe" --noconfirm packaging\CrewHealthHub.spec || exit /b 1
+".build-venv\Scripts\pyinstaller.exe" --noconfirm packaging\SpaceHealthManagementSystem.spec || exit /b 1
 echo.
-echo Built: %CD%\dist\CrewHealthHub.exe
+echo Built: %CD%\dist\SpaceHealthManagementSystem.exe

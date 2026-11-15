@@ -10,8 +10,6 @@ export const CARDS: Record<string, CardTarget> = {
   "ORBITAL-CREW-01": { kind: "crew", crewId: "c1", n: 1 },
   "ORBITAL-CREW-02": { kind: "crew", crewId: "c2", n: 2 },
   "ORBITAL-CREW-03": { kind: "crew", crewId: "c3", n: 3 },
-  "ORBITAL-CREW-04": { kind: "crew", crewId: "c4", n: 4 },
-  "ORBITAL-CREW-05": { kind: "crew", crewId: "c5", n: 5 },
   "MISSION-CTRL-99": { kind: "team" },
   "TONOMETER-ADMIN-04": { kind: "team" },
 
@@ -20,7 +18,7 @@ export const CARDS: Record<string, CardTarget> = {
   "UID:736A70A3": { kind: "crew", crewId: "c1", n: 1, holder: "Alaz İhsan Çelik" },
   "UID:AC94CD05": { kind: "crew", crewId: "c2", n: 2, holder: "Ahmet Arabacıoğlu" },
   "UID:628F72FF": { kind: "team", holder: "Poyraz Söğüt" },
-  "UID:042877621D2090": { kind: "team", holder: "Elif Arslan" },
+  "UID:042877621D2090": { kind: "crew", crewId: "c3", n: 3, holder: "Elif Arslan" },
   "UID:041F86CA571C90": { kind: "team", holder: "Özge Alpman", role: "Lead researcher" },
 };
 

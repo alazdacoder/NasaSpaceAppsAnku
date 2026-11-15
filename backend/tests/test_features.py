@@ -105,7 +105,7 @@ def test_default_seed_mind_states(world):
     alerts = {cid: {a["id"] for a in world.evaluation(cid)["alerts"]} for cid in world.crew_ids}
     assert "cognitive_fatigue" in alerts["c3"]          # poor-sleep week slows reaction time
     assert "workload_stress" in alerts["c2"]            # scripted high-workload week
-    assert "isolation_strain" in alerts["c4"]           # scripted isolation week
+    assert "isolation_strain" in alerts["c2"]           # scripted isolation week
     ev = world.evaluation("c3")["metrics"]["pvt_rt_ms"]
     assert ev["z"] > 1.5
 

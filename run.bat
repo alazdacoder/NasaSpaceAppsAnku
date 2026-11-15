@@ -4,7 +4,7 @@ rem   run.bat          set up (first run), build the UI, start and open the brow
 rem   run.bat test     run the pytest suite
 rem   run.bat rebuild  rebuild the UI, then start
 rem Needs Python 3.11+ (python.org) and, to build the UI, Node.js 18+ (nodejs.org).
-rem No Python/Node? Use CrewHealthHub.exe instead (see README).
+rem No Python/Node? Use SpaceHealthManagementSystem.exe instead (see README).
 setlocal
 cd /d "%~dp0"
 
