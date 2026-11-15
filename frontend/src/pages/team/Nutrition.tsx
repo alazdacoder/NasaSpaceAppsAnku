@@ -1,4 +1,5 @@
 import { TrendBlock } from "../../components/charts";
+import { C } from "../../lib/theme";
 import { Card, Empty, GroundNote, PageTitle, ProgressBar, SourceTag, Unverified, cx } from "../../components/ui";
 import { dayLabel, fmt, usePoll, type Metric, type ViewInfo } from "../../lib/api";
 import { useApp, useCrewName } from "../../lib/context";
@@ -34,20 +35,20 @@ export default function TeamNutrition() {
             const ratio = tg ? v / tg.value : 0;
             const inRange = tg?.range ? v >= tg.range[0] && v <= tg.range[1] : tg?.max ? v <= tg.value : v >= tg.value * 0.9;
             return (
-              <div key={key} className="rounded-xl bg-ink-850 p-3">
+              <div key={key} className="border-t border-ink-700 pt-3 pb-1">
                 <div className="flex items-center justify-between"><span className="font-semibold">{label}</span>{tg && <SourceTag verified={tg.verified} source={tg.source} />}</div>
                 <div className="mt-1 text-2xl font-bold tabular-nums">{fmt(v, 0)} <span className="text-base font-normal text-slate-400">/ {tg?.max ? t("max") + " " : ""}{tg?.value} {unit}</span></div>
-                <div className="my-2"><ProgressBar value={Math.min(ratio, 1.3) / 1.3} marker={1 / 1.3} color={inRange ? "#00E676" : "#FF9100"} /></div>
+                <div className="my-2"><ProgressBar value={Math.min(ratio, 1.3) / 1.3} marker={1 / 1.3} color={inRange ? C.ok : C.warn} /></div>
                 <div className="text-xs text-slate-400">{tg?.range ? t("Flight range {a}–{b} {u}. ", { a: tg.range[0], b: tg.range[1], u: unit }) : ""}{t("baseline {v} {u}", { v: fmt(mm?.baseline_mean, 0), u: unit })}</div>
                 <div className="mt-1 text-sm text-slate-300">{mm?.meaning}</div>
               </div>
             );
           })}
           {m.water_l && (
-            <div className="rounded-xl bg-ink-850 p-3">
+            <div className="border-t border-ink-700 pt-3 pb-1">
               <div className="flex items-center justify-between"><span className="font-semibold">{t("Water")}</span><Unverified source="Water target model is a simulation assumption" /></div>
               <div className="mt-1 text-2xl font-bold">{fmt(m.water_l.value, 2)} <span className="text-base font-normal text-slate-400">/ {data.water_target_l} L</span></div>
-              <div className="my-2"><ProgressBar value={(m.water_l.value ?? 0) / data.water_target_l} color={(m.water_l.value ?? 0) >= data.water_target_l ? "#00E676" : "#FF9100"} /></div>
+              <div className="my-2"><ProgressBar value={(m.water_l.value ?? 0) / data.water_target_l} color={(m.water_l.value ?? 0) >= data.water_target_l ? C.ok : C.warn} /></div>
               <div className="text-sm text-slate-300">{m.water_l.meaning}</div>
             </div>
           )}
@@ -58,7 +59,7 @@ export default function TeamNutrition() {
         {data.supplements.length === 0 && <p className="text-slate-400">{t("No supplement protocol.")}</p>}
         <div className="space-y-3">
           {data.supplements.map((s) => (
-            <div key={s.protocol_id} className="rounded-xl bg-ink-850 p-4">
+            <div key={s.protocol_id} className="border-t border-ink-700 pt-3 pb-1">
               <div className="text-lg font-semibold">{s.label} <span className="font-normal text-slate-400">· {s.dose_text}</span></div>
               <div className="text-sm text-slate-400">{t("Since {d} · adherence {a}", { d: dayLabel(s.start_day), a: s.adherence === null ? "–" : `${Math.round(s.adherence * 100)}%` })}</div>
               <div className="mt-3 flex flex-wrap gap-1.5" aria-label={t("Last 14 days of doses")}>

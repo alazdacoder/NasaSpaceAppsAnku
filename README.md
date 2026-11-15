@@ -60,6 +60,21 @@ Requirements: Python 3.11+ and Node 18+. If `node` isn't on your PATH, `run.sh` 
 
 Every start uses a fresh simulation with the default seed (42) and opens on mission day 30. The clock runs at 1 mission day per 60 s.
 
+### Crew card sign-in (NFC)
+
+The app opens on a card reader screen. On an Android phone with NFC turned on, hold a crew card to the back of the phone: the app reads it and opens that person's portal. Tapping a card on any other page switches to that person.
+- **Which cards work:** any NFC sticker or card (NTAG213/215 are cheap and common). Write one **text record** on it with a free app such as *NFC Tools* (Write → Add a record → Text):
+
+  | Card text | Opens |
+  |---|---|
+  | `ORBITAL-CREW-01` … `ORBITAL-CREW-05` | Astronaut 1 … 5 |
+  | `MISSION-CTRL-99`, `TONOMETER-ADMIN-04` | Lab team |
+
+- **Cards with no text** (for example a transit or hotel card) are read by their chip number. The app shows it, as in "This card is not on the crew list · Card UID:04A1B2C3…". Add that `UID:…` value to `frontend/src/lib/cards.ts` to accept the card.
+- **No NFC:** on a PC, a browser or a phone without NFC, use the quiet *No card?* row (Astronaut 1–5, Lab team) or *Simulate a card tap*.
+- **How it works:** Android WebView has no Web NFC, so `MainActivity.java` runs the phone's NFC reader (reader mode) while the app is open and passes each card to the page with `window.SHMS_onNfcTag(id)`; `frontend/src/lib/nfc.ts` and `cards.ts` decide who it is.
+- A card ID says who is holding the device. It is not a password: cards can be copied. That is fine for a demo, not for real medical data.
+
 ---
 
 ## Two portals

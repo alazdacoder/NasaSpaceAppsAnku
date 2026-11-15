@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { C } from "../../lib/theme";
 import { Link, useNavigate } from "react-router-dom";
 import { Area, AreaChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Icon } from "../../components/Icon";
@@ -66,19 +67,14 @@ interface TodayData {
   link?: LinkStatus;
 }
 
-const ELECTRIC_BLUE = "#00E5FF";
-const HEALTH_GREEN = "#00E676";
-const WARN_AMBER = "#FF9100";
-const CRIT_RED = "#FF5252";
-const TELEMETRY_VIOLET = "#B388FF";
 const HEART_PINK = "#FF6B81";
 
 const CONFIRM_BY_TAP = ["workout", "vest_rehab", "prelanding", "lsah", "water", "supplement", "fluid"];
 
 function zoneColor(zone: "normal" | "elevated" | "critical"): string {
-  if (zone === "critical") return CRIT_RED;
-  if (zone === "elevated") return WARN_AMBER;
-  return HEALTH_GREEN;
+  if (zone === "critical") return C.bad;
+  if (zone === "elevated") return C.warn;
+  return C.ok;
 }
 
 function zoneLabel(zone: "normal" | "elevated" | "critical"): string {
@@ -186,8 +182,8 @@ function OrbitalFluidRing({ pct, status }: { pct: number; status: "stabilized" |
   const cOuter = 2 * Math.PI * rOuter;
   const cInner = 2 * Math.PI * rInner;
   const f = Math.max(0.05, Math.min(1, pct / 100));
-  const primaryColor = status === "anomaly" ? CRIT_RED : status === "adapting" ? WARN_AMBER : TELEMETRY_VIOLET;
-  const secondaryColor = status === "anomaly" ? WARN_AMBER : ELECTRIC_BLUE;
+  const primaryColor = status === "anomaly" ? C.bad : status === "adapting" ? C.warn : C.rest;
+  const secondaryColor = status === "anomaly" ? C.warn : C.accent;
   const angleRad = ((f * 360 - 90) * Math.PI) / 180;
   const satX = center + rOuter * Math.cos(angleRad);
   const satY = center + rOuter * Math.sin(angleRad);
@@ -197,7 +193,7 @@ function OrbitalFluidRing({ pct, status }: { pct: number; status: "stabilized" |
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden>
         <defs>
           <linearGradient id="orbitalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={ELECTRIC_BLUE} />
+            <stop offset="0%" stopColor={C.accent} />
             <stop offset="100%" stopColor={primaryColor} />
           </linearGradient>
         </defs>
@@ -222,7 +218,7 @@ function OrbitalFluidRing({ pct, status }: { pct: number; status: "stabilized" |
             strokeWidth={9}
             strokeDasharray={`${cOuter} ${cOuter}`}
             strokeDashoffset={cOuter * (1 - f)}
-            style={{ filter: `drop-shadow(0 0 8px ${primaryColor}88)` }}
+
           />
           <circle cx={center} cy={center} r={rInner} stroke="rgba(0, 229, 255, 0.1)" strokeWidth={5} />
           <circle
@@ -240,10 +236,10 @@ function OrbitalFluidRing({ pct, status }: { pct: number; status: "stabilized" |
         <circle cx={satX} cy={satY} r={5} fill="#F8FAFC" stroke={primaryColor} strokeWidth={2.5} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center leading-none">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-telemetry">{t("Orbital Sync")}</span>
-        <span className="mt-1 text-3xl font-extrabold tabular-nums tracking-tight text-white">{pct}%</span>
+        <span className="text-[10px] font-bold text-slate-400">{t("Orbital Sync")}</span>
+        <span className="mt-1 text-3xl font-extrabold tabular-nums tracking-tight text-fg">{pct}%</span>
         <span
-          className="mt-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"
+          className="mt-1 rounded-full px-2 py-0.5 text-[10px] font-bold"
           style={{
             background: `${primaryColor}22`,
             color: primaryColor,
@@ -274,7 +270,7 @@ export function TaskRow({ t: task, onConfirm, busy }: { t: Task; onConfirm: () =
           ? "border-ok/30 bg-ok/[0.08]"
           : isStart
           ? "border-bad/40 bg-bad/[0.10]"
-          : "border-white/[0.06] bg-ink-850/85 hover:border-white/15"
+          : "border-ink-700 bg-ink-850/85 hover:border-ink-600"
       )}
     >
       {tappable ? (
@@ -290,7 +286,7 @@ export function TaskRow({ t: task, onConfirm, busy }: { t: Task; onConfirm: () =
         </span>
       )}
       <div className="min-w-[180px] flex-1">
-        <div className={cx("text-base font-semibold tracking-tight text-white", done && "text-slate-300 line-through decoration-slate-500")}>
+        <div className={cx("text-base font-semibold tracking-tight text-fg", done && "text-slate-300 line-through decoration-slate-500")}>
           {task.title}
         </div>
         <div className="text-sm text-slate-400">{task.detail}</div>
@@ -302,7 +298,7 @@ export function TaskRow({ t: task, onConfirm, busy }: { t: Task; onConfirm: () =
         )}
       </div>
       {done ? (
-        <span className="rounded-full bg-ok/15 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-ok">{t("Done")}</span>
+        <span className="rounded-full bg-ok/15 px-3.5 py-1 text-xs font-bold text-ok">{t("Done")}</span>
       ) : opens[task.kind] ? (
         <Button kind="primary" onClick={() => nav(opens[task.kind])}>
           {t("Open")}
@@ -335,7 +331,7 @@ function SleepBars({ nights, normal }: { nights: { day: number; value: number }[
       <div className="relative flex h-16 items-end gap-1.5">
         {normal !== null && (
           <div
-            className="absolute inset-x-0 border-t border-dashed border-white/30"
+            className="absolute inset-x-0 border-t border-dashed border-ink-600"
             style={{ bottom: `${(normal / top) * 100}%` }}
           />
         )}
@@ -345,7 +341,7 @@ function SleepBars({ nights, normal }: { nights: { day: number; value: number }[
               className="w-full rounded-full transition-all"
               style={{
                 height: `${(n.value / top) * 100}%`,
-                background: i === safeNights.length - 1 ? "#00E5FF" : "#B388FF",
+                background: i === safeNights.length - 1 ? C.accent : C.rest,
                 opacity: i === safeNights.length - 1 ? 1 : 0.55,
               }}
             />
@@ -540,11 +536,7 @@ export default function Today() {
       {/* Top Samsung Health Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-1">
         <div>
-          <div className="flex items-center gap-2.5">
-            <span className="inline-flex h-2.5 w-2.5 rounded-full bg-accent shadow-glowBlue" />
-            <span className="text-xs font-bold uppercase tracking-widest text-accent">{t("Antigravity Health Hub")}</span>
-          </div>
-          <h1 className="mt-0.5 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+          <h1 className="text-[28px] font-extrabold tracking-[-0.02em] text-fg sm:text-[34px]">
             {greet}, <span className="text-accent">{data.crew.name}</span>
           </h1>
           <p className="text-sm text-slate-400">
@@ -557,10 +549,10 @@ export default function Today() {
             type="button"
             onClick={() => setEditHome((v) => !v)}
             className={cx(
-              "inline-flex min-h-[40px] items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition",
+              "inline-flex min-h-[40px] items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-bold transition",
               editHome
                 ? "border-accent bg-accent text-ink-950 shadow-glowBlue"
-                : "border-white/10 bg-ink-900 text-slate-300 hover:border-white/25 hover:text-white"
+                : "border-ink-700 bg-ink-900 text-slate-300 hover:border-ink-600 hover:text-fg"
             )}
           >
             <Icon name="sliders" size={16} />
@@ -588,10 +580,10 @@ export default function Today() {
         className={cx(
           "relative overflow-hidden rounded-card border p-5 transition-all duration-300 sm:p-6",
           ep.failsafe_triggered
-            ? "border-bad/80 bg-gradient-to-r from-[#2A0E17] via-[#1F121B] to-[#181C24] shadow-glowRed"
+            ? "border-bad/80 bg-ink-900 shadow-glowRed"
             : ep.comm_link_state === "blackout"
-            ? "border-warn/60 bg-gradient-to-r from-[#261A0E] via-[#181C24] to-[#181C24]"
-            : "border-telemetry/40 bg-gradient-to-r from-[#1A172B] via-[#161B26] to-[#181C24] shadow-glowViolet"
+            ? "border-warn/60 bg-ink-900"
+            : "border-ink-700 bg-ink-900 shadow-card"
         )}
       >
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -601,7 +593,7 @@ export default function Today() {
                 "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border",
                 ep.failsafe_triggered
                   ? "animate-pulse border-bad bg-bad/20 text-bad"
-                  : "border-telemetry/50 bg-telemetry/15 text-telemetry"
+                  : "border-ink-700 bg-ink-850 text-bad"
               )}
             >
               <Icon name="satellite" size={26} />
@@ -610,9 +602,9 @@ export default function Today() {
               <div className="flex flex-wrap items-center gap-2">
                 <span
                   className={cx(
-                    "inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-xs font-extrabold uppercase tracking-wider",
+                    "inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-xs font-extrabold",
                     ep.comm_link_state === "active"
-                      ? "bg-bad text-ink-950"
+                      ? "bg-badfill text-white"
                       : ep.comm_link_state === "blackout"
                       ? "bg-warn text-ink-950"
                       : "border border-ok/40 bg-ok/20 text-ok"
@@ -623,10 +615,10 @@ export default function Today() {
                     style={{
                       background:
                         ep.comm_link_state === "active"
-                          ? "#0D0F12"
+                          ? "#F4F7FA"
                           : ep.comm_link_state === "blackout"
-                          ? "#0D0F12"
-                          : HEALTH_GREEN,
+                          ? "#F4F7FA"
+                          : C.ok,
                     }}
                   />
                   {ep.comm_link_state === "active"
@@ -635,16 +627,16 @@ export default function Today() {
                     ? t("Ground Communication Link: LOS Blackout (Store & Forward)")
                     : t("Ground Communication Link: Active / Standby")}
                 </span>
-                <span className="rounded-full bg-white/[0.06] px-2.5 py-0.5 text-xs font-medium text-slate-300">
+                <span className="rounded-full bg-fg/5 px-2.5 py-0.5 text-xs font-medium text-slate-300">
                   {t("Fail-Safe: Armed (IOP ≥ 24 mmHg · Shift ≥ 2250 mL)")}
                 </span>
                 <span className="text-xs text-slate-400">
                   · {t("One-way link delay: {d}", { d: duration(ep.delay_s) })}
                 </span>
               </div>
-              <h2 className="mt-1.5 text-lg font-bold tracking-tight text-white sm:text-xl">
+              <h2 className="mt-1.5 text-lg font-bold tracking-tight text-fg sm:text-xl">
                 {ep.failsafe_triggered
-                  ? t("CRITICAL BIOLOGICAL RISK DETECTED — Emergency Telemetry Packet Beamed to Earth")
+                  ? t("Critical biological risk detected: emergency telemetry sent to Earth")
                   : t("Emergency Ground-to-Space Protocol & Automated Bio-Risk Fail-Safe")}
               </h2>
               <p className="mt-0.5 text-sm text-slate-300">
@@ -665,7 +657,7 @@ export default function Today() {
               type="button"
               onClick={() => runOcularScan("anomaly")}
               disabled={scanning}
-              className="min-h-[44px] rounded-full border border-warn/50 bg-warn/15 px-4 py-2 text-xs font-bold uppercase tracking-wider text-warn transition hover:bg-warn/25 disabled:opacity-50"
+              className="min-h-[44px] rounded-full border border-warn/50 bg-warn/15 px-4 py-2 text-xs font-bold text-warn transition hover:bg-warn/25 disabled:opacity-50"
             >
               {t("Simulate Acute IOP Spike")}
             </button>
@@ -674,10 +666,8 @@ export default function Today() {
               onClick={triggerSos}
               disabled={sendingSos}
               className={cx(
-                "inline-flex min-h-[44px] items-center gap-2 rounded-full px-5 py-2 text-xs font-extrabold uppercase tracking-wider transition active:scale-95 disabled:opacity-50",
-                ep.failsafe_triggered
-                  ? "bg-bad text-ink-950 shadow-glowRed hover:brightness-110"
-                  : "bg-accent text-ink-950 shadow-glowBlue hover:brightness-110"
+                "inline-flex min-h-[44px] items-center gap-2 rounded-full px-5 py-2 text-xs font-extrabold transition active:scale-95 disabled:opacity-50",
+                "bg-badfill text-white shadow-glowRed hover:brightness-110"
               )}
             >
               <Icon name="sos" size={18} />
@@ -691,21 +681,16 @@ export default function Today() {
       <div className="grid gap-5 lg:grid-cols-12">
         <Link
           to="/crew/energy"
-          className="lift relative flex flex-col justify-between overflow-hidden rounded-card p-6 text-white shadow-card lg:col-span-5"
-          style={{
-            background: "linear-gradient(135deg, #1E50F2 0%, #0E74FF 55%, #00B8FF 100%)",
-          }}
+          className="lift relative flex flex-col justify-between overflow-hidden rounded-card border border-ink-700 bg-ink-900 p-6 text-fg shadow-card lg:col-span-5"
         >
           <div className="relative z-10 flex items-start justify-between gap-4">
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-black/20 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-cyan-100 backdrop-blur-sm">
-                {t("Energy score")}
-              </span>
+              <h2 className="text-base font-bold text-fg">{t("Energy score")}</h2>
               <div className="mt-3 flex items-baseline gap-2">
                 <span className="text-5xl font-extrabold tabular-nums tracking-tight">{energyScore}</span>
-                <span className="text-lg font-semibold text-blue-100">/ 100</span>
+                <span className="text-lg font-semibold text-slate-400">/ 100</span>
               </div>
-              <p className="mt-1 text-sm font-medium text-blue-100">
+              <p className="mt-1 text-sm font-medium text-slate-400">
                 {energyScore >= 80
                   ? t("Optimal orbital readiness")
                   : energyScore >= 65
@@ -715,28 +700,24 @@ export default function Today() {
             </div>
             <div
               className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full shadow-lg"
-              style={{
-                background:
-                  "radial-gradient(circle at 35% 30%, #00E5FF 0%, #00E676 38%, #FF9100 72%, #B388FF 100%)",
-                boxShadow: "0 0 36px rgba(0, 229, 255, 0.55)",
-              }}
+              style={{ background: "#E8A33D" }}
             >
-              <Icon name="energy" size={34} className="text-ink-950" />
+              <Icon name="energy" size={34} className="text-[#0E2A47]" />
             </div>
           </div>
-          <div className="relative z-10 mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-white/20 pt-3.5 text-xs font-medium text-blue-50">
+          <div className="relative z-10 mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-ink-700 pt-3.5 text-xs font-medium text-slate-400">
             <span>{t("Keep tracking your condition with your Bio-Monitor & Space Tonometer.")}</span>
-            <span className="font-bold uppercase tracking-wider">{t("Details ›")}</span>
+            <span className="font-bold">{t("Details")}</span>
           </div>
         </Link>
 
         {/* Daily Activity Concentric Rings Card */}
         <Link
           to="/crew/exercise"
-          className="shealth-card lift flex flex-col justify-between rounded-card p-5 lg:col-span-3"
+          className="lift flex flex-col justify-between rounded-card p-5 lg:col-span-3"
         >
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white">{t("Daily activity")}</h2>
+            <h2 className="text-base font-bold text-fg">{t("Daily activity")}</h2>
             <span className="text-xs font-semibold text-slate-400">
               {doneN}/{total} {t("tasks")}
             </span>
@@ -748,9 +729,9 @@ export default function Today() {
               gap={4}
               label={t("Daily activity concentric rings")}
               rings={[
-                { value: burned, max: Math.max(1, expectedKcal), color: HEALTH_GREEN },
-                { value: doneN, max: Math.max(1, total), color: ELECTRIC_BLUE },
-                { value: fluid.stabilization_pct, max: 100, color: TELEMETRY_VIOLET },
+                { value: burned, max: Math.max(1, expectedKcal), color: C.ok },
+                { value: doneN, max: Math.max(1, total), color: C.accent },
+                { value: fluid.stabilization_pct, max: 100, color: C.rest },
               ]}
             >
               <Icon name="heart" size={22} className="text-accent" />
@@ -777,64 +758,70 @@ export default function Today() {
         {/* Samsung Health Heart Rate Bar Chart Card */}
         <Link
           to="/crew/body"
-          className="shealth-card lift flex flex-col justify-between rounded-card p-5 lg:col-span-4"
+          className="lift flex flex-col justify-between rounded-card p-5 lg:col-span-4"
         >
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h2 className="text-base font-bold text-white">{t("Heart rate")}</h2>
+              <h2 className="text-base font-bold text-fg">{t("Heart rate")}</h2>
               <p className="text-xs text-slate-400">
                 {B.hr ? t("your normal {v}", { v: fmt(B.hr, 0) }) : t("Live Bio-Monitor")}
               </p>
             </div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-sm font-extrabold tabular-nums text-ink-950 shadow">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-ink-700 bg-ink-900 px-3 py-1 text-sm font-extrabold tabular-nums text-fg">
               <Icon name="heart" size={14} className="text-bad" />
-              {fmt(L.hr, 0)} <span className="text-[11px] font-semibold text-slate-600">{t("bpm")}</span>
+              {fmt(L.hr, 0)} <span className="text-[11px] font-semibold text-slate-400">{t("bpm")}</span>
             </div>
           </div>
 
-          <div className="my-3 flex h-24 items-end gap-1.5 rounded-xl bg-ink-950/60 px-3 py-2.5">
-            {hrBars.map((b) => {
-              const minP = Math.max(8, ((b.low - 45) / 110) * 100);
-              const maxP = Math.min(100, ((b.high - 45) / 110) * 100);
-              return (
-                <div key={b.idx} className="relative flex h-full flex-1 items-end justify-center">
-                  <div
-                    className="w-2 rounded-full"
-                    style={{
-                      height: `${Math.max(18, maxP - minP)}%`,
-                      marginBottom: `${minP * 0.4}%`,
-                      background: b.idx === hrBars.length - 1 ? "#FF5252" : HEART_PINK,
-                      opacity: b.idx === hrBars.length - 1 ? 1 : 0.65,
-                    }}
-                  />
+          {(() => {
+            const lo = Math.min(...hrBars.map((x) => x.low), B.hr ?? 999) - 4;
+            const hi = Math.max(...hrBars.map((x) => x.high), B.hr ?? 0) + 4;
+            const y = (v: number) => ((v - lo) / Math.max(1, hi - lo)) * 100;
+            return (
+              <div className="my-3 flex gap-2">
+                <div className="flex h-28 flex-col justify-between text-right text-[11px] tabular-nums text-slate-400">
+                  <span>{Math.round(hi)}</span><span>{Math.round(lo)}</span>
                 </div>
-              );
-            })}
-          </div>
+                <div className="relative h-28 flex-1 border-b border-l border-ink-700">
+                  {B.hr ? (
+                    <div className="absolute inset-x-0 border-t border-dashed border-slate-600" style={{ bottom: `${y(B.hr)}%` }}
+                      title={t("your normal {v}", { v: fmt(B.hr, 0) })} />
+                  ) : null}
+                  <div className="absolute inset-0 flex gap-1.5 px-2">
+                    {hrBars.map((b) => (
+                      <div key={b.idx} className="relative flex-1">
+                        <div className="absolute left-1/2 w-2 -translate-x-1/2 rounded-full"
+                          style={{
+                            bottom: `${y(b.low)}%`,
+                            height: `${Math.max(4, y(b.high) - y(b.low))}%`,
+                            background: b.idx === hrBars.length - 1 ? "rgb(var(--bad))" : HEART_PINK,
+                            opacity: b.idx === hrBars.length - 1 ? 1 : 0.7,
+                          }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
 
           <div className="flex items-center justify-between text-xs text-slate-400">
             <span>{t("Resting & orbital range")}</span>
-            <span className="font-mono text-slate-300">{missionTime(clock)}</span>
+            <span className="tabular-nums text-slate-300">{missionTime(clock)}</span>
           </div>
         </Link>
       </div>
 
       {/* MODULE 1 & MODULE 2: ANTIGRAVITY & FLUID DYNAMICS + SPACE OCULAR HEALTH & TONOMETER SYNC */}
-      <div className="grid gap-5 lg:grid-cols-12">
+      <div className="grid items-start gap-5 lg:grid-cols-12">
         {/* MODULE 1: Antigravity & Fluid Dynamics */}
         <section
           aria-label={t("Antigravity & Fluid Dynamics")}
-          className="shealth-card flex flex-col justify-between rounded-card p-5 sm:p-6 lg:col-span-5"
+          className="flex flex-col rounded-card border border-ink-700 bg-ink-900 p-5 shadow-card sm:p-6 lg:col-span-5"
         >
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="flex items-center gap-2">
-                <span className="inline-flex h-2 w-2 rounded-full bg-telemetry" />
-                <span className="text-xs font-bold uppercase tracking-wider text-telemetry">
-                  {t("Microgravity Telemetry")}
-                </span>
-              </div>
-              <h2 className="mt-1 text-xl font-bold tracking-tight text-white">
+              <h2 className="text-xl font-bold tracking-tight text-fg">
                 {t("Antigravity & Fluid Dynamics")}
               </h2>
             </div>
@@ -846,10 +833,10 @@ export default function Today() {
           <div className="my-5 flex flex-col items-center gap-5 sm:flex-row">
             <OrbitalFluidRing pct={fluid.stabilization_pct} status={fluid.stabilization_status} />
             <div className="w-full flex-1 space-y-3">
-              <div className="rounded-tile border border-white/[0.06] bg-ink-850/90 p-3.5">
+              <div className="border-t border-ink-700 pt-3 pb-1.5">
                 <div className="text-xs text-slate-400">{t("Cephalad Fluid Shift")}</div>
                 <div className="mt-0.5 flex items-baseline justify-between">
-                  <span className="text-2xl font-extrabold tabular-nums text-white">
+                  <span className="text-2xl font-extrabold tabular-nums text-fg">
                     {fluid.fluid_shift_ml} <span className="text-xs font-normal text-slate-400">mL</span>
                   </span>
                   <span className="text-xs font-semibold text-telemetry">
@@ -859,13 +846,13 @@ export default function Today() {
               </div>
 
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="rounded-tile border border-white/[0.06] bg-ink-850/90 p-3">
+                <div className="border-t border-ink-700 pt-3 pb-1">
                   <div className="text-[11px] text-slate-400">{t("Intracranial (ICP)")}</div>
                   <div className="mt-0.5 text-xl font-bold tabular-nums text-accent">
                     {fmt(fluid.icp_mmhg, 1)} <span className="text-xs font-normal text-slate-400">mmHg</span>
                   </div>
                 </div>
-                <div className="rounded-tile border border-white/[0.06] bg-ink-850/90 p-3">
+                <div className="border-t border-ink-700 pt-3 pb-1">
                   <div className="text-[11px] text-slate-400">{t("Ocular Shift Δ")}</div>
                   <div className="mt-0.5 text-xl font-bold tabular-nums text-warn">
                     +{fmt(fluid.iop_shift_delta_mmhg, 1)} <span className="text-xs font-normal text-slate-400">mmHg</span>
@@ -875,7 +862,7 @@ export default function Today() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-tile border border-white/[0.05] bg-ink-950/60 px-4 py-2.5 text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-ink-700 py-2.5 text-xs">
             <span className="text-slate-300">
               {t("LBNP / Thigh-Cuff Countermeasure:")}{" "}
               <strong className={fluid.lower_body_Countermeasure === "active" ? "text-warn" : "text-ok"}>
@@ -883,7 +870,7 @@ export default function Today() {
               </strong>
             </span>
             <Link to="/crew/ocular" className="font-bold text-accent hover:underline">
-              {t("Ocular & Fluid ›")}
+              {t("Ocular & Fluid")}
             </Link>
           </div>
         </section>
@@ -891,24 +878,18 @@ export default function Today() {
         {/* MODULE 2: Space Ocular Health & Tonometer Sync */}
         <section
           aria-label={t("Space Ocular Health & Tonometer Sync")}
-          className="shealth-card flex flex-col justify-between rounded-card p-5 sm:p-6 lg:col-span-7"
+          className="flex flex-col rounded-card border border-ink-700 bg-ink-900 p-5 shadow-card sm:p-6 lg:col-span-7"
         >
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <div className="flex items-center gap-2">
-                <Icon name="eye" size={16} className="text-accent" />
-                <span className="text-xs font-bold uppercase tracking-wider text-accent">
-                  {t("Eye-Based Health Check System · Paired Tonometer")}
-                </span>
-              </div>
-              <h2 className="mt-1 text-xl font-bold tracking-tight text-white">
+              <h2 className="text-xl font-bold tracking-tight text-fg">
                 {t("Space Ocular Health & Tonometer Sync")}
               </h2>
             </div>
 
             <div className="flex items-center gap-2">
               <span
-                className="inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider"
+                className="inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-extrabold"
                 style={{
                   borderColor: `${zoneColor(oc.safety_zone)}66`,
                   background: `${zoneColor(oc.safety_zone)}1F`,
@@ -927,10 +908,10 @@ export default function Today() {
           </div>
 
           <div className="my-4 grid gap-3 sm:grid-cols-4">
-            <div className="rounded-tile border border-white/[0.08] bg-ink-850 p-3.5 sm:col-span-2">
+            <div className="border-t border-ink-700 pt-3 pb-1.5 sm:col-span-2">
               <div className="flex items-center justify-between text-xs text-slate-400">
                 <span>{t("Live Intraocular Pressure (IOP)")}</span>
-                <span className="font-mono text-[11px] text-accent">{t("SYNCED")}</span>
+                <span className="tabular-nums text-[11px] text-accent">{t("Synced")}</span>
               </div>
               <div className="mt-1 flex items-baseline gap-2">
                 <span
@@ -951,15 +932,15 @@ export default function Today() {
               </div>
             </div>
 
-            <div className="rounded-tile border border-white/[0.06] bg-ink-850/90 p-3.5">
+            <div className="border-t border-ink-700 pt-3 pb-1.5">
               <div className="text-xs text-slate-400">{t("Optic Nerve (ONSD)")}</div>
-              <div className="mt-1 text-2xl font-extrabold tabular-nums text-white">
+              <div className="mt-1 text-2xl font-extrabold tabular-nums text-fg">
                 {fmt(oc.onsd_mm, 2)} <span className="text-xs font-normal text-slate-400">mm</span>
               </div>
               <div className="mt-1 text-[11px] text-slate-400">{t("Limit 5.80 mm")}</div>
             </div>
 
-            <div className="rounded-tile border border-white/[0.06] bg-ink-850/90 p-3.5">
+            <div className="border-t border-ink-700 pt-3 pb-1.5">
               <div className="text-xs text-slate-400">{t("Tonometer Status")}</div>
               <div className="mt-1 text-base font-bold text-ok">
                 {oc.device.connected ? t("Paired · Live") : t("Offline")}
@@ -970,7 +951,7 @@ export default function Today() {
             </div>
           </div>
 
-          <div className="rounded-tile border border-white/[0.05] bg-ink-950/65 p-3">
+          <div className="border-t border-ink-700 pt-3">
             <div className="mb-1.5 flex items-center justify-between text-xs">
               <span className="font-semibold text-slate-300">
                 {t("24-Hour Microgravity Optic Nerve & IOP Variation (mmHg)")}
@@ -982,27 +963,27 @@ export default function Today() {
                 <AreaChart data={oc.trend_24h} margin={{ top: 6, right: 8, bottom: 0, left: -20 }}>
                   <defs>
                     <linearGradient id="iopAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={ELECTRIC_BLUE} stopOpacity={0.45} />
-                      <stop offset="100%" stopColor={TELEMETRY_VIOLET} stopOpacity={0.02} />
+                      <stop offset="0%" stopColor={C.accent} stopOpacity={0.45} />
+                      <stop offset="100%" stopColor={C.rest} stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="hour" tick={{ fill: "#94a3b8", fontSize: 10 }} interval={5} />
-                  <YAxis domain={[12, 28]} tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                  <XAxis dataKey="hour" tick={{ fill: C.faint, fontSize: 10 }} interval={5} />
+                  <YAxis domain={[10, 30]} tick={{ fill: C.faint, fontSize: 11 }} />
                   <Tooltip
                     contentStyle={{
-                      background: "#181C24",
+                      background: "#FFFFFF",
                       border: "1px solid rgba(255,255,255,0.12)",
                       borderRadius: 12,
                       fontSize: 12,
                     }}
                   />
-                  <ReferenceLine y={20.5} stroke={WARN_AMBER} strokeDasharray="3 3" />
-                  <ReferenceLine y={24.0} stroke={CRIT_RED} strokeDasharray="3 3" />
+                  <ReferenceLine y={20.5} stroke={C.warn} strokeDasharray="3 3" />
+                  <ReferenceLine y={24.0} stroke={C.bad} strokeDasharray="3 3" />
                   <Area
                     type="monotone"
                     dataKey="iop_mmhg"
                     name={t("IOP (mmHg)")}
-                    stroke={ELECTRIC_BLUE}
+                    stroke={C.accent}
                     strokeWidth={2.5}
                     fill="url(#iopAreaGrad)"
                     isAnimationActive={false}
@@ -1028,13 +1009,13 @@ export default function Today() {
                 to="/crew/ocular"
                 className="inline-flex min-h-[46px] items-center rounded-full border border-accent/40 bg-accent/10 px-4 py-2 text-xs font-bold text-accent hover:bg-accent/20"
               >
-                {t("Full Ocular Console ›")}
+                {t("Full Ocular Console")}
               </Link>
               <button
                 type="button"
                 onClick={() => runOcularScan("calibration")}
                 disabled={scanning}
-                className="inline-flex min-h-[46px] items-center gap-2.5 rounded-full bg-accent px-6 py-2.5 text-sm font-extrabold text-ink-950 shadow-glowBlue transition hover:brightness-110 active:scale-95 disabled:opacity-50"
+                className="inline-flex min-h-[46px] items-center gap-2.5 rounded-full border border-ink-700 bg-ink-900 px-6 py-2.5 text-sm font-bold text-fg transition hover:bg-ink-850 active:scale-95 disabled:opacity-50"
               >
                 <Icon name="scan" size={18} />
                 {scanning ? t("Calibrating Ocular Scan…") : t("Initiate Ocular Calibration Scan")}
@@ -1056,13 +1037,13 @@ export default function Today() {
             <span
               className={cx(
                 "flex h-12 w-12 shrink-0 items-center justify-center rounded-full",
-                critical ? "bg-bad text-ink-950" : "bg-warn text-ink-950"
+                critical ? "bg-badfill text-white" : "bg-warn text-ink-950"
               )}
             >
               <Icon name="alert" size={26} />
             </span>
             <div className="min-w-[220px] flex-1">
-              <h2 className="text-xl font-bold text-white">{top.title}</h2>
+              <h2 className="text-xl font-bold text-fg">{top.title}</h2>
               <p className="mt-0.5 text-slate-200">{top.reason}</p>
               {top.recs[0] && (
                 <p className="mt-2 flex gap-2 font-semibold text-slate-50">
@@ -1074,8 +1055,8 @@ export default function Today() {
             <Link
               to="/crew/alerts"
               className={cx(
-                "flex min-h-[48px] w-full items-center justify-center rounded-full px-6 font-bold text-ink-950 transition hover:brightness-110 sm:w-auto",
-                critical ? "bg-bad" : "bg-warn"
+                "flex min-h-[48px] w-full items-center justify-center rounded-full px-6 font-bold transition hover:brightness-110 sm:w-auto",
+                critical ? "bg-badfill text-white" : "bg-warn text-ink-950"
               )}
             >
               {data.alerts.length > 1 ? t("All {n} alerts", { n: data.alerts.length }) : t("Details")}
@@ -1084,7 +1065,7 @@ export default function Today() {
           {(data.alert_drivers ?? []).length > 0 && (
             <div className="mt-4 flex flex-wrap gap-3">
               {data.alert_drivers.map((d) => (
-                <div key={d.metric} className="rounded-tile border border-white/10 bg-ink-950/55 px-4 py-2.5">
+                <div key={d.metric} className="border-t border-ink-700 py-2.5">
                   <div className="text-xs text-slate-300">{d.label}</div>
                   <div
                     className="text-2xl font-bold tabular-nums"
@@ -1112,9 +1093,7 @@ export default function Today() {
           <Link
             to="/crew/body"
             className="lift flex flex-col justify-between rounded-card p-5 text-white shadow-card"
-            style={{
-              background: "linear-gradient(145deg, #231E58 0%, #342D7E 60%, #443B9C 100%)",
-            }}
+          style={{ background: "#3B3486" }}
           >
             <div className="flex items-start justify-between">
               <div>
@@ -1123,7 +1102,7 @@ export default function Today() {
                   {fmt(sleep?.value, 1)} <span className="text-sm font-medium text-indigo-200">{t("h")}</span>
                 </div>
               </div>
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-400/20 text-[#B388FF]">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-400/20 text-rest">
                 <Icon name="moon" size={26} />
               </span>
             </div>
@@ -1139,9 +1118,7 @@ export default function Today() {
           <Link
             to="/crew/food"
             className="lift flex flex-col justify-between rounded-card p-5 text-white shadow-card"
-            style={{
-              background: "linear-gradient(145deg, #C85000 0%, #E66800 55%, #FF8F00 100%)",
-            }}
+          style={{ background: "#A65400" }}
           >
             <div className="flex items-start justify-between">
               <div>
@@ -1161,17 +1138,17 @@ export default function Today() {
             </p>
             <div className="mt-4 inline-flex items-center gap-1.5 self-start rounded-full bg-black/25 px-3.5 py-1.5 text-xs font-bold text-white">
               <Icon name="droplet" size={14} />
-              {t("Log meal or water ›")}
+              {t("Log meal or water")}
             </div>
           </Link>
 
-          <Link to="/crew/mind" className="shealth-card lift flex flex-col justify-between rounded-card p-5">
+          <Link to="/crew/mind" className="lift flex flex-col justify-between rounded-card p-5">
             <div className="flex items-center justify-between">
               <span className="text-sm font-bold text-slate-200">{t("How are you?")}</span>
               <span className="h-2 w-2 rounded-full bg-warn" />
             </div>
             <div className="my-2">
-              <div className="text-2xl font-extrabold" style={{ color: stressVal >= 3.5 ? WARN_AMBER : HEALTH_GREEN }}>
+              <div className="text-2xl font-extrabold" style={{ color: stressVal >= 3.5 ? C.warn : C.ok }}>
                 {stressWord}
               </div>
               <p className="mt-1 text-xs text-slate-400">
@@ -1189,7 +1166,7 @@ export default function Today() {
                   className="h-full rounded-full transition-all"
                   style={{
                     width: `${stressPct}%`,
-                    background: stressVal >= 3.5 ? WARN_AMBER : HEALTH_GREEN,
+                    background: stressVal >= 3.5 ? C.warn : C.ok,
                   }}
                 />
               </div>
@@ -1200,21 +1177,21 @@ export default function Today() {
             </div>
           </Link>
 
-          <Link to="/crew/body" className="shealth-card lift flex flex-col justify-between rounded-card p-5">
+          <Link to="/crew/body" className="lift flex flex-col justify-between rounded-card p-5">
             <div className="flex items-center justify-between">
               <span className="text-sm font-bold text-slate-200">{t("Blood oxygen")}</span>
               <span className="h-2 w-2 rounded-full bg-accent" />
             </div>
             <div className="my-2">
               <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold tabular-nums text-white">{fmt(L.spo2, 0)}</span>
+                <span className="text-4xl font-extrabold tabular-nums text-fg">{fmt(L.spo2, 0)}</span>
                 <span className="text-lg font-bold text-accent">%</span>
               </div>
               <p className="mt-1 text-xs text-slate-400">
                 {B.spo2 ? t("your normal {v}", { v: `${fmt(B.spo2, 0)}%` }) : t("Bio-Monitor continuous")}
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-2 border-t border-white/[0.06] pt-2.5 text-xs">
+            <div className="grid grid-cols-2 gap-2 border-t border-ink-700 pt-2.5 text-xs">
               <div>
                 <span className="text-slate-400">{t("Core temp")}</span>
                 <div className="font-bold tabular-nums text-slate-200">{fmt(L.core_temp, 1)} °C</div>
@@ -1233,7 +1210,7 @@ export default function Today() {
           to="/crew/return"
           className="lift flex flex-wrap items-center gap-5 rounded-card border border-telemetry/40 bg-telemetry/[0.12] p-5 sm:p-6"
         >
-          <Ring value={data.readiness.level} max={data.readiness.max_level} color={TELEMETRY_VIOLET} size={76} stroke={8} glow>
+          <Ring value={data.readiness.level} max={data.readiness.max_level} color={C.rest} size={76} stroke={8} glow>
             <span className="text-2xl font-bold tabular-nums">
               {data.readiness.level}
               <span className="text-sm text-slate-400">/{data.readiness.max_level}</span>
@@ -1263,20 +1240,20 @@ export default function Today() {
       <div className="grid gap-5 lg:grid-cols-12">
         <section
           className={cx(
-            "shealth-card rounded-card p-5 sm:p-6",
+            "rounded-card p-5 sm:p-6",
             (data.protocols ?? []).length > 0 ? "lg:col-span-8" : "lg:col-span-12"
           )}
         >
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-xl font-bold text-white">{t("Today's tasks")}</h2>
+              <h2 className="text-xl font-bold text-fg">{t("Today's tasks")}</h2>
               <p className="text-xs text-slate-400">
                 {pending === 0 ? t("All tasks done today") : tn("{n} task left today", "{n} tasks left today", pending)}
               </p>
             </div>
             {data.autopilot && (
               <span
-                className="rounded-full border border-white/10 bg-ink-850 px-3 py-1 text-xs text-slate-400"
+                className="rounded-full border border-ink-700 bg-ink-850 px-3 py-1 text-xs text-slate-400"
                 title={t("Tasks you don't confirm are completed by the simulated crew at their usual adherence.")}
               >
                 {t("demo autopilot on")}
@@ -1293,9 +1270,9 @@ export default function Today() {
         {(data.protocols ?? []).length > 0 && (
           <div className="space-y-5 lg:col-span-4">
             {data.protocols.map((p) => (
-              <section key={p.protocol_id} className="shealth-card rounded-card p-5 sm:p-6">
+              <section key={p.protocol_id} className="rounded-card p-5 sm:p-6">
                 <div className="flex items-baseline justify-between gap-3">
-                  <h2 className="font-bold text-white">{p.label}</h2>
+                  <h2 className="font-bold text-fg">{p.label}</h2>
                   <span className="text-2xl font-extrabold tabular-nums text-ok">
                     {p.score === null ? "–" : `${Math.round(p.score * 100)}%`}
                   </span>
@@ -1303,7 +1280,7 @@ export default function Today() {
                 <div className="my-3">
                   <ProgressBar
                     value={p.score ?? 0}
-                    color={(p.score ?? 0) > 0.6 ? HEALTH_GREEN : (p.score ?? 0) > 0.3 ? WARN_AMBER : HEART_PINK}
+                    color={(p.score ?? 0) > 0.6 ? C.ok : (p.score ?? 0) > 0.3 ? C.warn : HEART_PINK}
                     height={10}
                   />
                 </div>

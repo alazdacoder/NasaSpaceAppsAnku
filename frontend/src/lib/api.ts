@@ -240,7 +240,7 @@ export function duration(s: number | null | undefined): string {
 export function levelText(l: Level): string {
   return { green: t("All good"), amber: t("Watch"), red: t("Act now") }[l];
 }
-export const LEVEL_COLOR: Record<Level, string> = { green: "#00E676", amber: "#FF9100", red: "#FF5252" };
+export const LEVEL_COLOR: Record<Level, string> = { green: "#17834F", amber: "#B45F00", red: "#C62F45" };
 
 /** Machine names (ids from the server) */
 export function deviceName(d: string): string {

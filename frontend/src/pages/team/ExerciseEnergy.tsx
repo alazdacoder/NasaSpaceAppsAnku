@@ -1,6 +1,7 @@
 import {
   Bar, BarChart, CartesianGrid, ComposedChart, Legend, Line, LineChart, ReferenceArea, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
+import { C } from "../../lib/theme";
 import { AXIS, GRID, TIP, TrendBlock } from "../../components/charts";
 import { AlertCard, Card, Empty, GroundNote, MetricCard, PageTitle, ProgressBar, SourceTag, Unverified } from "../../components/ui";
 import { clockTime, dayLabel, dayTick, deviceName, exerciseName, fmt, usePoll, type Alert, type Metric, type ViewInfo } from "../../lib/api";
@@ -24,8 +25,8 @@ interface EnergyData {
   view: ViewInfo;
 }
 
-const DEV_COLOR: Record<string, string> = { ared: "#00E5FF", t2: "#B388FF", cevis: "#00E676", rehab: "#FF9100" };
-const EX_COLOR = ["#00E5FF", "#B388FF", "#00E676", "#FF9100"];
+const DEV_COLOR = (): Record<string, string> => ({ ared: C.accent, t2: C.rest, cevis: C.ok, rehab: C.warn });
+const EX_COLOR = () => [C.accent, C.rest, C.ok, C.warn];
 const PART_KEYS = ["sleep", "hygiene", "meal", "planning", "science", "maintenance", "eva", "medical", "leisure", "family_call", "rest", "skipped", "vestibular_rehab", "ared", "t2", "cevis", "rehab"];
 const PART_LABEL: Record<string, string> = {
   sleep: "Sleep", hygiene: "Hygiene", meal: "Meal", planning: "Daily planning conference", science: "Science work", maintenance: "Maintenance",
@@ -75,8 +76,8 @@ export default function ExerciseEnergy() {
               <YAxis tick={AXIS} width={48} />
               <Tooltip contentStyle={TIP} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
-              {parts.map((k) => <Bar key={k} dataKey={k} stackId="a" name={PART_LABEL[k] ? t(PART_LABEL[k]) : deviceName(k)} fill={ACT_COLOR[k] ?? "#64748b"} />)}
-              <Line dataKey="intake" name={t("Intake")} stroke="#00E676" strokeWidth={3} dot={{ r: 3 }} isAnimationActive={false} />
+              {parts.map((k) => <Bar key={k} dataKey={k} stackId="a" name={PART_LABEL[k] ? t(PART_LABEL[k]) : deviceName(k)} fill={ACT_COLOR[k] ?? C.faint} />)}
+              <Line dataKey="intake" name={t("Intake")} stroke={C.ok} strokeWidth={3} dot={{ r: 3 }} isAnimationActive={false} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
@@ -98,8 +99,8 @@ export default function ExerciseEnergy() {
               <tbody>
                 {en.yesterday.map((a, i) => (
                   <tr key={i} className="border-t border-ink-800">
-                    <td className="py-1 font-mono text-slate-400">{clockTime(a.start_h)}–{clockTime(a.end_h)}</td>
-                    <td><span className="mr-2 inline-block h-2.5 w-2.5 rounded-full" style={{ background: ACT_COLOR[a.device ?? a.kind] ?? "#64748b" }} />{a.label}</td>
+                    <td className="py-1 tabular-nums text-slate-400">{clockTime(a.start_h)}–{clockTime(a.end_h)}</td>
+                    <td><span className="mr-2 inline-block h-2.5 w-2.5 rounded-full" style={{ background: ACT_COLOR[a.device ?? a.kind] ?? C.faint }} />{a.label}</td>
                     <td className="tabular-nums">{fmt(a.minutes, 0)}</td>
                     <td className="tabular-nums">{fmt(a.met, 1)}</td>
                     <td className="text-right tabular-nums">{fmt(a.kcal, 0)}</td>
@@ -130,7 +131,7 @@ export default function ExerciseEnergy() {
         <Card title={t("Last 7 days")} className="lg:col-span-1">
           <div className="text-5xl font-bold tabular-nums">{data.last7_min}<span className="ml-1 text-xl text-slate-400">{t("min")}</span></div>
           <div className="mt-1 text-slate-400">{t("target ~{n} (range {lo}–{hi})", { n: data.weekly_target_min, lo, hi })}</div>
-          <div className="mt-3"><ProgressBar value={data.last7_min / data.weekly_target_min} height={16} marker={lo / data.weekly_target_min} color={data.last7_min < lo ? "#FF9100" : "#00E676"} /></div>
+          <div className="mt-3"><ProgressBar value={data.last7_min / data.weekly_target_min} height={16} marker={lo / data.weekly_target_min} color={data.last7_min < lo ? C.warn : C.ok} /></div>
           <p className="mt-2 text-xs text-slate-500">{t("Source: {s}", { s: data.limits.source })}</p>
         </Card>
         <Card title={t("Weekly minutes vs target")} className="lg:col-span-2">
@@ -140,11 +141,11 @@ export default function ExerciseEnergy() {
                 <CartesianGrid stroke={GRID} vertical={false} />
                 <XAxis dataKey="label" tick={AXIS} />
                 <YAxis tick={AXIS} width={44} />
-                <ReferenceArea y1={lo} y2={hi} fill="#00E676" fillOpacity={0.08} />
-                <ReferenceLine y={data.weekly_target_min} stroke="#00E676" strokeDasharray="5 5" label={{ value: t("{n} target", { n: data.weekly_target_min }), fill: "#00E676", fontSize: 12, position: "insideTopLeft" }} />
+                <ReferenceArea y1={lo} y2={hi} fill={C.ok} fillOpacity={0.08} />
+                <ReferenceLine y={data.weekly_target_min} stroke={C.ok} strokeDasharray="5 5" label={{ value: t("{n} target", { n: data.weekly_target_min }), fill: C.ok, fontSize: 12, position: "insideTopLeft" }} />
                 <Tooltip contentStyle={TIP} />
                 <Legend />
-                {(["ared", "t2", "cevis", "rehab"] as const).map((d) => <Bar key={d} dataKey={d} stackId="a" name={deviceName(d)} fill={DEV_COLOR[d]} />)}
+                {(["ared", "t2", "cevis", "rehab"] as const).map((d) => <Bar key={d} dataKey={d} stackId="a" name={deviceName(d)} fill={DEV_COLOR()[d]} />)}
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -162,7 +163,7 @@ export default function ExerciseEnergy() {
                 <Tooltip contentStyle={TIP} labelFormatter={(d) => dayLabel(Number(d))} />
                 <Legend />
                 {Object.keys(data.strength).map((ex, i) => (
-                  <Line key={ex} dataKey={ex} name={exerciseName(ex)} stroke={EX_COLOR[i % 4]} strokeWidth={2} dot={false} connectNulls isAnimationActive={false} />
+                  <Line key={ex} dataKey={ex} name={exerciseName(ex)} stroke={EX_COLOR()[i % 4]} strokeWidth={2} dot={false} connectNulls isAnimationActive={false} />
                 ))}
               </LineChart>
             </ResponsiveContainer>

@@ -2,38 +2,103 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
+/* Public Sans, bundled (the Android app runs offline). Variable weight 400-800. */
+@font-face {
+  font-family: "Public Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("./assets/fonts/public-sans-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Public Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("./assets/fonts/public-sans-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ---- theme tokens ("R G B") -------------------------------------------------------- */
+:root {
+  color-scheme: light;
+  --ink-950: 244 247 250; --ink-925: 238 243 248; --ink-900: 255 255 255; --ink-850: 241 245 249;
+  --ink-800: 230 237 244; --ink-700: 213 224 235; --ink-600: 185 201 217;
+  --fg: 14 42 71;
+  --slate-50: 10 32 56; --slate-100: 14 42 71; --slate-200: 20 54 90; --slate-300: 42 74 107;
+  --slate-400: 74 101 130; --slate-500: 86 112 140; --slate-600: 123 144 166; --slate-700: 159 178 196;
+  --limb: 127 196 245; --sun: 232 163 61;
+  --ok: 23 131 79; --warn: 180 95 0; --bad: 198 47 69; --accent: 47 127 216; --energy: 163 106 18; --rest: 44 90 138;
+  --bad-fill: 198 47 69; --warn-soft: 255 248 238; --bad-soft: 255 243 244; --accent-soft: 232 242 252;
+  --shadow-card: 0 1px 2px rgba(14,42,71,0.05), 0 10px 28px -18px rgba(14,42,71,0.28);
+  --shadow-lift: 0 2px 4px rgba(14,42,71,0.06), 0 18px 36px -18px rgba(14,42,71,0.34);
+  --login-sky: #FFFFFF;
+}
+/* Cupola Night: the station over Earth's night side. Deep ocean navy, cards a step
+   lighter, pale ink, the same atmosphere line glowing brighter. */
+:root[data-theme="dark"] {
   color-scheme: dark;
-  background: #0D0F12;
-  scrollbar-color: #2F384A #0D0F12;
+  --ink-950: 7 17 31; --ink-925: 10 22 39; --ink-900: 14 29 50; --ink-850: 19 37 62;
+  --ink-800: 25 46 76; --ink-700: 36 60 94; --ink-600: 56 84 122;
+  --fg: 232 240 248;
+  --slate-50: 244 248 252; --slate-100: 232 240 248; --slate-200: 214 226 239; --slate-300: 190 207 226;
+  --slate-400: 154 177 202; --slate-500: 134 158 186; --slate-600: 104 128 158; --slate-700: 78 101 130;
+  --limb: 127 196 245; --sun: 232 163 61;
+  --ok: 64 196 130; --warn: 236 168 72; --bad: 238 90 110; --accent: 84 156 236; --energy: 226 164 80; --rest: 128 170 222;
+  --bad-fill: 198 47 69; --warn-soft: 46 34 18; --bad-soft: 52 22 32; --accent-soft: 20 45 78;
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 12px 30px -18px rgba(0,0,0,0.7);
+  --shadow-lift: 0 2px 4px rgba(0,0,0,0.35), 0 18px 36px -16px rgba(0,0,0,0.8);
+  --login-sky: #040B16;
+}
+
+html {
+  background: rgb(var(--ink-950));
+  scrollbar-color: rgb(var(--ink-600)) rgb(var(--ink-950));
 }
 body {
   font-size: 16px;
-  background: radial-gradient(circle at 50% -10%, rgba(0, 229, 255, 0.07), transparent 45%),
-              radial-gradient(circle at 85% 15%, rgba(179, 136, 255, 0.06), transparent 40%),
-              #0D0F12;
-  color: #F8FAFC;
+  background: rgb(var(--ink-950));
+  color: rgb(var(--fg));
   -webkit-tap-highlight-color: transparent;
-  caret-color: #00E5FF;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  caret-color: rgb(var(--accent));
+  font-variant-numeric: tabular-nums;
 }
+h1, h2, h3 { text-wrap: balance; }
 button, a { touch-action: manipulation; }
-:focus-visible { outline: 2px solid #00E5FF; outline-offset: 2px; border-radius: 8px; }
-::selection { background: rgba(0, 229, 255, 0.3); color: #f8fafc; }
-::-webkit-scrollbar { width: 8px; height: 8px; }
+:focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; border-radius: 8px; }
+::selection { background: rgb(var(--limb) / 0.45); color: rgb(var(--fg)); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2F384A; border-radius: 999px; border: 2px solid #0D0F12; }
-::-webkit-scrollbar-thumb:hover { background: #3E4A61; }
+::-webkit-scrollbar-thumb { background: rgb(var(--ink-600)); border-radius: 999px; border: 3px solid rgb(var(--ink-950)); }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--slate-600)); }
+a { text-underline-offset: 3px; }
 table td, table th { font-variant-numeric: tabular-nums; }
-.recharts-legend-item-text { color: #cbd5e1 !important; }
-.recharts-tooltip-label { color: #e2e8f0; }
+.recharts-legend-item-text { color: rgb(var(--slate-300)) !important; }
+.recharts-tooltip-label { color: rgb(var(--fg)); font-weight: 600; }
+.recharts-default-tooltip { color: rgb(var(--fg)); }
+.login-sky { background: linear-gradient(180deg, var(--login-sky) 0%, var(--login-sky) 30%, rgb(var(--ink-950)) 100%); }
 
-/* Samsung Health OLED Card & Glass Surfaces */
-.shealth-card {
-  background: linear-gradient(165deg, rgba(28, 34, 46, 0.92) 0%, rgba(24, 28, 36, 0.96) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.065);
-  backdrop-filter: blur(16px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 14px 32px -16px rgba(0, 0, 0, 0.85);
+/* The atmosphere line: the header's lower edge on every page. A bright point marks
+   where the mission is between launch and landing (set with --limb-pos). */
+.limb-line {
+  position: relative;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(127,196,245,0) 0%, rgba(127,196,245,0.85) 12%, #7FC4F5 50%, rgba(127,196,245,0.85) 88%, rgba(127,196,245,0) 100%);
+  box-shadow: 0 1px 8px rgba(127,196,245,0.55);
+}
+.limb-line::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--limb-pos, 50%);
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 2px rgb(var(--accent)), 0 2px 6px rgba(0,0,0,0.35);
+  transition: left 900ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* --- motion: short, eased, and off when the system asks for less ------------------ */
@@ -46,8 +111,8 @@ table td, table th { font-variant-numeric: tabular-nums; }
 @media (hover: hover) {
   .lift:hover {
     transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.14);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 20px 38px -16px rgba(0, 0, 0, 0.9);
+    border-color: rgb(var(--ink-600));
+    box-shadow: var(--shadow-lift);
   }
 }
 .lift:active { transform: translateY(0) scale(0.995); }
@@ -61,8 +126,42 @@ table td, table th { font-variant-numeric: tabular-nums; }
 .orbital-pulse { animation: pulse-ring 3.2s ease-in-out infinite; }
 .check-pop { animation: check-pop 360ms cubic-bezier(0.16, 1, 0.3, 1); }
 .check-pop svg path { stroke-dasharray: 24; animation: check-draw 320ms 80ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+
+/* Card reader rings on the login limb: they breathe outward while waiting. */
+@keyframes read-wave {
+  0% { transform: scale(0.82); opacity: 0; }
+  25% { opacity: 0.9; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.read-wave { animation: read-wave 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+.read-wave.d2 { animation-delay: 0.93s; }
+.read-wave.d3 { animation-delay: 1.86s; }
+@keyframes card-settle {
+  0% { transform: translateY(10px) rotate(-6deg); }
+  60% { transform: translateY(-3px) rotate(1deg); }
+  100% { transform: translateY(0) rotate(0); }
+}
+.card-settle { animation: card-settle 520ms cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes nudge { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.nudge { animation: nudge 320ms ease-in-out 2; }
+
 @media (prefers-reduced-motion: reduce) {
-  .lift, .ring-arc { transition: none; }
+  .lift, .ring-arc, .limb-line::after { transition: none; }
   .lift:hover { transform: none; }
-  .check-pop, .check-pop svg path, .orbital-pulse { animation: none; }
+  .check-pop, .check-pop svg path, .orbital-pulse, .card-settle, .nudge { animation: none; }
+  .read-wave { animation: none; opacity: 0.5; transform: scale(1.1); }
+}
+
+/* Earth from the cupola: ocean deepening away from the limb, a few cloud bands,
+   and the atmosphere glowing just above the edge. */
+.earth {
+  background:
+    radial-gradient(ellipse 260px 26px at 41% 1.6%, rgba(255,255,255,0.32), transparent 70%),
+    radial-gradient(ellipse 340px 30px at 60% 2.4%, rgba(255,255,255,0.24), transparent 70%),
+    radial-gradient(ellipse 200px 18px at 52% 4.2%, rgba(255,255,255,0.16), transparent 70%),
+    radial-gradient(circle at 50% 0%, #3C8BD8 0%, #1E5DA4 8%, #133E6E 20%, #0E2A47 38%);
+  box-shadow:
+    0 -4px 0 0 rgba(127,196,245,0.75),
+    0 -14px 28px 0 rgba(127,196,245,0.55),
+    0 -56px 110px 0 rgba(127,196,245,0.30);
 }

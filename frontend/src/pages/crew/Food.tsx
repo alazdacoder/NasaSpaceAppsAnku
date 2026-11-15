@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { C } from "../../lib/theme";
 import { Icon } from "../../components/Icon";
 import { Ring } from "../../components/Ring";
 import { Button, Card, Empty, PageTitle, ProgressBar, Unverified, cx } from "../../components/ui";
@@ -69,7 +70,7 @@ export default function Food() {
 
       <div className="grid gap-5 md:grid-cols-2">
         <Card
-          className="border-accent/30 bg-gradient-to-br from-[#0F2634] via-[#181C24] to-[#181C24]"
+          className="border-accent/30 bg-ink-900"
           title={
             <span className="flex items-center gap-2">
               <Icon name="droplet" size={18} className="text-accent" />
@@ -79,10 +80,10 @@ export default function Food() {
         >
           <div className="flex items-center justify-between gap-4">
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <div className="text-xs font-semibold text-slate-400">
                 {t("Today's target: {n} L in total", { n: data.water_target_l })}
               </div>
-              <div className="mt-1 text-3xl font-black tabular-nums text-white">
+              <div className="mt-1 text-3xl font-black tabular-nums text-fg">
                 {extraWater > 0 ? t("+{n} L logged", { n: fmt(extraWater, 2) }) : t("Nothing logged yet")}
               </div>
             </div>
@@ -90,7 +91,7 @@ export default function Food() {
               value={Math.min(1, ((m.water_l?.value ?? 1.8) + extraWater) / Math.max(1, data.water_target_l))}
               size={72}
               stroke={7}
-              color="#00E5FF"
+              color={C.accent}
               label={`${fmt(data.water_target_l, 1)}L`}
             />
           </div>
@@ -107,10 +108,10 @@ export default function Food() {
             ))}
           </div>
           {data.water_task && (
-            <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/[0.06] bg-ink-850 p-3.5">
-              <span className="font-semibold text-white">{data.water_task.title}</span>
+            <div className="mt-4 flex items-center justify-between border-t border-ink-700 pt-3 pb-1.5">
+              <span className="font-semibold text-fg">{data.water_task.title}</span>
               {data.water_task.status === "done" ? (
-                <span className="font-bold text-ok">✓ {t("Done")}</span>
+                <span className="font-bold text-ok"><Icon name="check" size={14} className="mr-1 inline align-[-2px]" />{t("Done")}</span>
               ) : (
                 <Button
                   kind="ok"
@@ -124,7 +125,7 @@ export default function Food() {
         </Card>
 
         <Card
-          className="border-warn/30 bg-gradient-to-br from-[#2B1B0E] via-[#181C24] to-[#181C24]"
+          className="border-warn/30 bg-ink-900"
           title={
             <span className="flex items-center gap-2">
               <Icon name="food" size={18} className="text-warn" />
@@ -139,9 +140,9 @@ export default function Food() {
                 key={c.id}
                 kind="ghost"
                 onClick={() => add({ kind: "food", item: c.id }, c.label)}
-                className="border border-white/[0.06] bg-ink-850 text-left hover:border-warn/40"
+                className="border border-ink-700 bg-ink-850 text-left hover:border-warn/40"
               >
-                <div className="font-bold text-white">{c.label}</div>
+                <div className="font-bold text-fg">{c.label}</div>
                 <div className="text-xs font-semibold text-warn">{c.kcal} kcal</div>
               </Button>
             ))}
@@ -156,7 +157,7 @@ export default function Food() {
         <Card key={s.protocol_id} title={t("Supplement: {x}", { x: s.label })}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <div className="text-lg font-bold text-white">{s.dose_text}</div>
+              <div className="text-lg font-bold text-fg">{s.dose_text}</div>
               <div className="text-sm text-slate-400">
                 {t("Since {d} · taken {p} of the time", {
                   d: dayLabel(s.start_day),
@@ -177,7 +178,7 @@ export default function Food() {
                 {t("Took today's dose")}
               </Button>
             ) : (
-              <span className="text-lg font-bold text-ok">{s.today_task ? t("Today's dose taken ✓") : ""}</span>
+              <span className="text-lg font-bold text-ok">{s.today_task ? t("Today's dose taken") : ""}</span>
             )}
           </div>
           <div className="mt-3 flex flex-wrap gap-1.5" aria-label={t("Last 14 days of doses")}>
@@ -190,7 +191,7 @@ export default function Food() {
                   d.taken ? "bg-ok text-ink-950" : "bg-bad/25 text-bad",
                 )}
               >
-                {d.taken ? "✓" : "✕"}
+                {d.taken ? <Icon name="check" size={16} /> : <Icon name="x" size={16} />}
               </span>
             ))}
           </div>
@@ -203,8 +204,8 @@ export default function Food() {
             const v = m[key]?.value ?? 0;
             const ok = target ? v >= target * 0.9 : true;
             return (
-              <div key={key} className="rounded-2xl border border-white/[0.06] bg-ink-850 p-4">
-                <div className="flex items-center justify-between font-bold text-white">
+              <div key={key} className="border-t border-ink-700 pt-3 pb-1">
+                <div className="flex items-center justify-between font-bold text-fg">
                   {label}
                   <span
                     className={cx(
@@ -215,14 +216,14 @@ export default function Food() {
                     {ok ? t("On target") : t("Below target")}
                   </span>
                 </div>
-                <div className="mt-1.5 text-3xl font-black tabular-nums text-white">
+                <div className="mt-1.5 text-3xl font-black tabular-nums text-fg">
                   {fmt(v, key === "water_l" ? 1 : 0)}{" "}
                   <span className="text-sm font-normal text-slate-400">
                     / {target ? fmt(target, key === "water_l" ? 1 : 0) : "–"} {unit}
                   </span>
                 </div>
                 <div className="my-2.5">
-                  <ProgressBar value={target ? v / target : 0} color={ok ? "#00E676" : "#FF9100"} />
+                  <ProgressBar value={target ? v / target : 0} color={ok ? C.ok : C.warn} />
                 </div>
                 <div className="text-xs text-slate-400">{m[key]?.meaning}</div>
               </div>

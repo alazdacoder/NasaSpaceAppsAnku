@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Icon } from "../../components/Icon";
 import { TrendBlock } from "../../components/charts";
 import { AlertCard, Card, Empty, GroundNote, MetricCard, PageTitle, Seg, SourceTag, Stat, cx } from "../../components/ui";
 import { dayLabel, fmt, usePoll, type Alert, type Metric, type ViewInfo } from "../../lib/api";
@@ -41,7 +42,7 @@ const STATUS_STYLE: Record<Session["status"], string> = {
 };
 
 function annualText(a: string) {
-  if (a === "yes") return "✓";
+  if (a === "yes") return t("every year");
   if (a === "Every 3 yr.") return t("every 3 years");
   if (a === "Age-based") return t("by age");
   return a ? a : "";
@@ -52,7 +53,7 @@ function CatalogTable({ metrics }: { metrics: Record<string, { label: string }> 
   const [f, setF] = useState<"all" | "pre" | "in" | "post" | "annual" | "app">("all");
   if (!data) return <Card title={t("LSAH test catalog")}><Empty /></Card>;
   const rows = data.catalog.filter((c) => f === "all" || (f === "app" ? c.app_metrics.length > 0 : f === "annual" ? !!c.phases.annual : c.phases[f]));
-  const mark = (b: boolean) => (b ? <span className="font-bold text-ok">✓</span> : <span className="text-slate-600">–</span>);
+  const mark = (b: boolean) => (b ? <Icon name="check" size={16} className="text-ok" /> : <span className="text-slate-600">–</span>);
   return (
     <Card title={t("LSAH test catalog ({n} categories)", { n: data.catalog.length })} right={<SourceTag verified={data.verified} source={data.source} />}>
       <p className="mb-3 text-sm text-slate-400">{t("Every data category LSAH holds, with the mission phase it is collected in and the NASA medical requirement (MRID) behind it. The last column shows which measurements of this app belong to the category.")}</p>
@@ -71,7 +72,7 @@ function CatalogTable({ metrics }: { metrics: Record<string, { label: string }> 
                 <td className="py-2 pr-2"><div className="font-semibold text-slate-100">{c.title}</div><div className="text-xs text-slate-400">{c.variables}</div></td>
                 <td className="px-1 text-center">{mark(c.phases.pre)}</td><td className="px-1 text-center">{mark(c.phases.in)}</td>
                 <td className="px-1 text-center">{mark(c.phases.post)}</td><td className="px-1 text-center text-xs">{annualText(c.phases.annual)}</td>
-                <td className="px-2 font-mono text-xs text-slate-400">{c.mrid}</td>
+                <td className="px-2 tabular-nums text-xs text-slate-400">{c.mrid}</td>
                 <td className="text-xs text-accent">{c.app_metrics.map((m) => metrics?.[m]?.label ?? m).join(", ")}</td>
               </tr>
             ))}
@@ -86,10 +87,10 @@ export function TestCalendar({ tests, compact }: { tests: MissionTest[]; compact
   return (
     <div className="space-y-3">
       {tests.map((x) => (
-        <div key={x.id} className="rounded-xl bg-ink-850 p-3">
+        <div key={x.id} className="border-t border-ink-700 pt-3 pb-1">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <div className="font-semibold">{x.label}</div>
-            {!compact && <div className="text-xs text-slate-400">{t("LSAH category: {c}", { c: x.category })} · <span className="font-mono">{x.mrid}</span></div>}
+            {!compact && <div className="text-xs text-slate-400">{t("LSAH category: {c}", { c: x.category })} · <span className="tabular-nums">{x.mrid}</span></div>}
           </div>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {x.sessions.map((s) => {
@@ -97,7 +98,7 @@ export function TestCalendar({ tests, compact }: { tests: MissionTest[]; compact
               return (
                 <span key={s.day} title={`${dateText(s.date)}${res ? ` · ${res}` : ""}`}
                   className={cx("rounded-lg border px-2 py-1 text-xs font-semibold tabular-nums", STATUS_STYLE[s.status])}>
-                  {dayLabel(s.day)}{s.status === "done" ? " ✓" : s.status === "missed" ? " ✕" : ""}
+                  {dayLabel(s.day)}{s.status === "done" ? <Icon name="check" size={12} className="ml-1 inline" /> : s.status === "missed" ? <Icon name="x" size={12} className="ml-1 inline" /> : null}
                 </span>
               );
             })}
@@ -143,7 +144,7 @@ export default function TeamLsah() {
             {t("Age then: {a}.", { a: data.annual.age })} {data.annual.in_flight ? t("It falls during the mission, so it is done with the post-flight exams.") : ""}
           </p>
           <ul className="mt-3 space-y-1.5">
-            {due.map((i) => <li key={i.id} className="flex gap-2"><span className="text-ok">✓</span><span>{i.label}</span></li>)}
+            {due.map((i) => <li key={i.id} className="flex gap-2"><Icon name="check" size={16} className="mt-0.5 shrink-0 text-ok" /><span>{i.label}</span></li>)}
           </ul>
           {notDue.length > 0 && (
             <div className="mt-3 border-t border-ink-800 pt-2 text-sm text-slate-500">

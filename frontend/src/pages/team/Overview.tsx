@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { C } from "../../lib/theme";
 import { Link, useNavigate } from "react-router-dom";
 import { CartesianGrid, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from "recharts";
 import { AXIS, GRID, TIP, TrendBlock } from "../../components/charts";
@@ -69,7 +70,7 @@ interface Packet {
   arrives_in_s: number | null;
 }
 
-const CREW_COLORS = ["#00E5FF", "#B388FF", "#00E676", "#FF9100", "#FF5252"];
+const CREW_COLORS = () => [C.accent, C.rest, C.ok, C.warn, C.bad];
 const TREND_CHOICES = [
   "iop_mmhg",
   "onsd_mm",
@@ -106,7 +107,7 @@ const TREND_CHOICES = [
 ];
 
 function corrColor(r: number | null) {
-  if (r === null) return "#181C24";
+  if (r === null) return "#FFFFFF";
   const a = Math.min(1, Math.abs(r));
   return r > 0 ? `rgba(0,229,255,${0.12 + a * 0.72})` : `rgba(255,82,82,${0.12 + a * 0.72})`;
 }
@@ -141,13 +142,13 @@ function DemoPanel({ link }: { link: LinkStatus }) {
   return (
     <Card
       title={t("Demo panel")}
-      className="border-accent/40 bg-gradient-to-br from-[#101C2B] via-[#181C24] to-[#1A152C]"
+      className="border-accent/40 bg-ink-900"
       right={msg && <span className="rounded-full bg-ok/20 px-3 py-1 text-xs font-bold text-ok">{msg}</span>}
     >
       <div className="grid gap-5 lg:grid-cols-2">
         <div className="space-y-4">
           <div>
-            <div className="mb-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
+            <div className="mb-1.5 text-xs font-bold text-slate-400">
               {t("Mission profile (ground link)")}
             </div>
             <div className="flex flex-wrap gap-2">
@@ -209,7 +210,7 @@ function DemoPanel({ link }: { link: LinkStatus }) {
             </label>
           </div>
           <div>
-            <div className="mb-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
+            <div className="mb-1.5 text-xs font-bold text-slate-400">
               {t("Mission clock")} · {missionTime(clock)} ·{" "}
               {clock?.day_seconds ? t("1 day = {s} s", { s: clock.day_seconds }) : t("paused")}
             </div>
@@ -243,7 +244,7 @@ function DemoPanel({ link }: { link: LinkStatus }) {
             </div>
           </div>
           <div>
-            <div className="mb-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
+            <div className="mb-1.5 text-xs font-bold text-slate-400">
               {t("Return to Earth (fast-forward, takes a few seconds)")}
             </div>
             <div className="flex flex-wrap gap-2">
@@ -275,12 +276,12 @@ function DemoPanel({ link }: { link: LinkStatus }) {
         </div>
         <div className="space-y-4">
           <div>
-            <div className="mb-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">{t("Inject event")}</div>
+            <div className="mb-1.5 text-xs font-bold text-slate-400">{t("Inject event")}</div>
             <div className="flex flex-wrap gap-2">
               <select
                 value={crew}
                 onChange={(e) => setCrew(e.target.value)}
-                className="min-h-[46px] rounded-full border border-white/10 bg-ink-850 px-4 text-sm font-semibold text-white"
+                className="min-h-[46px] rounded-full border border-ink-700 bg-ink-850 px-4 text-sm font-semibold text-fg"
               >
                 {meta?.crew.map((c, idx) => (
                   <option key={c.id} value={c.id}>
@@ -291,7 +292,7 @@ function DemoPanel({ link }: { link: LinkStatus }) {
               <select
                 value={ev}
                 onChange={(e) => setEv(e.target.value)}
-                className="min-h-[46px] rounded-full border border-white/10 bg-ink-850 px-4 text-sm font-semibold text-white"
+                className="min-h-[46px] rounded-full border border-ink-700 bg-ink-850 px-4 text-sm font-semibold text-fg"
               >
                 {meta &&
                   Object.entries(meta.injectable_events).map(([id, e]) => (
@@ -318,7 +319,7 @@ function DemoPanel({ link }: { link: LinkStatus }) {
             </div>
           </div>
           <div>
-            <div className="mb-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
+            <div className="mb-1.5 text-xs font-bold text-slate-400">
               {t("Autopilot (simulated crew completes tasks you don't confirm)")}
             </div>
             <AutopilotToggles />
@@ -328,7 +329,7 @@ function DemoPanel({ link }: { link: LinkStatus }) {
               value={seed}
               onChange={(e) => setSeed(e.target.value)}
               placeholder={t("seed (default 42)")}
-              className="min-h-[46px] w-44 rounded-full border border-white/10 bg-ink-850 px-4 text-sm text-white"
+              className="min-h-[46px] w-44 rounded-full border border-ink-700 bg-ink-850 px-4 text-sm text-fg"
             />
             <Button kind="danger" disabled={busy} onClick={() => post("/api/demo/reset", { seed }, t("Simulation reset"))}>
               {t("Reset simulation")}
@@ -387,7 +388,7 @@ function LinkPanel({ link }: { link: LinkStatus }) {
       right={
         <span
           className={cx(
-            "rounded-full px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider",
+            "rounded-full px-3.5 py-1 text-xs font-extrabold",
             link.blackout ? "bg-bad/20 text-bad shadow-glowRed" : "bg-ok/15 text-ok",
           )}
         >
@@ -396,30 +397,30 @@ function LinkPanel({ link }: { link: LinkStatus }) {
       }
     >
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-2xl border border-white/[0.06] bg-ink-850 p-3.5">
+        <div className="border-t border-ink-700 pt-3 pb-1.5">
           <div className="text-xs text-slate-400">{t("Profile")}</div>
-          <div className="mt-0.5 text-lg font-bold text-white">{link.profile_label}</div>
+          <div className="mt-0.5 text-lg font-bold text-fg">{link.profile_label}</div>
         </div>
-        <div className="rounded-2xl border border-white/[0.06] bg-ink-850 p-3.5">
+        <div className="border-t border-ink-700 pt-3 pb-1.5">
           <div className="text-xs text-slate-400">{t("One-way delay")}</div>
           <div className="mt-0.5 text-2xl font-black text-accent">{duration(link.delay_s)}</div>
         </div>
-        <div className="rounded-2xl border border-white/[0.06] bg-ink-850 p-3.5">
+        <div className="border-t border-ink-700 pt-3 pb-1.5">
           <div className="text-xs text-slate-400">{t("Newest data on ground is")}</div>
-          <div className={cx("mt-0.5 text-2xl font-black", (age ?? 0) > 60 ? "text-warn" : "text-white")}>
+          <div className={cx("mt-0.5 text-2xl font-black", (age ?? 0) > 60 ? "text-warn" : "text-fg")}>
             {t("{a} old", { a: duration(age) })}
           </div>
         </div>
-        <div className="rounded-2xl border border-white/[0.06] bg-ink-850 p-3.5">
+        <div className="border-t border-ink-700 pt-3 pb-1.5">
           <div className="text-xs text-slate-400">{link.blackout ? t("Signal back in") : t("Next blackout in")}</div>
-          <div className="mt-0.5 text-2xl font-black text-white">
+          <div className="mt-0.5 text-2xl font-black text-fg">
             {link.window_change_in_s === null ? t("forced") : duration(link.window_change_in_s)}
           </div>
         </div>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
         <div>
-          <div className="text-3xl font-black tabular-nums text-white">{link.queued}</div>
+          <div className="text-3xl font-black tabular-nums text-fg">{link.queued}</div>
           <div className="text-xs text-slate-400">{t("queued onboard")}</div>
         </div>
         <div>
@@ -438,7 +439,7 @@ function LinkPanel({ link }: { link: LinkStatus }) {
         </div>
       </div>
       {data && (
-        <div className="mt-3 max-h-56 overflow-y-auto rounded-2xl border border-white/[0.05] bg-ink-950/60 p-2">
+        <div className="mt-3 max-h-56 overflow-y-auto border-t border-ink-700 pt-3">
           <table className="w-full text-left text-xs">
             <thead className="sticky top-0 bg-ink-950 text-slate-400">
               <tr>
@@ -452,8 +453,8 @@ function LinkPanel({ link }: { link: LinkStatus }) {
             </thead>
             <tbody>
               {data.packets.map((p) => (
-                <tr key={p.seq} className="border-t border-white/[0.04]">
-                  <td className="py-1.5 font-mono text-slate-400">{p.seq}</td>
+                <tr key={p.seq} className="border-t border-ink-700">
+                  <td className="py-1.5 tabular-nums text-slate-400">{p.seq}</td>
                   <td>
                     <span
                       className={cx(
@@ -536,7 +537,7 @@ function Trends({ crewIds }: { crewIds: { id: string; name: string }[] }) {
               "min-h-[34px] rounded-full px-3 text-xs font-semibold transition",
               sel.includes(m)
                 ? "border border-accent bg-accent/20 text-accent"
-                : "border border-white/[0.05] bg-ink-850 text-slate-400 hover:text-white",
+                : "border border-ink-700 bg-ink-850 text-slate-400 hover:text-fg",
             )}
           >
             {metricLabel(m)}
@@ -548,10 +549,10 @@ function Trends({ crewIds }: { crewIds: { id: string; name: string }[] }) {
           sel
             .filter((m) => data.metrics[m])
             .map((m) => (
-              <div key={m} className="rounded-2xl border border-white/[0.06] bg-ink-850 p-4">
+              <div key={m} className="border-t border-ink-700 pt-3 pb-1">
                 <div className="mb-1.5 flex items-center gap-2 text-xs">
                   <StatusDot level={data.metrics[m].status} size={10} />
-                  <span className="font-bold text-white">
+                  <span className="font-bold text-fg">
                     {t("now {v} {u}", { v: fmt(data.metrics[m].ewma, data.metrics[m].decimals), u: data.metrics[m].unit })}
                   </span>
                   {data.metrics[m].z !== null && data.metrics[m].z !== undefined && (
@@ -585,7 +586,7 @@ function Correlations({ crewIds }: { crewIds: { id: string; name: string }[] }) 
     );
   const byCrew = crewIds.map((c, i) => ({
     ...c,
-    color: CREW_COLORS[i],
+    color: CREW_COLORS()[i],
     pts: (data.scatter ?? []).filter((p) => p.crew_id === c.id),
   }));
   return (
@@ -652,8 +653,8 @@ function Correlations({ crewIds }: { crewIds: { id: string; name: string }[] }) 
             {t("Pearson r. Blue = rise together · red = one rises as the other falls. Correlation is not causation.")}
           </p>
         </div>
-        <div className="h-80 rounded-2xl border border-white/[0.06] bg-ink-850 p-3">
-          <div className="px-2 text-sm font-bold text-white">
+        <div className="h-80 border-t border-ink-700 pt-3 pb-1">
+          <div className="px-2 text-sm font-bold text-fg">
             {data.labels[pair[0]] ?? pair[0]} / {data.labels[pair[1]] ?? pair[1]}
           </div>
           <ResponsiveContainer>
@@ -697,18 +698,18 @@ function CrewCard({
   return (
     <div
       className={cx(
-        "shealth-card flex flex-col justify-between rounded-card border bg-ink-900/95 p-4 shadow-card backdrop-blur-md transition-all",
+        "flex flex-col justify-between rounded-card border bg-ink-900/95 p-4 shadow-card transition-all",
         s?.overall === "red"
           ? "border-bad/60 shadow-glowRed"
           : s?.overall === "amber"
             ? "border-warn/50"
-            : "border-white/[0.06] hover:border-accent/40",
+            : "border-ink-700 hover:border-accent/40",
       )}
     >
       <div>
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
-            <div className="text-lg font-extrabold text-white">{displayName}</div>
+            <div className="text-lg font-extrabold text-fg">{displayName}</div>
             <div className="text-xs text-slate-400">{c.role}</div>
           </div>
           {s && <StatusPill level={s.overall} />}
@@ -729,14 +730,14 @@ function CrewCard({
             {/* Eye-Based Health Check & Tonometer Mini Tile */}
             <button
               onClick={onOpenOcular}
-              className="mt-2.5 flex w-full items-center justify-between rounded-xl border border-accent/25 bg-gradient-to-r from-[#0F2233] to-[#1A162D] px-3 py-2 text-left transition hover:border-accent"
+              className="mt-2.5 flex w-full items-center justify-between border-y border-ink-700 py-2 text-left transition hover:text-accent"
             >
               <div>
-                <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-accent">
+                <div className="flex items-center gap-1 text-[10px] font-bold text-accent">
                   <Icon name="eye" size={12} />
                   {t("Tonometer IOP · Fluid")}
                 </div>
-                <div className="mt-0.5 text-sm font-black tabular-nums text-white">
+                <div className="mt-0.5 text-sm font-black tabular-nums text-fg">
                   {fmt(iopVal, 1)} <span className="text-[11px] font-normal text-slate-400">mmHg</span> ·{" "}
                   <span className="text-telemetry">{fmt(shiftVal, 0)} mL</span>
                 </div>
@@ -745,23 +746,23 @@ function CrewCard({
             </button>
 
             <div className="mt-2 grid grid-cols-3 gap-1.5 text-center text-xs">
-              <div className="rounded-xl bg-ink-850 p-1.5">
+              <div className="border-t border-ink-700 pt-1.5">
                 <div className="text-[10px] text-slate-400">{t("Wellbeing")}</div>
-                <div className="text-sm font-black text-white">{fmt(m.wellbeing?.value, 0)}</div>
+                <div className="text-sm font-black text-fg">{fmt(m.wellbeing?.value, 0)}</div>
               </div>
-              <div className="rounded-xl bg-ink-850 p-1.5">
+              <div className="border-t border-ink-700 pt-1.5">
                 <div className="text-[10px] text-slate-400">{t("Energy bal.")}</div>
-                <div className="text-sm font-black text-white">{fmt(m.energy_balance?.ewma, 0)}</div>
+                <div className="text-sm font-black text-fg">{fmt(m.energy_balance?.ewma, 0)}</div>
               </div>
               {post ? (
                 <div className="rounded-xl bg-telemetry/15 p-1.5">
                   <div className="text-[10px] text-telemetry">{t("Readiness")}</div>
-                  <div className="text-sm font-black text-white">{fmt(m.vest_readiness?.value, 0)}/4</div>
+                  <div className="text-sm font-black text-fg">{fmt(m.vest_readiness?.value, 0)}/4</div>
                 </div>
               ) : (
-                <div className="rounded-xl bg-ink-850 p-1.5">
+                <div className="border-t border-ink-700 pt-1.5">
                   <div className="text-[10px] text-slate-400">{t("Reaction")}</div>
-                  <div className="text-sm font-black text-white">{fmt(m.pvt_rt_ms?.value, 0)}</div>
+                  <div className="text-sm font-black text-fg">{fmt(m.pvt_rt_ms?.value, 0)}</div>
                 </div>
               )}
             </div>
@@ -773,7 +774,7 @@ function CrewCard({
                 </li>
               ))}
               {s.alerts.length > 4 && <li className="text-slate-500">{t("+{n} more", { n: s.alerts.length - 4 })}</li>}
-              {s.alerts.length === 0 && <li className="font-semibold text-ok">✓ {t("No alerts")}</li>}
+              {s.alerts.length === 0 && <li className="font-semibold text-ok"><Icon name="check" size={14} className="mr-1 inline align-[-2px]" />{t("No alerts")}</li>}
             </ul>
             <div className="mt-2 text-xs text-slate-400">
               {t("Tasks: {d}/{n} done · HR {hr}", {
@@ -791,7 +792,7 @@ function CrewCard({
                 </div>
                 <ProgressBar
                   value={p.score ?? 0}
-                  color={(p.score ?? 0) > 0.6 ? "#00E676" : (p.score ?? 0) > 0.3 ? "#FF9100" : "#FF5252"}
+                  color={(p.score ?? 0) > 0.6 ? C.ok : (p.score ?? 0) > 0.3 ? C.warn : C.bad}
                   height={6}
                 />
               </div>
@@ -802,9 +803,9 @@ function CrewCard({
 
       <button
         onClick={onOpen}
-        className="mt-3 min-h-[42px] w-full rounded-full border border-accent/30 bg-accent/10 text-xs font-extrabold text-accent transition hover:bg-accent hover:text-ink-950"
+        className="mt-3 min-h-[42px] w-full rounded-full border border-ink-700 bg-ink-900 text-sm font-bold text-fg transition hover:bg-ink-850"
       >
-        {t("Open details ›")}
+        {t("Open details")}
       </button>
     </div>
   );
@@ -839,10 +840,10 @@ export default function TeamOverview() {
         right={
           <Link
             to="/team/ocular"
-            className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-accent px-5 text-sm font-extrabold text-ink-950 shadow-glowBlue hover:brightness-110"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-ink-700 bg-ink-900 px-5 text-sm font-bold text-fg hover:bg-ink-850"
           >
             <Icon name="eye" size={18} />
-            {t("Open Ocular & Tonometer Command ›")}
+            {t("Open Ocular & Tonometer Command")}
           </Link>
         }
       >
@@ -873,7 +874,7 @@ export default function TeamOverview() {
       <Card title={t("Protocols and response score")}>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[720px] text-left text-sm">
-            <thead className="border-b border-white/[0.06] text-xs uppercase tracking-wider text-slate-400">
+            <thead className="border-b border-ink-700 text-xs text-slate-400">
               <tr>
                 <th className="py-2">{t("Crew")}</th>
                 <th>{t("Protocol")}</th>
@@ -888,15 +889,15 @@ export default function TeamOverview() {
             <tbody>
               {data.crew.flatMap((c, idx) =>
                 (c.state?.protocols ?? []).map((p) => (
-                  <tr key={`${c.id}-${p.protocol_id}`} className="border-t border-white/[0.04] align-top">
-                    <td className="py-2.5 font-bold text-white">{crewLabel(c.id, idx)}</td>
+                  <tr key={`${c.id}-${p.protocol_id}`} className="border-t border-ink-700 align-top">
+                    <td className="py-2.5 font-bold text-fg">{crewLabel(c.id, idx)}</td>
                     <td>{p.label}</td>
                     <td>{dayLabel(p.start_day)}</td>
                     <td>{t(p.started_by)}</td>
                     <td>{p.adherence === null ? "–" : `${Math.round(p.adherence * 100)}%`}</td>
                     <td
                       className="font-black"
-                      style={{ color: (p.score ?? 0) > 0.6 ? "#00E676" : (p.score ?? 0) > 0.3 ? "#FF9100" : "#FF5252" }}
+                      style={{ color: (p.score ?? 0) > 0.6 ? C.ok : (p.score ?? 0) > 0.3 ? C.warn : C.bad }}
                     >
                       {p.score === null ? "–" : `${Math.round(p.score * 100)}%`}
                     </td>
@@ -933,7 +934,7 @@ export default function TeamOverview() {
       <Card title={t("Event log (as received on the ground)")}>
         <div className="max-h-96 overflow-y-auto">
           <table className="w-full text-left text-sm">
-            <thead className="sticky top-0 bg-ink-900 text-xs uppercase tracking-wider text-slate-400">
+            <thead className="sticky top-0 bg-ink-900 text-xs text-slate-400">
               <tr>
                 <th className="py-1.5">#</th>
                 <th>{t("Mission time")}</th>
@@ -944,10 +945,10 @@ export default function TeamOverview() {
             </thead>
             <tbody>
               {evts?.events.map((e) => (
-                <tr key={e.seq} className="border-t border-white/[0.04] align-top">
-                  <td className="py-1.5 font-mono text-xs text-slate-500">{e.seq}</td>
-                  <td className="whitespace-nowrap pr-2 font-mono text-xs">{missionTOf(e.mission_t)}</td>
-                  <td className="whitespace-nowrap pr-2 font-semibold text-white">
+                <tr key={e.seq} className="border-t border-ink-700 align-top">
+                  <td className="py-1.5 tabular-nums text-xs text-slate-500">{e.seq}</td>
+                  <td className="whitespace-nowrap pr-2 tabular-nums text-xs">{missionTOf(e.mission_t)}</td>
+                  <td className="whitespace-nowrap pr-2 font-semibold text-fg">
                     {e.crew_id ? crewLabel(e.crew_id) : e.crew_name}
                   </td>
                   <td

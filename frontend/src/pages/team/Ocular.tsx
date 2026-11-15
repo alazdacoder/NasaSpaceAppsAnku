@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { C } from "../../lib/theme";
 import {
   Area,
   AreaChart,
@@ -224,11 +225,10 @@ export default function TeamOcular() {
       <GroundNote view={detail?.view ?? bodyFallback?.view} />
 
       {statusNote && (
-        <div className="flex items-center justify-between gap-3 rounded-2xl border border-bad/60 bg-bad/15 px-4 py-3 text-sm font-semibold text-white shadow-glowRed">
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-bad/60 bg-bad/15 px-4 py-3 text-sm font-semibold text-fg shadow-glowRed">
           <span>{statusNote}</span>
-          <button onClick={() => setStatusNote(null)} className="text-slate-300 hover:text-white">
-            ✕
-          </button>
+          <button onClick={() => setStatusNote(null)} className="text-slate-300 hover:text-fg">
+            <Icon name="x" size={18} />          </button>
         </div>
       )}
 
@@ -248,26 +248,28 @@ export default function TeamOcular() {
           {crewList.map((c) => {
             const cOc = c.ocular;
             const zone = cOc.safety_zone;
-            const zColor = zone === "critical" ? "#FF5252" : zone === "elevated" ? "#FF9100" : "#00E676";
+            const zColor = zone === "critical" ? C.bad : zone === "elevated" ? C.warn : C.ok;
             const active = c.id === crewId;
             return (
               <button
                 key={c.id}
                 onClick={() => setCrewId(c.id)}
                 className={cx(
-                  "flex flex-col justify-between rounded-2xl border p-4 text-left transition-all",
+                  "flex flex-col justify-between rounded-b-tile border-t-[3px] px-3 pb-3 pt-3 text-left transition-colors",
                   active
-                    ? "border-accent bg-accent/10 shadow-glowBlue"
+                    ? "border-accent bg-accentsoft"
                     : zone === "critical"
-                      ? "border-bad/60 bg-bad/10"
-                      : "border-white/[0.06] bg-ink-850/90 hover:border-white/20",
+                      ? "border-bad hover:bg-ink-850"
+                      : zone === "elevated"
+                        ? "border-warn hover:bg-ink-850"
+                        : "border-ink-700 hover:bg-ink-850",
                 )}
               >
                 <div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-bold text-white">{c.name}</span>
+                    <span className="font-bold text-fg">{c.name}</span>
                     <span
-                      className="rounded-full px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider"
+                      className="rounded-full px-2 py-0.5 text-[10px] font-extrabold"
                       style={{ color: zColor, background: `${zColor}20` }}
                     >
                       {zone === "critical" ? t("Critical") : zone === "elevated" ? t("Elevated") : t("Normal")}
@@ -277,7 +279,7 @@ export default function TeamOcular() {
 
                   <div className="mt-3 flex items-baseline justify-between">
                     <div>
-                      <div className="text-[11px] uppercase tracking-wider text-slate-400">{t("Tonometer IOP")}</div>
+                      <div className="text-[11px] text-slate-400">{t("Tonometer IOP")}</div>
                       <div className="text-2xl font-black tabular-nums" style={{ color: zColor }}>
                         {fmt(cOc.iop_mmhg, 1)} <span className="text-xs font-normal text-slate-400">mmHg</span>
                       </div>
@@ -286,44 +288,44 @@ export default function TeamOcular() {
                       value={cOc.antigravity_fluid.stabilization_pct / 100}
                       size={44}
                       stroke={4}
-                      color="#B388FF"
+                      color={C.rest}
                       label={`${cOc.antigravity_fluid.stabilization_pct}%`}
                     />
                   </div>
 
-                  <div className="mt-2 space-y-1 border-t border-white/[0.06] pt-2 text-xs text-slate-300">
+                  <div className="mt-2 space-y-1 border-t border-ink-700 pt-2 text-xs text-slate-300">
                     <div className="flex justify-between">
                       <span className="text-slate-400">{t("OD / OS")}:</span>
-                      <span className="font-mono font-semibold">
+                      <span className="tabular-nums font-semibold">
                         {fmt(cOc.iop_od_mmhg, 1)} / {fmt(cOc.iop_os_mmhg, 1)}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">{t("ONSD")}:</span>
-                      <span className="font-mono font-semibold text-accent">{fmt(cOc.onsd_mm, 2)} mm</span>
+                      <span className="tabular-nums font-semibold text-accent">{fmt(cOc.onsd_mm, 2)} mm</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">{t("Liquid shift")}:</span>
-                      <span className="font-mono font-semibold text-telemetry">
+                      <span className="tabular-nums font-semibold text-telemetry">
                         {cOc.antigravity_fluid.fluid_shift_ml} mL
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">{t("ICP")}:</span>
-                      <span className="font-mono font-semibold">{fmt(cOc.icp_mmhg, 1)} mmHg</span>
+                      <span className="tabular-nums font-semibold">{fmt(cOc.icp_mmhg, 1)} mmHg</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center justify-between border-t border-white/[0.06] pt-2 text-[11px]">
+                <div className="mt-3 flex items-center justify-between border-t border-ink-700 pt-2 text-[11px]">
                   <span className="text-slate-400">{t("Earth SOS Link")}</span>
                   <span
                     className={cx(
-                      "font-bold uppercase",
+                      "font-bold",
                       cOc.emergency_protocol.failsafe_triggered ? "text-bad" : "text-ok",
                     )}
                   >
-                    {cOc.emergency_protocol.failsafe_triggered ? t("SOS ACTIVE") : t("STANDBY")}
+                    {cOc.emergency_protocol.failsafe_triggered ? t("SOS ACTIVE") : t("Standby")}
                   </span>
                 </div>
               </button>
@@ -353,31 +355,31 @@ export default function TeamOcular() {
               <AreaChart data={oc.trend_24h} margin={{ top: 10, right: 12, left: -10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="teamOcularGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#00E5FF" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="#00E5FF" stopOpacity={0.02} />
+                    <stop offset="0%" stopColor={C.accent} stopOpacity={0.4} />
+                    <stop offset="100%" stopColor={C.accent} stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke={GRID} vertical={false} strokeDasharray="3 3" />
                 <XAxis dataKey="hour" tick={AXIS} interval={2} />
-                <YAxis tick={AXIS} domain={[11, 27]} />
+                <YAxis tick={AXIS} domain={[10, 30]} />
                 <ReferenceLine
                   y={20.5}
-                  stroke="#FF9100"
+                  stroke={C.warn}
                   strokeDasharray="4 4"
-                  label={{ value: t("Elevated (20.5)"), fill: "#FF9100", fontSize: 11, position: "insideTopRight" }}
+                  label={{ value: t("Elevated (20.5)"), fill: C.warn, fontSize: 11, position: "insideTopRight" }}
                 />
                 <ReferenceLine
                   y={24.0}
-                  stroke="#FF5252"
+                  stroke={C.bad}
                   strokeDasharray="3 3"
-                  label={{ value: t("Critical SOS (24.0)"), fill: "#FF5252", fontSize: 11, position: "insideTopLeft" }}
+                  label={{ value: t("Critical SOS (24.0)"), fill: C.bad, fontSize: 11, position: "insideTopLeft" }}
                 />
                 <Tooltip contentStyle={TIP} />
                 <Area
                   type="monotone"
                   dataKey="iop_mmhg"
                   name={t("Intraocular Pressure (mmHg)")}
-                  stroke="#00E5FF"
+                  stroke={C.accent}
                   strokeWidth={2.8}
                   fill="url(#teamOcularGrad)"
                   isAnimationActive={false}
@@ -386,7 +388,7 @@ export default function TeamOcular() {
                   type="monotone"
                   dataKey="icp_mmhg"
                   name={t("Intracranial Pressure (mmHg)")}
-                  stroke="#B388FF"
+                  stroke={C.rest}
                   strokeWidth={2.2}
                   dot={false}
                   strokeDasharray="4 3"
@@ -410,16 +412,16 @@ export default function TeamOcular() {
               stroke={10}
               color={
                 oc.antigravity_fluid.stabilization_status === "anomaly"
-                  ? "#FF5252"
+                  ? C.bad
                   : oc.antigravity_fluid.stabilization_status === "adapting"
-                    ? "#FF9100"
-                    : "#B388FF"
+                    ? C.warn
+                    : C.rest
               }
               label={`${oc.antigravity_fluid.stabilization_pct}%`}
               sub={t("Stabilized")}
             />
             <div className="space-y-1.5 text-sm">
-              <div className="font-bold text-white">
+              <div className="font-bold text-fg">
                 {t("Cephalad Fluid Shift")}:{" "}
                 <span className="text-telemetry">{oc.antigravity_fluid.fluid_shift_ml} mL</span>
               </div>
@@ -437,10 +439,8 @@ export default function TeamOcular() {
             </div>
           </div>
 
-          <div className="mt-4 space-y-2 rounded-2xl border border-white/[0.06] bg-ink-850 p-3.5 text-xs text-slate-300">
-            <div className="font-bold uppercase tracking-wider text-accent">
-              {t("Clinical Countermeasure Protocol")}
-            </div>
+          <div className="mt-4 space-y-2 border-t border-ink-700 pt-3 pb-1.5 text-xs text-slate-300">
+            <h3 className="text-sm font-bold text-fg">{t("Clinical Countermeasure Protocol")}</h3>
             <p>
               •{" "}
               {t(
@@ -497,7 +497,7 @@ export default function TeamOcular() {
         {overview?.history && overview.history.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-white/[0.06] text-xs uppercase tracking-wider text-slate-400">
+              <thead className="border-b border-ink-700 text-xs text-slate-400">
                 <tr>
                   <th className="py-2">{t("Mission Time")}</th>
                   <th>{t("Astronaut")}</th>
@@ -515,9 +515,9 @@ export default function TeamOcular() {
                   const onsdVal = isSos ? p.tonometer?.onsd_mm : p.onsd_mm;
                   const shiftVal = isSos ? p.fluid_dynamics?.fluid_shift_ml : p.fluid_shift_ml;
                   return (
-                    <tr key={h.id} className="border-b border-white/[0.04]">
-                      <td className="py-2.5 font-mono text-xs text-slate-300">{missionTOf(h.mission_t)}</td>
-                      <td className="font-semibold text-white">{crewLabel(h.crew_id)}</td>
+                    <tr key={h.id} className="border-b border-ink-700">
+                      <td className="py-2.5 tabular-nums text-xs text-slate-300">{missionTOf(h.mission_t)}</td>
+                      <td className="font-semibold text-fg">{crewLabel(h.crew_id)}</td>
                       <td>
                         <span
                           className={cx(
@@ -525,13 +525,13 @@ export default function TeamOcular() {
                             isSos ? "bg-bad/20 text-bad" : "bg-accent/15 text-accent",
                           )}
                         >
-                          {isSos ? t("EMERGENCY SOS TO EARTH") : t("Tonometer Calibration")}
+                          {isSos ? t("Emergency SOS to Earth") : t("Tonometer Calibration")}
                         </span>
                       </td>
-                      <td className="font-mono text-white">
+                      <td className="tabular-nums text-fg">
                         {fmt(iopVal, 1)} mmHg · {fmt(onsdVal, 2)} mm
                       </td>
-                      <td className="font-mono text-telemetry">{shiftVal ? `${fmt(shiftVal, 0)} mL` : "–"}</td>
+                      <td className="tabular-nums text-telemetry">{shiftVal ? `${fmt(shiftVal, 0)} mL` : "–"}</td>
                       <td className="text-xs text-slate-300">
                         {isSos ? p.reason : t("Logged in Ground Ophthalmology Database")}
                       </td>

@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { Icon } from "./Icon";
+import { C } from "../lib/theme";
 import { LEVEL_COLOR, dayLabel, duration, fmt, levelText, type Alert, type Level, type Metric, type ViewInfo } from "../lib/api";
 import { t } from "../lib/i18n";
 import { Sparkline } from "./charts";
@@ -9,10 +11,10 @@ export function cx(...c: (string | false | null | undefined)[]) {
 
 export function Card({ children, className, title, right }: { children: ReactNode; className?: string; title?: ReactNode; right?: ReactNode }) {
   return (
-    <section className={cx("shealth-card rounded-card border border-white/[0.06] bg-ink-900/95 p-5 shadow-card backdrop-blur-md sm:p-6", className)}>
+    <section className={cx("rounded-card border border-ink-700 bg-ink-900 p-5 shadow-card sm:p-6", className)}>
       {(title || right) && (
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.05] pb-3">
-          {title && <h2 className="text-base font-bold tracking-tight text-white sm:text-lg">{title}</h2>}
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-ink-700 pb-3">
+          {title && <h2 className="text-base font-bold tracking-tight text-fg sm:text-lg">{title}</h2>}
           {right}
         </div>
       )}
@@ -23,26 +25,25 @@ export function Card({ children, className, title, right }: { children: ReactNod
 
 export function PageTitle({ children, sub, right }: { children: ReactNode; sub?: ReactNode; right?: ReactNode }) {
   return (
-    <div className="relative overflow-hidden rounded-card border border-white/[0.07] bg-gradient-to-r from-[#141A26] via-[#181C24] to-[#1A162B] px-5 py-4 shadow-card sm:px-6 sm:py-5">
-      <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-accent/10 blur-3xl" />
-      <div className="relative flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">{children}</h1>
-          {sub && <p className="mt-1 text-sm text-slate-300 sm:text-base">{sub}</p>}
-        </div>
-        {right}
+    <div className="flex flex-wrap items-end justify-between gap-3 border-b border-ink-700 pb-4 pt-1">
+      <div className="min-w-0">
+        <h1 className="text-[28px] font-extrabold leading-tight tracking-[-0.02em] text-fg sm:text-[34px]">{children}</h1>
+        {sub && <p className="mt-1 max-w-3xl text-[15px] text-slate-400 sm:text-base">{sub}</p>}
       </div>
+      {right}
     </div>
   );
 }
 
+/** Level marker that reads without colour: circle = fine, triangle = watch, diamond = act now. */
 export function StatusDot({ level, size = 14 }: { level: Level; size?: number }) {
+  const c = LEVEL_COLOR[level];
   return (
-    <span
-      aria-label={levelText(level)}
-      className="inline-block shrink-0 rounded-full"
-      style={{ width: size, height: size, background: LEVEL_COLOR[level], boxShadow: `0 0 0 3px ${LEVEL_COLOR[level]}33` }}
-    />
+    <svg width={size} height={size} viewBox="0 0 14 14" role="img" aria-label={levelText(level)} className="inline-block shrink-0">
+      {level === "green" && <circle cx="7" cy="7" r="6" fill={c} />}
+      {level === "amber" && <path d="M7 1.2 13 12.4H1Z" fill={c} strokeLinejoin="round" />}
+      {level === "red" && <path d="M7 .8 13.2 7 7 13.2.8 7Z" fill={c} />}
+    </svg>
   );
 }
 
@@ -60,7 +61,7 @@ export function Unverified({ source, className }: { source?: string; className?:
   return (
     <span
       title={source ? t("Not checked against a NASA source. Source: {s}", { s: t(source) }) : t("Not checked against a NASA source")}
-      className={cx("inline-flex items-center rounded border border-dashed border-warn/70 px-1.5 py-0 text-[11px] font-semibold uppercase tracking-wide text-warn", className)}
+      className={cx("inline-flex items-center rounded border border-dashed border-warn/70 px-1.5 py-0 text-[11px] font-semibold text-warn", className)}
     >
       {t("unverified")}
     </span>
@@ -70,7 +71,7 @@ export function Unverified({ source, className }: { source?: string; className?:
 export function SourceTag({ verified, source }: { verified: boolean; source?: string }) {
   if (!verified) return <Unverified source={source} />;
   return (
-    <span title={source} className="inline-flex items-center rounded border border-ok/40 px-1.5 text-[11px] font-semibold uppercase tracking-wide text-ok">
+    <span title={source} className="inline-flex items-center rounded border border-ok/40 px-1.5 text-[11px] font-semibold text-ok">
       {t("verified")}
     </span>
   );
@@ -81,10 +82,10 @@ export function Button({ children, onClick, kind = "primary", className, disable
   disabled?: boolean; title?: string; type?: "button" | "submit";
 }) {
   const k = {
-    primary: "bg-accent text-ink-950 hover:brightness-110",
-    ok: "bg-ok text-ink-950 hover:brightness-110",
-    danger: "bg-bad text-ink-950 hover:brightness-110",
-    ghost: "bg-ink-800 text-slate-100 hover:bg-ink-700",
+    primary: "bg-accent text-white shadow-glowBlue hover:brightness-110",
+    ok: "bg-ok text-white hover:brightness-110",
+    danger: "bg-badfill text-white hover:brightness-110",
+    ghost: "border border-ink-700 bg-ink-900 text-fg hover:bg-ink-850",
   }[kind];
   return (
     <button
@@ -99,39 +100,35 @@ export function Button({ children, onClick, kind = "primary", className, disable
   );
 }
 
-export function ProgressBar({ value, color = "#00E5FF", height = 10, marker }: { value: number; color?: string; height?: number; marker?: number }) {
+export function ProgressBar({ value, color = C.accent, height = 10, marker }: { value: number; color?: string; height?: number; marker?: number }) {
   const v = Math.max(0, Math.min(1, value));
   return (
-    <div className="relative w-full overflow-hidden rounded-full bg-ink-950/90 ring-1 ring-white/[0.06]" style={{ height }}>
-      <div className="h-full rounded-full transition-all duration-500" style={{ width: `${v * 100}%`, background: color, boxShadow: `0 0 12px ${color}66` }} />
+    <div className="relative w-full overflow-hidden rounded-full bg-ink-800" style={{ height }}>
+      <div className="h-full rounded-full transition-all duration-500" style={{ width: `${v * 100}%`, background: color }} />
       {marker !== undefined && (
-        <div className="absolute top-0 h-full w-0.5 bg-white/90" style={{ left: `${Math.max(0, Math.min(1, marker)) * 100}%` }} />
+        <div className="absolute top-0 h-full w-0.5 bg-fg" style={{ left: `${Math.max(0, Math.min(1, marker)) * 100}%` }} />
       )}
     </div>
   );
 }
 
 export function AlertCard({ alert, compact }: { alert: Alert; compact?: boolean }) {
-  const border = { green: "border-ok/40 shadow-glowGreen", amber: "border-warn/60 shadow-glowAmber", red: "border-bad/70 shadow-glowRed" }[alert.level];
-  const bg = {
-    green: "bg-gradient-to-br from-ok/10 via-ink-900 to-ink-900",
-    amber: "bg-gradient-to-br from-warn/12 via-ink-900 to-ink-900",
-    red: "bg-gradient-to-br from-bad/15 via-ink-900 to-ink-900",
-  }[alert.level];
+  const border = { green: "border-ok/35", amber: "border-warn/45", red: "border-bad/55" }[alert.level];
+  const bg = { green: "bg-ink-900", amber: "bg-warnsoft", red: "bg-badsoft" }[alert.level];
   return (
-    <div className={cx("rounded-3xl border p-5 backdrop-blur-md", border, bg)}>
+    <div className={cx("rounded-tile border p-5 shadow-card", border, bg)}>
       <div className="flex flex-wrap items-center gap-2.5">
         <StatusDot level={alert.level} />
-        <span className="text-lg font-bold text-white">{alert.title}</span>
+        <span className="text-lg font-bold text-fg">{alert.title}</span>
         {alert.kind === "cross" && <span className="rounded-full bg-accent/15 px-2.5 py-0.5 text-xs font-bold text-accent">{t("cross-source")}</span>}
         {!alert.verified && <Unverified source={alert.source} />}
       </div>
-      <p className="mt-1.5 text-slate-300"><span className="font-semibold text-white">{t("Why:")} </span>{alert.reason}</p>
+      <p className="mt-1.5 text-slate-300"><span className="font-semibold text-fg">{t("Why:")} </span>{alert.reason}</p>
       {!compact && alert.recs.length > 0 && (
         <ul className="mt-2.5 space-y-1.5">
           {alert.recs.map((r) => (
             <li key={r.id} className="flex flex-wrap items-start gap-2 text-slate-100">
-              <span className="mt-0.5 font-bold text-accent">→</span>
+              <Icon name="chevron" size={16} className="mt-1 shrink-0 text-accent" />
               <span className="flex-1">{r.text}</span>
               {!r.verified && <Unverified source={r.source} />}
             </li>
@@ -144,17 +141,13 @@ export function AlertCard({ alert, compact }: { alert: Alert; compact?: boolean 
 
 /** Astronaut view: one plain sentence and the first thing to do. */
 export function SimpleAlert({ alert }: { alert: Alert }) {
-  const border = { green: "border-ok/40", amber: "border-warn/60", red: "border-bad/70 shadow-glowRed" }[alert.level];
-  const bg = {
-    green: "bg-gradient-to-r from-ok/10 to-ink-850",
-    amber: "bg-gradient-to-r from-warn/12 to-ink-850",
-    red: "bg-gradient-to-r from-bad/15 to-ink-850",
-  }[alert.level];
+  const border = { green: "border-ok/35", amber: "border-warn/45", red: "border-bad/55" }[alert.level];
+  const bg = { green: "bg-ink-900", amber: "bg-warnsoft", red: "bg-badsoft" }[alert.level];
   return (
-    <div className={cx("rounded-3xl border p-5", border, bg)}>
-      <div className="flex items-center gap-2.5 text-lg font-bold text-white"><StatusDot level={alert.level} />{alert.title}</div>
+    <div className={cx("rounded-tile border p-5 shadow-card", border, bg)}>
+      <div className="flex items-center gap-2.5 text-lg font-bold text-fg"><StatusDot level={alert.level} />{alert.title}</div>
       <p className="mt-1 text-slate-300">{alert.reason}</p>
-      {alert.recs[0] && <p className="mt-1.5 font-semibold text-accent">→ {alert.recs[0].text}</p>}
+      {alert.recs[0] && <p className="mt-1.5 flex items-start gap-1.5 font-semibold text-accent"><Icon name="chevron" size={16} className="mt-1 shrink-0 text-accent" /><span>{alert.recs[0].text}</span></p>}
     </div>
   );
 }
@@ -168,17 +161,16 @@ function baselineText(m: Metric, personal: boolean): string {
 export function MetricCard({ m, showChart = true, big, personal = true }: { m: Metric; showChart?: boolean; big?: boolean; personal?: boolean }) {
   const val = m.ewma ?? m.value;
   return (
-    <div className={cx("rounded-2xl border bg-ink-850/90 p-4 backdrop-blur-sm transition-colors",
-      m.status === "red" ? "border-bad/60 shadow-glowRed" : m.status === "amber" ? "border-warn/50 shadow-glowAmber" : "border-white/[0.06] hover:border-accent/30")}>
+    <div className={cx("border-t pb-1 pt-3", m.status === "red" ? "border-t-2 border-bad" : m.status === "amber" ? "border-t-2 border-warn" : "border-ink-700")}>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-400">
             {m.label}
             {!m.verified && m.has_rules && <Unverified source={m.thresholds.find((x) => !x.verified)?.source ?? m.estimate_note ?? undefined} />}
             {m.estimate_note && <Unverified source={m.estimate_note} />}
           </div>
           <div className="mt-1.5 flex items-baseline gap-1.5">
-            <span className={cx("font-black tracking-tight tabular-nums text-white", big ? "text-4xl" : "text-3xl")}>{fmt(val, m.decimals)}</span>
+            <span className={cx("font-black tracking-tight tabular-nums text-fg", big ? "text-4xl" : "text-3xl")}>{fmt(val, m.decimals)}</span>
             <span className="text-sm font-medium text-slate-400">{m.unit}</span>
           </div>
         </div>
@@ -198,7 +190,7 @@ export function MetricCard({ m, showChart = true, big, personal = true }: { m: M
       )}
       <p className="mt-2 text-sm leading-snug text-slate-300">{m.meaning}</p>
       {m.triggered?.length > 0 && (
-        <p className="mt-1 text-sm font-semibold" style={{ color: m.status === "red" ? "#FF5252" : "#FF9100" }}>{m.triggered[0].reason}</p>
+        <p className="mt-1 text-sm font-semibold" style={{ color: m.status === "red" ? C.bad : C.warn }}>{m.triggered[0].reason}</p>
       )}
       <div className="mt-1.5 text-[11px] text-slate-500">
         {t("smoothed (EWMA) · last raw {v} · 7-day slope {s}/day", { v: fmt(m.value, m.decimals), s: fmt(m.slope, Math.max(1, m.decimals)) })}
@@ -214,15 +206,14 @@ export function SimpleMetric({ m, value, unit, label }: { m?: Metric; value?: nu
   const v = value !== undefined ? value : m.ewma ?? m.value;
   const word = !m.has_rules ? null : m.status === "green" ? t("Normal") : m.status === "amber" ? t("Watch") : t("Act now");
   return (
-    <div className={cx("rounded-2xl border bg-ink-850/90 p-4 backdrop-blur-sm transition-colors",
-      m.status === "red" ? "border-bad/60 shadow-glowRed" : m.status === "amber" ? "border-warn/50" : "border-white/[0.06] hover:border-accent/30")}>
+    <div className={cx("border-t pb-1 pt-3", m.status === "red" ? "border-t-2 border-bad" : m.status === "amber" ? "border-t-2 border-warn" : "border-ink-700")}>
       <div className="flex items-start justify-between gap-2">
         <div className="text-sm font-semibold text-slate-200">{label ?? m.label}</div>
         {word && <span className={cx("rounded-full px-2.5 py-0.5 text-xs font-bold",
           m.status === "green" ? "bg-ok/15 text-ok" : m.status === "amber" ? "bg-warn/15 text-warn" : "bg-bad/15 text-bad")}>{word}</span>}
       </div>
       <div className="mt-1.5 flex items-baseline gap-1.5">
-        <span className="text-4xl font-black tracking-tight tabular-nums text-white">{fmt(v, m.decimals)}</span>
+        <span className="text-4xl font-black tracking-tight tabular-nums text-fg">{fmt(v, m.decimals)}</span>
         <span className="text-base font-medium text-slate-400">{unit ?? m.unit}</span>
       </div>
       {m.baseline_mean !== null && m.baseline_mean !== undefined && (
@@ -239,10 +230,10 @@ export function Empty({ text }: { text?: string }) {
 
 export function Stat({ label, value, unit, sub, color }: { label: string; value: ReactNode; unit?: string; sub?: ReactNode; color?: string }) {
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-ink-850/90 p-4 backdrop-blur-sm">
-      <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">{label}</div>
+    <div className="border-t border-ink-700 pb-1 pt-3">
+      <div className="text-xs font-semibold text-slate-400">{label}</div>
       <div className="mt-1 flex items-baseline gap-1.5">
-        <span className="text-3xl font-black tracking-tight tabular-nums text-white" style={color ? { color } : undefined}>{value}</span>
+        <span className="text-3xl font-black tracking-tight tabular-nums text-fg" style={color ? { color } : undefined}>{value}</span>
         {unit && <span className="text-sm font-medium text-slate-400">{unit}</span>}
       </div>
       {sub && <div className="mt-1 text-xs text-slate-400">{sub}</div>}
@@ -254,11 +245,11 @@ export function Seg<T extends string>({ value, options, onChange, size = "md" }:
   value: T; options: { id: T; label: ReactNode }[]; onChange: (v: T) => void; size?: "sm" | "md";
 }) {
   return (
-    <div className="flex flex-wrap gap-1 rounded-full border border-white/[0.06] bg-ink-850 p-1">
+    <div className="flex flex-wrap gap-1 rounded-full border border-ink-700 bg-ink-850 p-1">
       {options.map((o) => (
         <button key={o.id} onClick={() => onChange(o.id)} aria-pressed={value === o.id}
           className={cx("rounded-full px-4 font-semibold transition", size === "sm" ? "min-h-[36px] text-sm" : "min-h-[44px]",
-            value === o.id ? "bg-accent text-ink-950 shadow-glowBlue font-bold" : "text-slate-300 hover:bg-ink-700")}>
+            value === o.id ? "bg-fg text-ink-950 font-bold" : "text-slate-300 hover:bg-ink-700")}>
           {o.label}
         </button>
       ))}
@@ -270,7 +261,7 @@ export function Seg<T extends string>({ value, options, onChange, size = "md" }:
 export function GroundNote({ view }: { view?: ViewInfo }) {
   if (!view || view.side !== "ground") return null;
   return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border border-accent/30 bg-accent/10 px-4 py-2.5 text-sm text-slate-200 backdrop-blur-md">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-tile border border-limb/60 bg-accentsoft px-4 py-2.5 text-sm text-slate-200">
       <span className="inline-flex items-center gap-1.5 font-bold text-accent">
         <span className="h-2 w-2 rounded-full bg-accent" />
         {t("Ground copy")}

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { C } from "../../lib/theme";
 import { SimpleLine } from "../../components/charts";
 import { Icon } from "../../components/Icon";
 import { Ring } from "../../components/Ring";
@@ -54,12 +55,12 @@ function CheckIn({
   return (
     <Card
       title={t("Daily check-in")}
-      right={today && !saved ? <span className="text-sm font-bold text-ok">✓ {t("done today, you can change it")}</span> : undefined}
+      right={today && !saved ? <span className="text-sm font-bold text-ok"><Icon name="check" size={14} className="mr-1 inline align-[-2px]" />{t("done today, you can change it")}</span> : undefined}
     >
       <div className="space-y-5">
         {QUESTIONS.map((q) => (
           <div key={q.key}>
-            <div className="mb-2 text-base font-bold text-white">{t(q.q)}</div>
+            <div className="mb-2 text-base font-bold text-fg">{t(q.q)}</div>
             <Rating
               value={vals[q.key]}
               onChange={(v) => {
@@ -161,7 +162,7 @@ function ReactionTest({
             : state === "early"
               ? "border border-bad/50 bg-bad/25 text-bad"
               : state === "wait"
-                ? "border border-white/10 bg-ink-850 text-slate-300"
+                ? "border border-ink-700 bg-ink-850 text-slate-300"
                 : "bg-accent text-ink-950 shadow-glowBlue",
         )}
       >
@@ -203,7 +204,7 @@ export default function Mind() {
   const wb = m.wellbeing;
   const wbVal = wb?.value;
   const wbWord = wbVal === null || wbVal === undefined ? "–" : wbVal >= 65 ? t("Good") : wbVal >= 50 ? t("Okay") : t("Low");
-  const wbColor = wbVal !== undefined && wbVal !== null && wbVal >= 65 ? "#00E676" : wbVal !== undefined && wbVal !== null && wbVal >= 50 ? "#FF9100" : "#FF5252";
+  const wbColor = wbVal !== undefined && wbVal !== null && wbVal >= 65 ? C.ok : wbVal !== undefined && wbVal !== null && wbVal >= 50 ? C.warn : C.bad;
 
   return (
     <div className="mx-auto max-w-5xl space-y-5">
@@ -216,7 +217,7 @@ export default function Mind() {
 
       <div className="grid gap-5 md:grid-cols-[1fr_1.2fr]">
         <Card
-          className="border-telemetry/30 bg-gradient-to-br from-[#231438] via-[#181C24] to-[#181C24]"
+          className="border-telemetry/30 bg-ink-900"
           title={
             <span className="flex items-center gap-2">
               <Icon name="mind" size={18} className="text-telemetry" />
@@ -227,7 +228,7 @@ export default function Mind() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="flex items-baseline gap-2.5">
-                <span className="text-5xl font-black tabular-nums text-white">{fmt(wbVal, 0)}</span>
+                <span className="text-5xl font-black tabular-nums text-fg">{fmt(wbVal, 0)}</span>
                 <span className="text-lg text-slate-400">/100</span>
                 <span
                   className="rounded-full px-3 py-0.5 text-sm font-extrabold"
@@ -240,18 +241,18 @@ export default function Mind() {
                 {t("from yesterday's check-in · your normal {n}", { n: fmt(wb?.baseline_mean, 0) })}
               </div>
             </div>
-            <Ring value={(wbVal ?? 75) / 100} size={76} stroke={7} color="#B388FF" label={`${fmt(wbVal, 0)}`} />
+            <Ring value={(wbVal ?? 75) / 100} size={76} stroke={7} color={C.rest} label={`${fmt(wbVal, 0)}`} />
           </div>
           <div className="mt-3">
-            <SimpleLine m={wb} days={14} height={130} color="#B388FF" />
+            <SimpleLine m={wb} days={14} height={130} color={C.rest} />
           </div>
           <div className="mt-3 grid grid-cols-2 gap-2.5 text-sm">
             {(["stress", "tiredness", "connection"] as const).map(
               (k) =>
                 m[k] && (
-                  <div key={k} className="rounded-2xl border border-white/[0.06] bg-ink-850 px-3.5 py-2.5">
+                  <div key={k} className="rounded-2xl border border-ink-700 bg-ink-850 px-3.5 py-2.5">
                     <div className="text-xs text-slate-400">{m[k].label}</div>
-                    <div className="text-xl font-black text-white">
+                    <div className="text-xl font-black text-fg">
                       {fmt(m[k].ewma, 1)}
                       <span className="text-xs font-normal text-slate-400">/5</span>
                     </div>
@@ -259,7 +260,7 @@ export default function Mind() {
                 ),
             )}
             {m.pvt_rt_ms && (
-              <div className="rounded-2xl border border-white/[0.06] bg-ink-850 px-3.5 py-2.5">
+              <div className="rounded-2xl border border-ink-700 bg-ink-850 px-3.5 py-2.5">
                 <div className="text-xs text-slate-400">{t("Reaction time")}</div>
                 <div className="text-xl font-black text-accent">
                   {fmt(m.pvt_rt_ms.value, 0)}
@@ -275,7 +276,7 @@ export default function Mind() {
           ))}
           {data.alerts.length === 0 && (
             <div className="rounded-3xl border border-ok/40 bg-ok/10 p-4 text-base font-bold text-ok">
-              ✓ {t("No concerns. Keep looking after yourself.")}
+              <Icon name="check" size={14} className="mr-1 inline align-[-2px]" />{t("No concerns. Keep looking after yourself.")}
             </div>
           )}
           {!data.live_calls_possible && (
@@ -296,7 +297,7 @@ export default function Mind() {
                   ]
               ).map((x, i) => (
                 <li key={i} className="flex gap-2.5">
-                  <span className="font-bold text-accent">→</span>
+                  <Icon name="chevron" size={16} className="mt-1 shrink-0 text-accent" />
                   <span>{x}</span>
                 </li>
               ))}

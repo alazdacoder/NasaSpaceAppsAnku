@@ -1,4 +1,5 @@
 import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { C } from "../../lib/theme";
 import { AXIS, GRID, TIP, TrendBlock } from "../../components/charts";
 import { AlertCard, Card, Empty, GroundNote, MetricCard, PageTitle, ProgressBar, Stat, Unverified } from "../../components/ui";
 import { dayLabel, dayTick, fmt, usePoll } from "../../lib/api";
@@ -8,7 +9,7 @@ import { BalanceChart, ReadinessRing, type Effects, type ReturnData } from "../c
 
 function EffectsTable({ e, title }: { e: Effects; title: string }) {
   return (
-    <div className="rounded-xl bg-ink-850 p-3">
+    <div className="border-t border-ink-700 pt-3 pb-1">
       <div className="mb-2 font-semibold">{title}</div>
       <table className="w-full text-sm">
         <tbody>
@@ -77,10 +78,10 @@ export default function TeamVestibular() {
           : <EffectsTable e={data.prediction.if_all_training} title={t("Prediction if all pre-landing training is done")} />}
         <Card title={t("Pre-landing training")}>
           <div className="text-4xl font-bold">{data.prediction.training_done}<span className="text-lg text-slate-400">/{data.prediction.training_planned}</span></div>
-          <div className="my-2"><ProgressBar value={data.prediction.training_done / data.prediction.training_planned} color="#B388FF" /></div>
+          <div className="my-2"><ProgressBar value={data.prediction.training_done / data.prediction.training_planned} color={C.rest} /></div>
           <p className="text-sm text-slate-300">{t("Window opens {d}. Full training lowers landing effects by {p}% in the model.", { d: dayLabel(data.prediction.training_window_start), p: Math.round(data.model.training_benefit * 100) })}</p>
           {data.recovery && (
-            <div className="mt-3 rounded-xl bg-ink-850 p-3">
+            <div className="mt-3 border-t border-ink-700 pt-3 pb-1">
               <div className="font-semibold">{t("Balance recovery (measured)")}</div>
               <div className="text-sm text-slate-300">
                 {t("{p}% recovered from {a} to {b} toward baseline {c}", { p: Math.round(data.recovery.progress * 100), a: fmt(data.recovery.start, 0), b: fmt(data.recovery.current, 0), c: fmt(data.recovery.baseline, 0) })}
@@ -108,9 +109,9 @@ export default function TeamVestibular() {
                       <CartesianGrid stroke={GRID} vertical={false} />
                       <XAxis dataKey="day" tick={AXIS} tickFormatter={dayTick} />
                       <YAxis tick={AXIS} width={30} domain={[0, 4]} allowDecimals={false} />
-                      <ReferenceLine y={4} stroke="#00E676" strokeDasharray="4 4" />
+                      <ReferenceLine y={4} stroke={C.ok} strokeDasharray="4 4" />
                       <Tooltip contentStyle={TIP} labelFormatter={(d) => dayLabel(Number(d))} />
-                      <Line type="stepAfter" dataKey="value" name={t("Level")} stroke="#B388FF" strokeWidth={3} dot={{ r: 4 }} isAnimationActive={false} />
+                      <Line type="stepAfter" dataKey="value" name={t("Level")} stroke={C.rest} strokeWidth={3} dot={{ r: 4 }} isAnimationActive={false} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>

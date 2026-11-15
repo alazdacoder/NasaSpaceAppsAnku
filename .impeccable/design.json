@@ -1,0 +1,859 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-15T07:34:36+00:00",
+  "title": "Design System: SHMS (Space Health Management System)",
+  "extensions": {
+    "colorMeta": {
+      "cloud-ground": {
+        "role": "neutral",
+        "displayName": "Cloud Ground",
+        "canonical": "rgb(244 247 250)",
+        "tonalRamp": [
+          "#B9C9D9",
+          "#D5E0EB",
+          "#E6EDF4",
+          "#EEF3F8",
+          "#F1F5F9",
+          "#F4F7FA",
+          "#F9FBFC",
+          "#FFFFFF"
+        ]
+      },
+      "card-white": {
+        "role": "neutral",
+        "displayName": "Card White",
+        "canonical": "rgb(255 255 255)",
+        "tonalRamp": [
+          "#B9C9D9",
+          "#D5E0EB",
+          "#E6EDF4",
+          "#EEF3F8",
+          "#F1F5F9",
+          "#F4F7FA",
+          "#F9FBFC",
+          "#FFFFFF"
+        ]
+      },
+      "soft-tile": {
+        "role": "neutral",
+        "displayName": "Soft Tile",
+        "canonical": "rgb(241 245 249)",
+        "tonalRamp": [
+          "#B9C9D9",
+          "#D5E0EB",
+          "#E6EDF4",
+          "#EEF3F8",
+          "#F1F5F9",
+          "#F4F7FA",
+          "#F9FBFC",
+          "#FFFFFF"
+        ]
+      },
+      "well": {
+        "role": "neutral",
+        "displayName": "Well",
+        "canonical": "rgb(230 237 244)",
+        "tonalRamp": [
+          "#B9C9D9",
+          "#D5E0EB",
+          "#E6EDF4",
+          "#EEF3F8",
+          "#F1F5F9",
+          "#F4F7FA",
+          "#F9FBFC",
+          "#FFFFFF"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "rgb(213 224 235)",
+        "tonalRamp": [
+          "#B9C9D9",
+          "#D5E0EB",
+          "#E6EDF4",
+          "#EEF3F8",
+          "#F1F5F9",
+          "#F4F7FA",
+          "#F9FBFC",
+          "#FFFFFF"
+        ]
+      },
+      "hairline-strong": {
+        "role": "neutral",
+        "displayName": "Hairline Strong",
+        "canonical": "rgb(185 201 217)",
+        "tonalRamp": [
+          "#B9C9D9",
+          "#D5E0EB",
+          "#E6EDF4",
+          "#EEF3F8",
+          "#F1F5F9",
+          "#F4F7FA",
+          "#F9FBFC",
+          "#FFFFFF"
+        ]
+      },
+      "ocean-ink": {
+        "role": "neutral",
+        "displayName": "Ocean Ink",
+        "canonical": "rgb(14 42 71)",
+        "tonalRamp": [
+          "#0A2038",
+          "#0E2A47",
+          "#14365A",
+          "#2A4A6B",
+          "#4A6582",
+          "#56708C",
+          "#7B90A6",
+          "#9FB2C4"
+        ]
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Ink Secondary",
+        "canonical": "rgb(74 101 130)",
+        "tonalRamp": [
+          "#0A2038",
+          "#0E2A47",
+          "#14365A",
+          "#2A4A6B",
+          "#4A6582",
+          "#56708C",
+          "#7B90A6",
+          "#9FB2C4"
+        ]
+      },
+      "ink-tertiary": {
+        "role": "neutral",
+        "displayName": "Ink Tertiary",
+        "canonical": "rgb(86 112 140)",
+        "tonalRamp": [
+          "#0A2038",
+          "#0E2A47",
+          "#14365A",
+          "#2A4A6B",
+          "#4A6582",
+          "#56708C",
+          "#7B90A6",
+          "#9FB2C4"
+        ]
+      },
+      "ink-faint": {
+        "role": "neutral",
+        "displayName": "Ink Faint",
+        "canonical": "rgb(123 144 166)",
+        "tonalRamp": [
+          "#0A2038",
+          "#0E2A47",
+          "#14365A",
+          "#2A4A6B",
+          "#4A6582",
+          "#56708C",
+          "#7B90A6",
+          "#9FB2C4"
+        ]
+      },
+      "atmosphere-blue": {
+        "role": "primary",
+        "displayName": "Atmosphere Blue",
+        "canonical": "rgb(47 127 216)",
+        "tonalRamp": [
+          "#112C4D",
+          "#1B487C",
+          "#2564AA",
+          "#2F7FD8",
+          "#6DA5E4",
+          "#A1C5ED",
+          "#CBDFF5",
+          "#EAF2FB"
+        ]
+      },
+      "atmosphere-blue-soft": {
+        "role": "primary",
+        "displayName": "Atmosphere Blue Soft",
+        "canonical": "rgb(232 242 252)",
+        "tonalRamp": [
+          "#3F4956",
+          "#78828E",
+          "#B0BAC5",
+          "#E8F2FC",
+          "#EFF6FD",
+          "#F5F9FE",
+          "#F9FCFE",
+          "#FDFEFF"
+        ]
+      },
+      "limb-blue": {
+        "role": "secondary",
+        "displayName": "Limb Blue",
+        "canonical": "rgb(127 196 245)",
+        "tonalRamp": [
+          "#253E54",
+          "#436A8A",
+          "#6197C0",
+          "#7FC4F5",
+          "#A5D6F8",
+          "#C5E4FA",
+          "#DFF0FC",
+          "#F2F9FE"
+        ]
+      },
+      "sun-amber": {
+        "role": "tertiary",
+        "displayName": "Sun Amber",
+        "canonical": "rgb(232 163 61)",
+        "tonalRamp": [
+          "#3F3626",
+          "#785A2E",
+          "#B07E36",
+          "#E8A33D",
+          "#EFBF77",
+          "#F5D6A8",
+          "#F9E8CE",
+          "#FDF6EC"
+        ]
+      },
+      "state-ok": {
+        "role": "state",
+        "displayName": "State Ok",
+        "canonical": "rgb(23 131 79)",
+        "tonalRamp": [
+          "#0B2E2B",
+          "#0F4A37",
+          "#136643",
+          "#17834F",
+          "#5DA884",
+          "#97C7B0",
+          "#C5E0D3",
+          "#E8F3ED"
+        ]
+      },
+      "state-warn": {
+        "role": "state",
+        "displayName": "State Warn",
+        "canonical": "rgb(180 95 0)",
+        "tonalRamp": [
+          "#322417",
+          "#5E3810",
+          "#894C08",
+          "#B45F00",
+          "#CA8F4C",
+          "#DDB78C",
+          "#ECD7BF",
+          "#F8EFE6"
+        ]
+      },
+      "state-warn-soft": {
+        "role": "state",
+        "displayName": "State Warn Soft",
+        "canonical": "rgb(255 248 238)",
+        "tonalRamp": [
+          "#454B53",
+          "#838486",
+          "#C1BEBA",
+          "#FFF8EE",
+          "#FFFAF3",
+          "#FFFCF7",
+          "#FFFDFB",
+          "#FFFEFD"
+        ]
+      },
+      "state-bad": {
+        "role": "state",
+        "displayName": "State Bad",
+        "canonical": "rgb(198 47 69)",
+        "tonalRamp": [
+          "#371828",
+          "#662032",
+          "#96283C",
+          "#C62F45",
+          "#D76D7D",
+          "#E5A1AB",
+          "#F1CBD0",
+          "#F9EAEC"
+        ]
+      },
+      "state-bad-soft": {
+        "role": "state",
+        "displayName": "State Bad Soft",
+        "canonical": "rgb(255 243 244)",
+        "tonalRamp": [
+          "#454A54",
+          "#83828A",
+          "#C1BABF",
+          "#FFF3F4",
+          "#FFF7F7",
+          "#FFFAFA",
+          "#FFFCFC",
+          "#FFFEFE"
+        ]
+      },
+      "danger-fill": {
+        "role": "state",
+        "displayName": "Danger Fill",
+        "canonical": "rgb(198 47 69)",
+        "tonalRamp": [
+          "#371828",
+          "#662032",
+          "#96283C",
+          "#C62F45",
+          "#D76D7D",
+          "#E5A1AB",
+          "#F1CBD0",
+          "#F9EAEC"
+        ]
+      },
+      "energy-ochre": {
+        "role": "data",
+        "displayName": "Energy Ochre",
+        "canonical": "rgb(163 106 18)",
+        "tonalRamp": [
+          "#2E271C",
+          "#553E18",
+          "#7C5415",
+          "#A36A12",
+          "#BF9759",
+          "#D6BC94",
+          "#E8DAC4",
+          "#F6F0E7"
+        ]
+      },
+      "ground-navy": {
+        "role": "data",
+        "displayName": "Ground Navy",
+        "canonical": "rgb(44 90 138)",
+        "tonalRamp": [
+          "#10233A",
+          "#1A3654",
+          "#23486F",
+          "#2C5A8A",
+          "#6B8CAD",
+          "#A0B5CA",
+          "#CAD6E2",
+          "#EAEEF3"
+        ]
+      },
+      "night-ground": {
+        "role": "neutral",
+        "displayName": "Night Ground (Cupola Night)",
+        "canonical": "rgb(7 17 31)",
+        "tonalRamp": [
+          "#07111F",
+          "#0A1627",
+          "#0E1D32",
+          "#13253E",
+          "#192E4C",
+          "#243C5E",
+          "#38547A",
+          "#4E6582"
+        ]
+      },
+      "night-card": {
+        "role": "neutral",
+        "displayName": "Night Card (Cupola Night)",
+        "canonical": "rgb(14 29 50)",
+        "tonalRamp": [
+          "#07111F",
+          "#0A1627",
+          "#0E1D32",
+          "#13253E",
+          "#192E4C",
+          "#243C5E",
+          "#38547A",
+          "#4E6582"
+        ]
+      },
+      "night-soft-tile": {
+        "role": "neutral",
+        "displayName": "Night Soft Tile (Cupola Night)",
+        "canonical": "rgb(19 37 62)",
+        "tonalRamp": [
+          "#07111F",
+          "#0A1627",
+          "#0E1D32",
+          "#13253E",
+          "#192E4C",
+          "#243C5E",
+          "#38547A",
+          "#4E6582"
+        ]
+      },
+      "night-well": {
+        "role": "neutral",
+        "displayName": "Night Well (Cupola Night)",
+        "canonical": "rgb(25 46 76)",
+        "tonalRamp": [
+          "#07111F",
+          "#0A1627",
+          "#0E1D32",
+          "#13253E",
+          "#192E4C",
+          "#243C5E",
+          "#38547A",
+          "#4E6582"
+        ]
+      },
+      "night-hairline": {
+        "role": "neutral",
+        "displayName": "Night Hairline (Cupola Night)",
+        "canonical": "rgb(36 60 94)",
+        "tonalRamp": [
+          "#07111F",
+          "#0A1627",
+          "#0E1D32",
+          "#13253E",
+          "#192E4C",
+          "#243C5E",
+          "#38547A",
+          "#4E6582"
+        ]
+      },
+      "night-hairline-strong": {
+        "role": "neutral",
+        "displayName": "Night Hairline Strong (Cupola Night)",
+        "canonical": "rgb(56 84 122)",
+        "tonalRamp": [
+          "#07111F",
+          "#0A1627",
+          "#0E1D32",
+          "#13253E",
+          "#192E4C",
+          "#243C5E",
+          "#38547A",
+          "#4E6582"
+        ]
+      },
+      "night-ink": {
+        "role": "neutral",
+        "displayName": "Night Ink (Cupola Night)",
+        "canonical": "rgb(232 240 248)",
+        "tonalRamp": [
+          "#3F4955",
+          "#78808C",
+          "#B0B8C2",
+          "#E8F0F8",
+          "#EFF4FA",
+          "#F5F8FC",
+          "#F9FBFD",
+          "#FDFEFE"
+        ]
+      },
+      "night-ink-secondary": {
+        "role": "neutral",
+        "displayName": "Night Ink Secondary (Cupola Night)",
+        "canonical": "rgb(154 177 202)",
+        "tonalRamp": [
+          "#2C394A",
+          "#506174",
+          "#75899F",
+          "#9AB1CA",
+          "#B8C8DA",
+          "#D2DCE7",
+          "#E6ECF2",
+          "#F5F7FA"
+        ]
+      },
+      "night-ink-tertiary": {
+        "role": "neutral",
+        "displayName": "Night Ink Tertiary (Cupola Night)",
+        "canonical": "rgb(134 158 186)",
+        "tonalRamp": [
+          "#273446",
+          "#46586C",
+          "#667B93",
+          "#869EBA",
+          "#AABBCF",
+          "#C9D3E0",
+          "#E1E7EE",
+          "#F3F5F8"
+        ]
+      },
+      "night-atmosphere-blue": {
+        "role": "primary",
+        "displayName": "Night Atmosphere Blue (Cupola Night)",
+        "canonical": "rgb(84 156 236)",
+        "tonalRamp": [
+          "#1A3452",
+          "#2E5686",
+          "#4179B9",
+          "#549CEC",
+          "#87BAF2",
+          "#B2D2F6",
+          "#D4E6FA",
+          "#EEF5FD"
+        ]
+      },
+      "night-atmosphere-blue-soft": {
+        "role": "primary",
+        "displayName": "Night Atmosphere Blue Soft (Cupola Night)",
+        "canonical": "rgb(20 45 78)",
+        "tonalRamp": [
+          "#0A182B",
+          "#0E1F36",
+          "#112642",
+          "#142D4E",
+          "#5A6C83",
+          "#95A0AF",
+          "#C4CAD3",
+          "#E8EAED"
+        ]
+      },
+      "night-state-ok": {
+        "role": "state",
+        "displayName": "Night State Ok (Cupola Night)",
+        "canonical": "rgb(64 196 130)",
+        "tonalRamp": [
+          "#153E38",
+          "#246A50",
+          "#329769",
+          "#40C482",
+          "#79D6A8",
+          "#A9E4C7",
+          "#CFF0E0",
+          "#ECF9F2"
+        ]
+      },
+      "night-state-warn": {
+        "role": "state",
+        "displayName": "Night State Warn (Cupola Night)",
+        "canonical": "rgb(236 168 72)",
+        "tonalRamp": [
+          "#403729",
+          "#7A5C34",
+          "#B3823E",
+          "#ECA848",
+          "#F2C27F",
+          "#F6D8AD",
+          "#FAE9D1",
+          "#FDF6ED"
+        ]
+      },
+      "night-state-warn-soft": {
+        "role": "state",
+        "displayName": "Night State Warn Soft (Cupola Night)",
+        "canonical": "rgb(46 34 18)",
+        "tonalRamp": [
+          "#11151C",
+          "#1A1A18",
+          "#241E15",
+          "#2E2212",
+          "#6D6459",
+          "#A19C94",
+          "#CBC8C4",
+          "#EAE9E7"
+        ]
+      },
+      "night-state-bad": {
+        "role": "state",
+        "displayName": "Night State Bad (Cupola Night)",
+        "canonical": "rgb(238 90 110)",
+        "tonalRamp": [
+          "#412333",
+          "#7A3646",
+          "#B4485A",
+          "#EE5A6E",
+          "#F38C9A",
+          "#F7B5BE",
+          "#FBD6DB",
+          "#FDEEF0"
+        ]
+      },
+      "night-state-bad-soft": {
+        "role": "state",
+        "displayName": "Night State Bad Soft (Cupola Night)",
+        "canonical": "rgb(52 22 32)",
+        "tonalRamp": [
+          "#12121F",
+          "#1E1420",
+          "#291520",
+          "#341620",
+          "#715C63",
+          "#A4969B",
+          "#CCC5C7",
+          "#EBE8E9"
+        ]
+      },
+      "night-energy-ochre": {
+        "role": "data",
+        "displayName": "Night Energy Ochre (Cupola Night)",
+        "canonical": "rgb(226 164 80)",
+        "tonalRamp": [
+          "#3E362B",
+          "#745A38",
+          "#AB7F44",
+          "#E2A450",
+          "#EBBF84",
+          "#F2D6B0",
+          "#F8E8D3",
+          "#FCF6EE"
+        ]
+      },
+      "night-ground-navy": {
+        "role": "data",
+        "displayName": "Night Ground Navy (Cupola Night)",
+        "canonical": "rgb(128 170 222)",
+        "tonalRamp": [
+          "#25374F",
+          "#445E7E",
+          "#6284AE",
+          "#80AADE",
+          "#A6C4E8",
+          "#C6D9F0",
+          "#DFEAF7",
+          "#F2F6FC"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Login headline only; 34px phone, 52px tablet, 60px desktop."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles above a hairline; 28px phone, 34px desktop."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles above the card's hairline divider; 16px phone, 18px desktop."
+      },
+      "numeral": {
+        "displayName": "Numeral",
+        "purpose": "Metric values, weight 800-900, 30-36px, always tabular."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text, meanings and subtitles."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Metric labels, captions and baseline lines; fine print 11px. Sentence case."
+      }
+    },
+    "themes": {
+      "mechanism": "CSS variables holding 'R G B' on :root (Cupola Daylight) and :root[data-theme=\"dark\"] (Cupola Night); Tailwind reads them as rgb(var(--x) / <alpha-value>). Follows prefers-color-scheme until the person chooses; the choice is stored under localStorage 'shms-theme' and applied before first render.",
+      "light": "Cupola Daylight",
+      "dark": "Cupola Night",
+      "svgColors": "lib/theme.tsx C getters and themePalette()"
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 1px 2px rgba(14,42,71,0.05), 0 10px 28px -18px rgba(14,42,71,0.28)",
+        "purpose": "Cards and alert tiles at rest (Cupola Daylight)."
+      },
+      {
+        "name": "card-night",
+        "value": "0 1px 2px rgba(0,0,0,0.3), 0 12px 30px -18px rgba(0,0,0,0.7)",
+        "purpose": "Cards and alert tiles at rest (Cupola Night)."
+      },
+      {
+        "name": "lift",
+        "value": "0 2px 4px rgba(14,42,71,0.06), 0 18px 36px -18px rgba(14,42,71,0.34)",
+        "purpose": "Hovered cards, bottom bar, popovers (Cupola Daylight)."
+      },
+      {
+        "name": "lift-night",
+        "value": "0 2px 4px rgba(0,0,0,0.35), 0 18px 36px -16px rgba(0,0,0,0.8)",
+        "purpose": "Hovered cards, bottom bar, popovers (Cupola Night)."
+      },
+      {
+        "name": "glow-accent",
+        "value": "0 6px 16px -8px rgb(var(--accent) / 0.55)",
+        "purpose": "Under the solid primary button only."
+      },
+      {
+        "name": "limb-glow",
+        "value": "0 1px 8px rgba(127,196,245,0.55)",
+        "purpose": "The atmosphere line's own light."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Default easing for lift, confirmations, progress arcs and the limb point."
+      },
+      {
+        "name": "hover-lift",
+        "value": "200ms",
+        "purpose": "Card lift (translateY -2px) and shadow swap, pointer devices only."
+      },
+      {
+        "name": "confirm",
+        "value": "360-520ms",
+        "purpose": "Check pop and card settle on login."
+      },
+      {
+        "name": "progress",
+        "value": "700-900ms",
+        "purpose": "Ring arcs and the limb progress point."
+      },
+      {
+        "name": "reading-rings",
+        "value": "2.8s infinite, staggered 0.93s",
+        "purpose": "Login reader rings while waiting for a card."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "none",
+        "purpose": "All transitions and animations stop; reading rings hold at half opacity."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "2xl",
+        "value": "1536px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single primary action in a view.",
+      "html": "<button class=\"ds-btn-primary\">Save check-in</button>",
+      "css": ".ds-btn-primary{font-family:'Public Sans',system-ui,sans-serif;min-height:48px;padding:8px 24px;border:none;border-radius:9999px;background:rgb(var(--accent));color:#fff;font-size:16px;font-weight:600;box-shadow:0 6px 16px -8px rgb(var(--accent) / 0.55);transition:filter 200ms,transform 200ms;cursor:pointer}.ds-btn-primary:hover{filter:brightness(1.1)}.ds-btn-primary:active{transform:scale(0.97)}.ds-btn-primary:focus-visible{outline:2px solid rgb(var(--accent));outline-offset:2px}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary actions and header controls.",
+      "html": "<button class=\"ds-btn-ghost\">Cancel</button>",
+      "css": ".ds-btn-ghost{font-family:'Public Sans',system-ui,sans-serif;min-height:48px;padding:8px 24px;border:1px solid rgb(var(--ink-700));border-radius:9999px;background:rgb(var(--ink-900));color:rgb(var(--fg));font-size:16px;font-weight:600;transition:background-color 200ms,transform 200ms;cursor:pointer}.ds-btn-ghost:hover{background:rgb(var(--ink-850))}.ds-btn-ghost:active{transform:scale(0.97)}.ds-btn-ghost:focus-visible{outline:2px solid rgb(var(--accent));outline-offset:2px}"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive or emergency action; same fill in both themes.",
+      "html": "<button class=\"ds-btn-danger\">End session</button>",
+      "css": ".ds-btn-danger{font-family:'Public Sans',system-ui,sans-serif;min-height:48px;padding:8px 24px;border:none;border-radius:9999px;background:rgb(var(--bad-fill));color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:filter 200ms}.ds-btn-danger:hover{filter:brightness(1.1)}.ds-btn-danger:focus-visible{outline:2px solid rgb(var(--accent));outline-offset:2px}"
+    },
+    {
+      "name": "Card with metric cells",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "White card with a hairline title row and hairline-separated metric cells.",
+      "html": "<section class=\"ds-card\"><h2 class=\"ds-card-title\">Body</h2><div class=\"ds-cells\"><div class=\"ds-cell\"><div class=\"ds-cell-label\">Resting heart rate</div><div><span class=\"ds-num\">58</span> <span class=\"ds-unit\">bpm</span></div><div class=\"ds-cell-sub\">Your normal: 56 bpm</div></div><div class=\"ds-cell ds-cell-warn\"><div class=\"ds-cell-label\">Intraocular pressure <svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\"><path d=\"M7 1.2 13 12.4H1Z\" fill=\"rgb(var(--warn))\"/></svg></div><div><span class=\"ds-num\">21</span> <span class=\"ds-unit\">mmHg</span></div><div class=\"ds-cell-sub\">Watch</div></div></div></section>",
+      "css": ".ds-card{font-family:'Public Sans',system-ui,sans-serif;border:1px solid rgb(var(--ink-700));border-radius:24px;background:rgb(var(--ink-900));color:rgb(var(--fg));padding:24px;box-shadow:var(--shadow-card);transition:transform 200ms cubic-bezier(0.16,1,0.3,1),box-shadow 200ms}.ds-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift);border-color:rgb(var(--ink-600))}.ds-card-title{margin:0 0 16px;padding-bottom:12px;border-bottom:1px solid rgb(var(--ink-700));font-size:18px;font-weight:700;letter-spacing:-0.015em}.ds-cells{display:grid;grid-template-columns:1fr 1fr;gap:20px}.ds-cell{border-top:1px solid rgb(var(--ink-700));padding-top:12px}.ds-cell-warn{border-top:2px solid rgb(var(--warn))}.ds-cell-label{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:rgb(var(--slate-400))}.ds-num{font-size:30px;font-weight:900;letter-spacing:-0.025em;font-variant-numeric:tabular-nums}.ds-unit{font-size:14px;font-weight:500;color:rgb(var(--slate-400))}.ds-cell-sub{margin-top:4px;font-size:12px;color:rgb(var(--slate-400))}"
+    },
+    {
+      "name": "Watch Alert",
+      "kind": "card",
+      "refersTo": "alert-tile-warn",
+      "description": "An alert tile: shape, title, the reason, then the first thing to do.",
+      "html": "<div class=\"ds-alert\"><div class=\"ds-alert-title\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\"><path d=\"M7 1.2 13 12.4H1Z\" fill=\"rgb(var(--warn))\"/></svg>Fluid intake low</div><p class=\"ds-alert-why\"><b>Why:</b> 1.4 L of 2.5 L by mid-day.</p><p class=\"ds-alert-rec\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 6l6 6-6 6\"/></svg>Drink 500 mL in the next hour.</p></div>",
+      "css": ".ds-alert{font-family:'Public Sans',system-ui,sans-serif;border:1px solid rgb(var(--warn) / 0.45);border-radius:18px;background:rgb(var(--warn-soft));padding:20px;box-shadow:var(--shadow-card);color:rgb(var(--fg))}.ds-alert-title{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700}.ds-alert-why{margin:6px 0 0;color:rgb(var(--slate-300))}.ds-alert-why b{color:rgb(var(--fg))}.ds-alert-rec{display:flex;gap:6px;align-items:flex-start;margin:6px 0 0;font-weight:600;color:rgb(var(--accent))}"
+    },
+    {
+      "name": "Status Pill",
+      "kind": "chip",
+      "refersTo": "status-pill-warn",
+      "description": "State as shape + word + colour.",
+      "html": "<span class=\"ds-pill ds-pill-ok\"><svg width=\"10\" height=\"10\" viewBox=\"0 0 14 14\"><circle cx=\"7\" cy=\"7\" r=\"6\" fill=\"currentColor\"/></svg>Normal</span> <span class=\"ds-pill ds-pill-warn\"><svg width=\"10\" height=\"10\" viewBox=\"0 0 14 14\"><path d=\"M7 1.2 13 12.4H1Z\" fill=\"currentColor\"/></svg>Watch</span> <span class=\"ds-pill ds-pill-bad\"><svg width=\"10\" height=\"10\" viewBox=\"0 0 14 14\"><path d=\"M7 .8 13.2 7 7 13.2.8 7Z\" fill=\"currentColor\"/></svg>Act now</span>",
+      "css": ".ds-pill{font-family:'Public Sans',system-ui,sans-serif;display:inline-flex;align-items:center;gap:8px;padding:4px 12px;border-radius:9999px;border:1px solid;font-size:14px;font-weight:600}.ds-pill-ok{background:rgb(var(--ok) / 0.15);border-color:rgb(var(--ok) / 0.4);color:rgb(var(--ok))}.ds-pill-warn{background:rgb(var(--warn) / 0.15);border-color:rgb(var(--warn) / 0.4);color:rgb(var(--warn))}.ds-pill-bad{background:rgb(var(--bad) / 0.15);border-color:rgb(var(--bad) / 0.5);color:rgb(var(--bad))}"
+    },
+    {
+      "name": "Side Rail Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Pill nav items with authored 2px icons; active on atmosphere-blue-soft.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-item ds-active\" href=\"#\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z\"/></svg>Today</a><a class=\"ds-nav-item\" href=\"#\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z\"/></svg>Body</a></nav>",
+      "css": ".ds-nav{font-family:'Public Sans',system-ui,sans-serif;display:flex;flex-direction:column;gap:2px;width:240px;padding:16px 12px;background:rgb(var(--ink-900));border-right:1px solid rgb(var(--ink-700))}.ds-nav-item{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 16px;border-radius:9999px;font-size:15px;font-weight:600;color:rgb(var(--slate-400));text-decoration:none;transition:background-color 150ms,color 150ms}.ds-nav-item:hover{background:rgb(var(--ink-850));color:rgb(var(--fg))}.ds-nav-item.ds-active{background:rgb(var(--accent-soft));color:rgb(var(--accent))}.ds-nav-item:focus-visible{outline:2px solid rgb(var(--accent));outline-offset:2px}"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "custom",
+      "refersTo": "seg-option-selected",
+      "description": "Range and view switches; the selected option inverts to ink.",
+      "html": "<div class=\"ds-seg\"><button class=\"ds-seg-opt ds-on\" aria-pressed=\"true\">7 days</button><button class=\"ds-seg-opt\" aria-pressed=\"false\">30 days</button><button class=\"ds-seg-opt\" aria-pressed=\"false\">Mission</button></div>",
+      "css": ".ds-seg{font-family:'Public Sans',system-ui,sans-serif;display:inline-flex;gap:4px;padding:4px;border:1px solid rgb(var(--ink-700));border-radius:9999px;background:rgb(var(--ink-850))}.ds-seg-opt{min-height:44px;padding:0 16px;border:none;border-radius:9999px;background:transparent;color:rgb(var(--slate-300));font:inherit;font-weight:600;cursor:pointer;transition:background-color 150ms}.ds-seg-opt:hover{background:rgb(var(--ink-700))}.ds-seg-opt.ds-on{background:rgb(var(--fg));color:rgb(var(--ink-950));font-weight:700}.ds-seg-opt:focus-visible{outline:2px solid rgb(var(--accent));outline-offset:2px}"
+    },
+    {
+      "name": "Limb Line",
+      "kind": "custom",
+      "refersTo": "limb-line",
+      "description": "Signature: the header's bottom edge, with the mission-progress point.",
+      "html": "<div class=\"ds-limb\" style=\"--limb-pos:38%\" role=\"img\" aria-label=\"Mission progress 37%\"></div>",
+      "css": ".ds-limb{position:relative;height:3px;background:linear-gradient(90deg,rgba(127,196,245,0) 0%,rgba(127,196,245,0.85) 12%,#7FC4F5 50%,rgba(127,196,245,0.85) 88%,rgba(127,196,245,0) 100%);box-shadow:0 1px 8px rgba(127,196,245,0.55)}.ds-limb::after{content:'';position:absolute;top:50%;left:var(--limb-pos,50%);width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px rgb(var(--accent)),0 2px 6px rgba(0,0,0,0.35);transition:left 900ms cubic-bezier(0.16,1,0.3,1)}@media (prefers-reduced-motion:reduce){.ds-limb::after{transition:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Cupola Window",
+    "overview": "The app is lit like the ISS cupola looking down at Earth. In daylight (Cupola Daylight, the default light theme) that means a cloud-white ground, pure white cards and ocean-navy ink. At night (Cupola Night, the dark theme) it is the station over Earth's night side: deep ocean navy ground, cards one step lighter, pale ink. Both themes are one system. Every colour is a CSS variable holding `R G B`, defined once per theme, and every component reads the same semantic names, so a screen built for one theme is correct in the other without edits. The theme follows the operating system until the person picks one with the round switch in the header. The choice is stored and applied before first paint.\n\nOne thing holds the world together: the **atmosphere limb line**, a thin pale-blue glow (3px) along the bottom edge of every header. A bright white point travels along it from launch to landing, so the line doubles as mission progress. On the login screen the same line becomes the full curved Earth limb, and the crew card is read on it.\n\nDensity is calm but data-rich. Structure comes from 1px hairlines and quiet tonal steps, not boxes inside boxes. One family, Public Sans, carries both display and data, always with tabular numerals. Every health state is readable without colour: it always has a shape and a word as well.",
+    "keyCharacteristics": [
+      "Two themes, one token set: Cupola Daylight (light) and Cupola Night (dark), switched by `data-theme` on the root.",
+      "A single atmosphere blue for the primary action, selection and focus. Its rarity is the point.",
+      "The limb line under every header, doubling as mission progress.",
+      "Hairline metric cells instead of boxed tiles. Generous 24px card corners, pill-shaped controls.",
+      "States as shape + word + colour: circle = normal, triangle = watch, diamond = act now.",
+      "Soft, navy-tinted (light) or black (dark) ambient shadows. Nothing hard-edged."
+    ],
+    "rules": [
+      {
+        "name": "The One Atmosphere Rule",
+        "body": "Atmosphere Blue marks the single primary action, the current location and focus. Nothing decorative is blue-filled.",
+        "section": "colors"
+      },
+      {
+        "name": "The Never-Colour-Alone Rule",
+        "body": "A state colour is always paired with a shape (circle / triangle / diamond) and a word (\"Normal\", \"Watch\", \"Act now\"). A metric cell on watch or act-now also thickens its top hairline to 2px in the state colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Same-Names Rule",
+        "body": "Components use the semantic tokens (ground, card, soft tile, well, hairline, ink, state), never a literal hex. Charts and SVG, which cannot read CSS variables, read the theme's current values through the `C` getters and `themePalette()` in `lib/theme.tsx`, which hold exactly the hexes above for each theme. The one place literal colour is allowed is the login's Earth and anything drawn on it, which stays the same in both themes because Earth is always ocean.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Family Rule",
+        "body": "Public Sans only. No second display face, no system fallback chosen as a look.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Rule",
+        "body": "Numerals are tabular everywhere (set on `body` and on tables), so values in a column and a ticking mission clock never jitter.",
+        "section": "typography"
+      },
+      {
+        "name": "The Soft-Light Rule",
+        "body": "Every shadow is diffuse and offset downward with a negative spread. No hard offset shadows, no inner shadows.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** build every surface from the semantic tokens (ground, card, soft tile, well, hairline, ink, state) so it is correct in both Cupola Daylight and Cupola Night.",
+      "**Do** give every SVG or chart colour through `C` / `themePalette()`, never a hardcoded hex.",
+      "**Do** close every header with the limb line and keep its progress point.",
+      "**Do** pair every state colour with its shape (circle, triangle, diamond) and a word.",
+      "**Do** separate metrics with hairlines (1px top rule) inside a card rather than nesting boxed tiles.",
+      "**Do** keep touch targets at least 44px and buttons at least 48px tall.",
+      "**Do** use tabular numerals for every value and clock."
+    ],
+    "donts": [
+      "**Don't** use a dark starfield, neon glow or sci-fi dashboard look. The night theme is a calm navy ocean, not space.",
+      "**Don't** add a second accent colour or fill decorative elements with Atmosphere Blue.",
+      "**Don't** use Sun Amber or Limb Blue for text or as a status colour.",
+      "**Don't** use hard offset shadows, inner shadows or black outlines.",
+      "**Don't** add uppercase eyebrows or letter-spaced kickers above headings.",
+      "**Don't** use emoji or icon fonts as icons; use the authored 2px-stroke set.",
+      "**Don't** fetch fonts from the network; Public Sans is bundled."
+    ]
+  }
+}

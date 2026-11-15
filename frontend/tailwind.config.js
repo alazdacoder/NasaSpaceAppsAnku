@@ -1,38 +1,63 @@
 /** @type {import('tailwindcss').Config} */
+// "Cupola Daylight" (light) and "Cupola Night" (dark). Every colour is a CSS variable
+// holding "R G B", set in index.css for each theme, so opacity modifiers keep working.
+// The `ink` scale names surfaces (950 = page, 900 = card, 850 = soft tile, 800/700 = wells
+// and hairlines) and `fg` / `slate` name text, so every page reads the same tokens.
+const v = (name) => `rgb(var(--${name}) / <alpha-value>)`;
+
 export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}", "./frontend/index.html", "./frontend/src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        // Deep OLED dark mode (#0D0F12 primary surface with #181C24 card backgrounds)
         ink: {
-          950: "#0D0F12",
-          925: "#12151B",
-          900: "#181C24",
-          850: "#1E2430",
-          800: "#252C3A",
-          700: "#2F384A",
-          600: "#3E4A61",
+          950: v("ink-950"),
+          925: v("ink-925"),
+          900: v("ink-900"),
+          850: v("ink-850"),
+          800: v("ink-800"),
+          700: v("ink-700"),
+          600: v("ink-600"),
         },
-        ok: "#00E676",        // Samsung Health vibrant health green
-        warn: "#FF9100",      // Warning amber
-        bad: "#FF5252",       // Critical red / coral
-        accent: "#00E5FF",    // Samsung Health electric blue
-        energy: "#FF9100",    // Calories, nutrition, activity amber
-        rest: "#B388FF",      // Telemetry violet / space & antigravity modules
-        telemetry: "#B388FF", // Space & antigravity telemetry violet
+        fg: v("fg"),
+        limb: v("limb"),
+        sun: v("sun"),
+        slate: {
+          50: v("slate-50"),
+          100: v("slate-100"),
+          200: v("slate-200"),
+          300: v("slate-300"),
+          400: v("slate-400"),
+          500: v("slate-500"),
+          600: v("slate-600"),
+          700: v("slate-700"),
+        },
+        ok: v("ok"),
+        warn: v("warn"),
+        bad: v("bad"),
+        badfill: v("bad-fill"),
+        accent: v("accent"),
+        energy: v("energy"),
+        rest: v("rest"),
+        telemetry: v("rest"),
+        // soft state grounds for alerts and selection
+        warnsoft: v("warn-soft"),
+        badsoft: v("bad-soft"),
+        accentsoft: v("accent-soft"),
       },
-      borderRadius: { card: "28px", tile: "22px" },
+      borderRadius: { card: "24px", tile: "18px" },
       boxShadow: {
-        card: "inset 0 1px 0 rgba(255,255,255,0.06), 0 14px 32px -16px rgba(0,0,0,0.82)",
-        lift: "inset 0 1px 0 rgba(255,255,255,0.10), 0 20px 42px -14px rgba(0,0,0,0.9)",
-        glowBlue: "0 0 28px -6px rgba(0, 229, 255, 0.35)",
-        glowGreen: "0 0 28px -6px rgba(0, 230, 118, 0.35)",
-        glowViolet: "0 0 28px -6px rgba(179, 136, 255, 0.38)",
-        glowRed: "0 0 32px -4px rgba(255, 82, 82, 0.45)",
+        card: "var(--shadow-card)",
+        lift: "var(--shadow-lift)",
+        // kept as names so old call sites stay valid; all are soft offset shadows
+        glowBlue: "0 6px 16px -8px rgb(var(--accent) / 0.55)",
+        glowGreen: "0 6px 16px -10px rgb(var(--ok) / 0.45)",
+        glowViolet: "0 6px 16px -10px rgb(var(--rest) / 0.45)",
+        glowRed: "0 6px 18px -10px rgb(var(--bad) / 0.5)",
+        glowAmber: "0 6px 18px -10px rgb(var(--warn) / 0.45)",
       },
       fontFamily: {
-        sans: ["Inter", "Roboto", '"One UI Sans"', '"Google Sans"', '"Segoe UI Variable Text"', "system-ui", "-apple-system", "sans-serif"],
+        sans: ['"Public Sans"', "system-ui", "-apple-system", '"Segoe UI"', "Roboto", "sans-serif"],
       },
       fontSize: { base: ["16px", "1.5"] },
     },

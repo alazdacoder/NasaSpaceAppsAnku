@@ -54,7 +54,7 @@ export default function AlertsPage({ side = "crew" }: { side?: Side }) {
               className="inline-flex min-h-[42px] items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 text-xs font-bold text-accent hover:bg-accent/20"
             >
               <Icon name="eye" size={16} />
-              {t("Ocular & Tonometer")} ›
+              {t("Ocular & Tonometer")}
             </Link>
             <Button kind="danger" disabled={sending} onClick={sendEmergencyToEarth} className="text-sm shadow-glowRed">
               <span className="flex items-center gap-1.5">
@@ -71,18 +71,17 @@ export default function AlertsPage({ side = "crew" }: { side?: Side }) {
       <GroundNote view={data.view} />
 
       {sosMsg && (
-        <div className="flex items-center justify-between rounded-2xl border border-bad/60 bg-bad/15 px-4 py-3 text-sm font-semibold text-white shadow-glowRed">
+        <div className="flex items-center justify-between rounded-2xl border border-bad/60 bg-bad/15 px-4 py-3 text-sm font-semibold text-fg shadow-glowRed">
           <span>{sosMsg}</span>
-          <button onClick={() => setSosMsg(null)} className="text-slate-300 hover:text-white">
-            ✕
-          </button>
+          <button onClick={() => setSosMsg(null)} className="text-slate-300 hover:text-fg">
+            <Icon name="x" size={18} />          </button>
         </div>
       )}
 
       {data.alerts.length === 0 && (
-        <Card className="border-ok/40 bg-gradient-to-r from-ok/10 via-ink-900 to-ink-900">
+        <Card className="border-ok/40">
           <div className="flex items-center gap-3 text-lg font-bold text-ok">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ok/20">✓</span>
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ok/15 text-ok"><Icon name="check" size={20} /></span>
             {t("No active clinical or ocular alerts. All biomarkers and tonometer readings are within safe flight zones.")}
           </div>
         </Card>

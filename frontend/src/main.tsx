@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { CrewLayout, TeamLayout } from "./components/Shell";
 import { AppProvider } from "./lib/context";
 import { LangProvider } from "./lib/i18n";
+import { ThemeProvider } from "./lib/theme";
 import AlertsPage from "./pages/AlertsPage";
 import Portal from "./pages/Portal";
 import CrewBody from "./pages/crew/Body";
@@ -31,6 +32,7 @@ import "./index.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <LangProvider>
+      <ThemeProvider>
       <AppProvider>
         <BrowserRouter>
           <Routes>
@@ -75,6 +77,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           </Routes>
         </BrowserRouter>
       </AppProvider>
+      </ThemeProvider>
     </LangProvider>
   </React.StrictMode>,
 );

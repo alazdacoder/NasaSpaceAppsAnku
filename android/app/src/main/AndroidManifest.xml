@@ -4,6 +4,10 @@
     <!-- Needed to open the local server socket on 127.0.0.1 and for the optional NASA OSDR call. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Crew card sign-in. Optional: phones without NFC still install and use manual sign-in. -->
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-feature android:name="android.hardware.nfc" android:required="false" />
+
     <application
         android:name="com.chaquo.python.android.PyApplication"
         android:label="@string/app_name"

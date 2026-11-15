@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { C } from "../lib/theme";
 import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { api, exerciseName, fmt } from "../lib/api";
 import { getLang, t } from "../lib/i18n";
@@ -26,7 +27,7 @@ function Stepper({ label, value, unit, step, onChange, max, min = 0, decimals = 
   label: string; value: number; unit: string; step: number; onChange: (v: number) => void; max: number; min?: number; decimals?: number;
 }) {
   return (
-    <div className="rounded-xl border border-ink-700 bg-ink-850 p-3">
+    <div className="border-t border-ink-700 pt-3 pb-1">
       <div className="text-sm text-slate-400">{label}</div>
       <div className="mt-1 flex items-center gap-2">
         <button aria-label={t("Decrease {x}", { x: label })} className="h-14 w-14 rounded-xl bg-ink-700 text-3xl font-bold active:bg-ink-600" onClick={() => onChange(Math.max(min, +(value - step).toFixed(2)))}>−</button>
@@ -114,13 +115,13 @@ export function LiveWorkout({ crewId, view, onFinish, exercises, limits }: {
       <div className="grid gap-4 lg:grid-cols-[1fr_1.4fr]">
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-white/[0.06] bg-ink-850 p-4">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t("Heart rate")} · {live.hr_source}</div>
+            <div className="border-t border-ink-700 pt-3 pb-1">
+              <div className="text-xs font-semibold text-slate-400">{t("Heart rate")} · {live.hr_source}</div>
               <div className="mt-1 text-5xl font-black tabular-nums text-bad sm:text-6xl">{live.hr}<span className="ml-1 text-lg font-semibold text-slate-400">{t("bpm")}</span></div>
               <div className="text-xs text-slate-400">{t("target ≈ {n} bpm", { n: live.target_hr })}</div>
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-ink-850 p-4">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t("Energy burned")}</div>
+            <div className="border-t border-ink-700 pt-3 pb-1">
+              <div className="text-xs font-semibold text-slate-400">{t("Energy burned")}</div>
               <div className="mt-1 text-5xl font-black tabular-nums text-warn sm:text-6xl">{fmt(live.kcal, 0)}<span className="ml-1 text-lg font-semibold text-slate-400">kcal</span></div>
               <div className="text-xs text-slate-400">{t("{r} kcal/min · {m} MET", { r: fmt(live.kcal_min, 1), m: fmt(live.met, 1) })}</div>
             </div>
@@ -160,7 +161,7 @@ export function LiveWorkout({ crewId, view, onFinish, exercises, limits }: {
             <Stepper label={t("Power")} value={Number(s.watts)} unit="W" step={10} max={limits.cevis_max_watts} onChange={(v) => update({ watts: v })} />
           )}
           {live.device === "rehab" && (
-            <div className="rounded-xl bg-ink-850 p-3 text-slate-300">{t("Ground reconditioning with your trainer: walking, strength and balance. Stop and sit down if you feel dizzy.")}</div>
+            <div className="border-t border-ink-700 pt-3 pb-1 text-slate-300">{t("Ground reconditioning with your trainer: walking, strength and balance. Stop and sit down if you feel dizzy.")}</div>
           )}
           <div className="flex gap-3">
             <Button kind="ok" className="flex-1 text-lg" onClick={finish}>{t("Finish & log")}</Button>
@@ -174,21 +175,21 @@ export function LiveWorkout({ crewId, view, onFinish, exercises, limits }: {
                   {bt.state === "connected" ? t("Connected: {d}", { d: bt.msg }) : bt.state === "connecting" ? t("Connecting…") : t("Connect via Bluetooth")}
                 </Button>
               )}
-              {bt.bpm !== null && <span className="text-rose-300">{bt.bpm} {t("bpm")}</span>}
+              {bt.bpm !== null && <span className="text-bad">{bt.bpm} {t("bpm")}</span>}
               {bt.state === "error" && <span className="text-bad">{bt.msg}</span>}
             </div>
           </div>
         </div>
-        <div className="h-[380px] rounded-2xl bg-ink-850 p-3">
+        <div className="h-[380px] border-t border-ink-700 pt-3 pb-1">
           <ResponsiveContainer>
             <LineChart data={live.samples ?? []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <CartesianGrid stroke={GRID} vertical={false} />
               <XAxis dataKey="t" tick={AXIS} tickFormatter={(x) => mmss(x)} type="number" domain={["dataMin", "dataMax"]} />
               <YAxis yAxisId="hr" tick={AXIS} domain={[50, 190]} width={40} />
               <YAxis yAxisId="kcal" orientation="right" tick={AXIS} width={44} domain={[0, "auto"]} />
-              {live.target_hr && <ReferenceLine yAxisId="hr" y={live.target_hr} stroke="#FF9100" strokeDasharray="4 4" label={{ value: t("target"), fill: "#FF9100", fontSize: 12 }} />}
-              <Line yAxisId="hr" type="monotone" dataKey="hr" name={t("Heart rate")} stroke="#FF5252" strokeWidth={3} dot={false} isAnimationActive={false} />
-              <Line yAxisId="kcal" type="monotone" dataKey="kcal" name="kcal" stroke="#00E5FF" strokeWidth={2.5} strokeDasharray="5 3" dot={false} isAnimationActive={false} />
+              {live.target_hr && <ReferenceLine yAxisId="hr" y={live.target_hr} stroke={C.warn} strokeDasharray="4 4" label={{ value: t("target"), fill: C.warn, fontSize: 12 }} />}
+              <Line yAxisId="hr" type="monotone" dataKey="hr" name={t("Heart rate")} stroke={C.bad} strokeWidth={3} dot={false} isAnimationActive={false} />
+              <Line yAxisId="kcal" type="monotone" dataKey="kcal" name="kcal" stroke={C.accent} strokeWidth={2.5} strokeDasharray="5 3" dot={false} isAnimationActive={false} />
             </LineChart>
           </ResponsiveContainer>
           <div className="-mt-1 flex justify-center gap-4 text-xs text-slate-400">

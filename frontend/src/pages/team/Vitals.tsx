@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { C } from "../../lib/theme";
 import { TrendBlock } from "../../components/charts";
 import { Icon } from "../../components/Icon";
 import { AlertCard, Card, Empty, GroundNote, MetricCard, PageTitle, Stat } from "../../components/ui";
@@ -36,7 +37,7 @@ export default function Vitals() {
             className="inline-flex min-h-[42px] items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 text-xs font-bold text-accent hover:bg-accent/20"
           >
             <Icon name="eye" size={16} />
-            {t("Ocular & Tonometer Command ›")}
+            {t("Ocular & Tonometer Command")}
           </Link>
         }
       >
@@ -54,14 +55,14 @@ export default function Vitals() {
             label={t("Heart rate")}
             value={fmt(L.hr, 0)}
             unit={t("bpm")}
-            color="#FF5252"
+            color={C.bad}
             sub={t("baseline {v}", { v: fmt(v.hr_rest?.baseline_mean, 0) })}
           />
           <Stat
             label={t("Breathing")}
             value={fmt(L.resp_rate, 0)}
             unit="/min"
-            color="#00E5FF"
+            color={C.accent}
             sub={t("baseline {v}", { v: fmt(v.resp_rate?.baseline_mean, 0) })}
           />
           <Stat
@@ -76,14 +77,14 @@ export default function Vitals() {
             label={t("Blood oxygen")}
             value={fmt(L.spo2, 0)}
             unit="%"
-            color="#00E676"
+            color={C.ok}
             sub={t("baseline {v}", { v: fmt(v.spo2?.baseline_mean, 0) })}
           />
           <Stat
             label={t("Core temp")}
             value={fmt(L.core_temp, 2)}
             unit="°C"
-            color="#FF9100"
+            color={C.warn}
             sub={t("baseline {v}", { v: fmt(v.core_temp?.baseline_mean, 2) })}
           />
           <Stat
@@ -105,7 +106,7 @@ export default function Vitals() {
         title={t("Space Ocular Health & Antigravity Fluid Dynamics")}
         right={
           <Link to="/team/ocular" className="text-xs font-bold text-accent hover:underline">
-            {t("Full Ocular & Tonometer Matrix ›")}
+            {t("Full Ocular & Tonometer Matrix")}
           </Link>
         }
       >
@@ -118,10 +119,10 @@ export default function Vitals() {
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Stat label={t("Intraocular pressure (IOP)")} value={fmt(L.iop_mmhg ?? 18.4, 1)} unit="mmHg" color="#00E5FF" sub={t("Paired Space Tonometer")} />
-            <Stat label={t("Optic nerve sheath diameter")} value={fmt(L.onsd_mm ?? 5.54, 2)} unit="mm" color="#00E676" sub={t("Ultrasonic ONSD pod")} />
-            <Stat label={t("Cephalad fluid shift")} value={fmt(L.fluid_shift_ml ?? 1680, 0)} unit="mL" color="#B388FF" sub={t("Biologic liquid redistribution")} />
-            <Stat label={t("Intracranial pressure (ICP)")} value={fmt(L.icp_mmhg ?? 13.8, 1)} unit="mmHg" color="#FF9100" sub={t("Non-invasive cranial fluid")} />
+            <Stat label={t("Intraocular pressure (IOP)")} value={fmt(L.iop_mmhg ?? 18.4, 1)} unit="mmHg" color={C.accent} sub={t("Paired Space Tonometer")} />
+            <Stat label={t("Optic nerve sheath diameter")} value={fmt(L.onsd_mm ?? 5.54, 2)} unit="mm" color={C.ok} sub={t("Ultrasonic ONSD pod")} />
+            <Stat label={t("Cephalad fluid shift")} value={fmt(L.fluid_shift_ml ?? 1680, 0)} unit="mL" color={C.rest} sub={t("Biologic liquid redistribution")} />
+            <Stat label={t("Intracranial pressure (ICP)")} value={fmt(L.icp_mmhg ?? 13.8, 1)} unit="mmHg" color={C.warn} sub={t("Non-invasive cranial fluid")} />
           </div>
         )}
       </Card>

@@ -1,4 +1,5 @@
 import { TrendBlock } from "../../components/charts";
+import { Icon } from "../../components/Icon";
 import { AlertCard, Card, Empty, GroundNote, MetricCard, PageTitle } from "../../components/ui";
 import { fmt, usePoll, type Alert, type Metric, type Rec, type ViewInfo } from "../../lib/api";
 import { useApp, useCrewName } from "../../lib/context";
@@ -52,7 +53,7 @@ export default function TeamMind() {
       </div>
       {data.tips.length > 0 && (
         <Card title={t("Recommendations shown to the crew member")}>
-          <ul className="space-y-1">{data.tips.map((r) => <li key={r.id}>→ {r.text}</li>)}</ul>
+          <ul className="space-y-1">{data.tips.map((r) => <li key={r.id} className="flex items-start gap-1.5"><Icon name="chevron" size={16} className="mt-1 shrink-0 text-accent" /><span>{r.text}</span></li>)}</ul>
         </Card>
       )}
       <p className="text-sm text-slate-500">{t("Reaction time now {v} ms (baseline {b} ms).", { v: fmt(m.pvt_rt_ms?.value, 0), b: fmt(m.pvt_rt_ms?.baseline_mean, 0) })}</p>

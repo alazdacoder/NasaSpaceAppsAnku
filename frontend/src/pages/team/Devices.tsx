@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { C } from "../../lib/theme";
 import { Link } from "react-router-dom";
 import { Icon } from "../../components/Icon";
 import { Button, Card, Empty, PageTitle, ProgressBar, cx } from "../../components/ui";
@@ -24,11 +25,11 @@ interface Device {
 }
 
 const STATE_COLOR: Record<string, string> = {
-  connected: "#00E676",
-  syncing: "#00E5FF",
-  offline: "#FF5252",
-  disabled: "#64748b",
-  standby: "#B388FF",
+  connected: C.ok,
+  syncing: C.accent,
+  offline: C.bad,
+  disabled: C.faint,
+  standby: C.rest,
 };
 
 export default function Devices() {
@@ -111,7 +112,7 @@ export default function Devices() {
             className="inline-flex min-h-[42px] items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 text-xs font-bold text-accent hover:bg-accent/20"
           >
             <Icon name="eye" size={16} />
-            {t("Open Tonometer Telemetry ›")}
+            {t("Open Tonometer Telemetry")}
           </Link>
         }
       >
@@ -125,18 +126,18 @@ export default function Devices() {
             <div
               key={d.id}
               className={cx(
-                "shealth-card flex flex-col justify-between rounded-card border p-5 shadow-card backdrop-blur-md transition-all",
+                "flex flex-col justify-between rounded-card border p-5 shadow-card transition-all",
                 !d.enabled
-                  ? "border-dashed border-white/15 bg-ink-900/50 opacity-70"
+                  ? "border-dashed border-ink-600 bg-ink-900/50 opacity-70"
                   : isTono
-                    ? "border-accent/50 bg-gradient-to-br from-[#0F2435] via-[#181C24] to-[#1D1530] shadow-glowBlue"
-                    : "border-white/[0.06] bg-ink-900/95 hover:border-white/20",
+                    ? "border-accent/50 bg-ink-900 shadow-glowBlue"
+                    : "border-ink-700 bg-ink-900/95 hover:border-ink-600",
               )}
             >
               <div>
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <div className="flex items-center gap-2 text-lg font-extrabold leading-tight text-white">
+                    <div className="flex items-center gap-2 text-lg font-extrabold leading-tight text-fg">
                       {isTono && <Icon name="eye" size={18} className="text-accent" />}
                       {d.name}
                     </div>
@@ -145,7 +146,7 @@ export default function Devices() {
                     </div>
                   </div>
                   <span
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-ink-850 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wider"
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-ink-700 bg-ink-850 px-2.5 py-1 text-xs font-extrabold"
                     style={{ color: STATE_COLOR[d.status.state] }}
                   >
                     <span className="h-2 w-2 rounded-full" style={{ background: STATE_COLOR[d.status.state] }} />
@@ -153,7 +154,7 @@ export default function Devices() {
                   </span>
                 </div>
                 <p className="mt-2.5 text-sm leading-snug text-slate-300">{d.description}</p>
-                <div className="mt-3.5 space-y-2 border-t border-white/[0.05] pt-3 text-xs">
+                <div className="mt-3.5 space-y-2 border-t border-ink-700 pt-3 text-xs">
                   <div className="flex items-center gap-3">
                     <span className="w-24 text-slate-400">{t("Battery")}</span>
                     {d.status.battery_pct === null ? (
@@ -165,21 +166,21 @@ export default function Devices() {
                             value={d.status.battery_pct / 100}
                             color={
                               d.status.battery_pct < 25
-                                ? "#FF5252"
+                                ? C.bad
                                 : d.status.battery_pct < 50
-                                  ? "#FF9100"
-                                  : "#00E676"
+                                  ? C.warn
+                                  : C.ok
                             }
                             height={8}
                           />
                         </div>
-                        <span className="w-10 text-right font-mono font-bold text-white">{d.status.battery_pct}%</span>
+                        <span className="w-10 text-right tabular-nums font-bold text-fg">{d.status.battery_pct}%</span>
                       </>
                     )}
                   </div>
                   <div className="flex gap-3">
                     <span className="w-24 text-slate-400">{t("Last sync")}</span>
-                    <span className="font-mono text-slate-200">{missionTOf(d.status.last_sync_mission_t)}</span>
+                    <span className="tabular-nums text-slate-200">{missionTOf(d.status.last_sync_mission_t)}</span>
                   </div>
                   {d.status.note && (
                     <div className="flex gap-3">
@@ -218,7 +219,7 @@ export default function Devices() {
           value={csv}
           onChange={(e) => setCsv(e.target.value)}
           rows={5}
-          className="mt-2.5 w-full rounded-2xl border border-white/10 bg-ink-950 p-3.5 font-mono text-sm text-white"
+          className="mt-2.5 w-full rounded-2xl border border-ink-700 bg-ink-950 p-3.5 tabular-nums text-sm text-fg"
           aria-label={t("CSV text")}
         />
         <div className="mt-3 flex flex-wrap items-center gap-3">

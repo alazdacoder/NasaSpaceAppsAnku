@@ -1,176 +1,194 @@
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Icon } from "../components/Icon";
-import { CrewSwitcher, LinkPill, SimBadge } from "../components/Shell";
-import { missionTime } from "../lib/api";
-import { useApp, useCrewName } from "../lib/context";
+import { LinkPill, Mark } from "../components/Shell";
+import { cx } from "../components/ui";
+import { CARDS, UNKNOWN_DEMO_CARD, lookupCard, normalizeCardId, type CardTarget } from "../lib/cards";
+import { useApp } from "../lib/context";
 import { LangSwitch, t } from "../lib/i18n";
+import { ThemeSwitch } from "../lib/theme";
+import { onCardTap, readerState, type ReaderState } from "../lib/nfc";
 
-function PortalCard({
-  to,
-  icon,
-  title,
-  who,
-  points,
-  accent,
-  gradient,
-  badge,
-}: {
-  to: string;
-  icon: string;
-  title: string;
-  who: string;
-  points: string[];
-  accent: string;
-  gradient: string;
-  badge: string;
-}) {
+type Phase = { kind: "standby" } | { kind: "ok"; target: CardTarget } | { kind: "unknown"; id: string };
+
+const OPEN_DELAY_MS = 1100;
+
+/** The crew card sitting on the limb. */
+function CrewCard({ phase }: { phase: Phase }) {
+  const ok = phase.kind === "ok";
+  const bad = phase.kind === "unknown";
   return (
-    <Link
-      to={to}
-      className="group relative flex flex-col overflow-hidden rounded-card border border-white/[0.08] bg-ink-900/95 p-6 shadow-card backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/20 sm:p-7"
-    >
-      <div className={`pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-br ${gradient} opacity-30 transition-opacity group-hover:opacity-50`} />
-      <div className="relative flex items-start justify-between gap-3">
-        <span
-          className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 shadow-lg"
-          style={{ background: `${accent}22`, color: accent, boxShadow: `0 0 24px ${accent}33` }}
-        >
-          <Icon name={icon} size={28} />
-        </span>
-        <span
-          className="rounded-full border px-3 py-1 text-xs font-extrabold uppercase tracking-wider"
-          style={{ color: accent, borderColor: `${accent}55`, background: `${accent}18` }}
-        >
-          {badge}
-        </span>
+    <div key={phase.kind === "unknown" ? phase.id : phase.kind}
+      className={cx("relative h-[92px] w-[146px] rounded-[14px] bg-white p-3 text-left shadow-[0_18px_36px_-14px_rgba(6,22,40,0.6)]",
+        ok && "card-settle", bad && "nudge")}>
+      <div className="flex items-center justify-between">
+        <span className="block h-[18px] w-[24px] rounded-[4px] bg-sun" />
+        <Icon name="nfc" size={18} className="text-[#56708C]" />
       </div>
-      <div className="relative mt-4">
-        <h2 className="text-2xl font-extrabold tracking-tight text-white">{title}</h2>
-        <p className="mt-0.5 text-sm font-medium text-slate-400">{who}</p>
-      </div>
-      <ul className="relative mt-5 flex-1 space-y-2.5 text-sm text-slate-200">
-        {points.map((p) => (
-          <li key={p} className="flex items-start gap-2.5">
-            <span className="mt-0.5 font-bold" style={{ color: accent }}>
-              ●
-            </span>
-            <span>{p}</span>
-          </li>
-        ))}
-      </ul>
-      <span
-        className="relative mt-6 inline-flex min-h-[50px] items-center justify-center rounded-full text-base font-extrabold text-ink-950 transition group-hover:brightness-110"
-        style={{ background: accent, boxShadow: `0 0 22px ${accent}44` }}
-      >
-        {t("Open")} ›
-      </span>
-    </Link>
+      <span className="mt-3 block h-2 w-[86px] rounded-full bg-[#0E2A47]" />
+      <span className="mt-1.5 block h-1.5 w-[56px] rounded-full bg-[#D5E0EB]" />
+      {ok && (
+        <span className="check-pop absolute -right-3 -top-3 flex h-9 w-9 items-center justify-center rounded-full bg-ok text-white shadow-glowGreen">
+          <Icon name="check" size={20} />
+        </span>
+      )}
+      {bad && (
+        <span className="absolute -right-3 -top-3 flex h-9 w-9 items-center justify-center rounded-full bg-warn text-white">
+          <Icon name="x" size={18} />
+        </span>
+      )}
+    </div>
   );
 }
 
 export default function Portal() {
-  const { clock, meta } = useApp();
-  const crewName = useCrewName();
+  const { clock, meta, setCrewId } = useApp();
+  const navigate = useNavigate();
+  const [phase, setPhase] = useState<Phase>({ kind: "standby" });
+  const [reader, setReader] = useState<ReaderState>(() => readerState());
+  const [simOpen, setSimOpen] = useState(false);
+  const timer = useRef<number>();
+
+  const open = (target: CardTarget) => {
+    if (target.kind === "crew") {
+      setCrewId(target.crewId);
+      navigate("/crew");
+    } else {
+      navigate("/team");
+    }
+  };
+
+  const handleTag = (raw: string) => {
+    window.clearTimeout(timer.current);
+    const target = lookupCard(raw);
+    if (!target) {
+      setPhase({ kind: "unknown", id: normalizeCardId(raw) });
+      try { navigator.vibrate?.([40, 60, 40]); } catch { /* no haptics */ }
+      return;
+    }
+    setPhase({ kind: "ok", target });
+    try { navigator.vibrate?.(35); } catch { /* no haptics */ }
+    timer.current = window.setTimeout(() => open(target), OPEN_DELAY_MS);
+  };
+
+  const tagRef = useRef(handleTag);
+  tagRef.current = handleTag;
+  useEffect(() => onCardTap((id) => tagRef.current(id)), []);
+  useEffect(() => {
+    // The phone's NFC switch can change while the app is open.
+    const id = window.setInterval(() => setReader(readerState()), 2000);
+    return () => { window.clearInterval(id); window.clearTimeout(timer.current); };
+  }, []);
+
+  const welcome = phase.kind === "ok"
+    ? phase.target.holder ? t("Welcome, {name}", { name: phase.target.holder.split(" ")[0] })
+      : phase.target.kind === "crew" ? t("Welcome, Astronaut {n}", { n: phase.target.n }) : t("Welcome, lab team")
+    : "";
+
+  const title = phase.kind === "ok" ? welcome
+    : phase.kind === "unknown" ? t("This card is not on the crew list")
+    : t("Hold your crew card to the back of the device");
+  const sub = phase.kind === "ok"
+    ? phase.target.kind === "crew" ? t("Opening your health space…") : t("Opening the lab team view…")
+    : phase.kind === "unknown" ? t("Card {id}. Try another card, or sign in below.", { id: phase.id })
+    : t("SHMS reads the card and opens your own health space.");
+
+  const status = phase.kind === "ok" ? t("Card confirmed")
+    : phase.kind === "unknown" ? t("Unknown card")
+    : reader === "ready" ? t("Ready to read a card")
+    : reader === "off" ? t("NFC is turned off. Turn it on in the phone's settings.")
+    : t("This device has no card reader. Sign in below, or simulate a tap.");
+
+  const day = clock ? (clock.phase === "inflight" ? t("Mission day {d}", { d: clock.today }) : clock.phase === "preflight" ? t("Before launch") : t("Back on Earth")) : "";
+
   return (
-    <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-6 sm:px-6 sm:py-10">
-      <header className="flex flex-wrap items-center gap-3 rounded-full border border-white/[0.07] bg-ink-900/90 px-5 py-3 shadow-card backdrop-blur-xl">
-        <span className="flex items-center gap-2 text-xl font-black tracking-tight text-white">
-          <span className="inline-block h-3 w-3 rounded-full bg-accent shadow-glowBlue" aria-hidden />
-          SHMS
+    <div className="relative flex min-h-[100svh] flex-col overflow-hidden login-sky">
+      <header className="relative z-10 flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-4 sm:px-8 sm:py-5">
+        <span className="flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-fg">
+          <Mark size={30} /> SHMS
+          <span className="hidden text-sm font-medium text-slate-400 md:inline">{t("Space Health Management System")}</span>
         </span>
-        <span className="hidden text-sm font-medium text-slate-300 sm:inline">
-          {t("Space Health Management System")}
-        </span>
-        <SimBadge />
-        <span className="rounded-full bg-ink-850 px-3 py-1 font-mono text-xs font-bold text-slate-200">
-          {missionTime(clock)}
-        </span>
-        <LinkPill />
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex flex-wrap items-center gap-2 text-sm">
+          {day && <span className="hidden font-semibold text-slate-300 sm:inline">{day}</span>}
+          <LinkPill />
           <LangSwitch />
+          <ThemeSwitch />
         </div>
       </header>
 
-      {/* Hero Banner */}
-      <div className="relative mt-6 overflow-hidden rounded-card border border-white/[0.08] bg-gradient-to-br from-[#0E2238] via-[#151B28] to-[#211536] p-6 shadow-card sm:p-8">
-        <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-accent/15 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-16 left-1/3 h-56 w-56 rounded-full bg-telemetry/15 blur-3xl" />
-        <div className="relative flex flex-wrap items-center justify-between gap-4">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-accent">
-              <Icon name="eye" size={14} />
-              {t("Antigravity Biometrics · Space Ocular Tonometer · Direct Earth SOS")}
-            </div>
-            <h1 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">
-              {t("Orbital Crew Health & Space Ocular Telemetry Hub")}
-            </h1>
-            <p className="mt-2 text-sm leading-relaxed text-slate-300 sm:text-base">
-              {t(
-                "Continuous astronaut health monitoring with paired Space Tonometer intraocular pressure (IOP) tracking, microgravity biologic liquid redistribution analysis, and automated emergency space-to-Earth transmission.",
-              )}
-            </p>
-          </div>
-          <div className="flex flex-col items-start gap-2 sm:items-end">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              {t("Active Astronaut Profile")}: <strong className="text-accent">{crewName}</strong>
-            </span>
-            <CrewSwitcher />
+      <section className="relative z-10 mx-auto max-w-3xl px-5 pt-[5vh] text-center sm:pt-[7vh]" aria-live="polite">
+        <h1 className="text-[34px] font-extrabold leading-[1.04] tracking-[-0.03em] text-fg sm:text-[52px] lg:text-[60px]">{title}</h1>
+        <p className={cx("mx-auto mt-4 max-w-xl text-[17px] sm:text-xl", phase.kind === "unknown" ? "text-warn" : "text-slate-400")}>{sub}</p>
+      </section>
+
+      {/* Earth seen from the cupola: the limb is where the card is read. */}
+      <div className="relative min-h-[470px] flex-1">
+        <div aria-hidden className="earth absolute left-1/2 top-[150px] h-[2400px] w-[2400px] -translate-x-1/2 rounded-full" />
+
+        <div className="absolute left-1/2 top-[150px] -translate-x-1/2 -translate-y-1/2">
+          <div className="relative flex h-[230px] w-[230px] items-center justify-center">
+            {phase.kind === "standby" && reader !== "off" && (
+              <>
+                <span aria-hidden className="read-wave absolute inset-0 rounded-full border-2 border-limb" />
+                <span aria-hidden className="read-wave d2 absolute inset-0 rounded-full border-2 border-limb" />
+                <span aria-hidden className="read-wave d3 absolute inset-0 rounded-full border-2 border-limb" />
+              </>
+            )}
+            {phase.kind === "ok" && <span aria-hidden className="absolute inset-6 rounded-full border-2 border-[#7BE0AE]" />}
+            <CrewCard phase={phase} />
           </div>
         </div>
+
+        <p className="absolute inset-x-0 top-[290px] px-6 text-center text-base font-semibold text-white">
+          <span aria-hidden className={cx("mr-2 inline-block h-2.5 w-2.5 rounded-full align-middle",
+            phase.kind === "ok" ? "bg-[#7BE0AE]" : phase.kind === "unknown" ? "bg-[#FFC27A]" : reader === "ready" ? "bg-limb orbital-pulse" : "bg-[#9FB2C4]")} />
+          {status}
+        </p>
+
+        {/* Manual sign-in: present, quiet. */}
+        <div className="absolute inset-x-0 bottom-5 z-10 flex flex-col items-center gap-3 px-4 text-sm text-[#BFD6EC]">
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2">
+            <span>{t("No card?")}</span>
+            <span className="text-[#BFD6EC]">{t("Astronaut")}</span>
+            {(meta?.crew ?? []).map((c, i) => (
+              <button key={c.id} onClick={() => open({ kind: "crew", crewId: c.id, n: i + 1 })} aria-label={c.name}
+                className="h-9 min-w-[36px] rounded-full border border-white/25 px-2 font-semibold tabular-nums text-white transition-colors hover:bg-white/10">
+                {i + 1}
+              </button>
+            ))}
+            <span aria-hidden className="mx-1 hidden text-[#7F9BB8] sm:inline">·</span>
+            <button onClick={() => open({ kind: "team" })}
+              className="h-9 rounded-full border border-white/25 px-3 font-semibold text-white transition-colors hover:bg-white/10">
+              {t("Lab team")}
+            </button>
+          </div>
+
+          <div className="relative">
+            <button onClick={() => setSimOpen((v) => !v)} aria-expanded={simOpen}
+              className="inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold text-[#BFD6EC] underline decoration-white/30 underline-offset-4 hover:text-white">
+              <Icon name="nfc" size={14} />{t("Simulate a card tap")}
+            </button>
+            {simOpen && (
+              <div className="absolute bottom-10 left-1/2 max-h-[60vh] w-[340px] max-w-[calc(100vw-32px)] -translate-x-1/2 overflow-y-auto rounded-tile border border-ink-700 bg-ink-900 p-2 text-left text-fg shadow-lift">
+                <p className="px-2 pb-1.5 pt-1 text-xs text-slate-400">{t("Demo cards on this device. Pick one to tap it.")}</p>
+                {[...Object.keys(CARDS), UNKNOWN_DEMO_CARD].map((id) => {
+                  const target = CARDS[id];
+                  const role = !target ? t("not on the list") : target.kind === "crew" ? t("Astronaut {n}", { n: target.n }) : t("Lab team");
+                  const who = target?.holder ? `${target.holder} · ${role}` : role;
+                  return (
+                    <button key={id} onClick={() => { setSimOpen(false); handleTag(id); }}
+                      className="flex w-full items-center justify-between gap-3 rounded-xl px-2 py-1.5 text-left hover:bg-ink-850">
+                      <span className="font-mono text-[13px]">{id}</span>
+                      <span className={cx("text-xs", target ? "text-slate-400" : "text-warn")}>{who}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          <p className="max-w-2xl text-center text-xs leading-snug text-[#BFD6EC]">{t("Simulated data")} · {meta?.disclaimer}</p>
+        </div>
       </div>
-
-      {/* 3 Portal Modules */}
-      <div className="mt-6 grid gap-5 lg:grid-cols-3">
-        <PortalCard
-          to="/crew"
-          icon="today"
-          accent="#00E5FF"
-          gradient="from-[#00E5FF] to-[#0077FF]"
-          badge={t("Onboard Tablet")}
-          title={t("Astronaut")}
-          who={t("Personal Daily Health & Countermeasure Hub")}
-          points={[
-            t("Samsung Health-style modular dashboard & daily mission tasks"),
-            t("Live ARED, T2 & CEVIS workouts with heart rate and kcal"),
-            t("Energy score, water & galley nutrition, mood & PVT reaction test"),
-            t("Pre-landing training & post-landing gravity re-adaptation"),
-          ]}
-        />
-
-        <PortalCard
-          to="/crew/ocular"
-          icon="eye"
-          accent="#00E676"
-          gradient="from-[#00E676] to-[#00E5FF]"
-          badge={t("Tonometer + SOS")}
-          title={t("Ocular & Tonometer")}
-          who={t("Eye-Based Health Check & Biologic Liquid System")}
-          points={[
-            t("Live intraocular pressure (IOP mmHg) from paired space tonometer"),
-            t("Cephalad biologic liquid movement (mL) & intracranial pressure (ICP)"),
-            t("24-hour optic nerve pressure trend & one-tap calibration scan"),
-            t("Emergency Ground-to-Space Protocol: direct SOS alert to Earth"),
-          ]}
-        />
-
-        <PortalCard
-          to="/team"
-          icon="grid"
-          accent="#B388FF"
-          gradient="from-[#B388FF] to-[#651FFF]"
-          badge={t("Mission Control")}
-          title={t("Lab team")}
-          who={t("Ground · Flight Surgeons, Ophthalmology & Lab")}
-          points={[
-            t("All 5 astronauts (Astronaut 1–5), alerts & protocols at a glance"),
-            t("Dedicated Ground Ocular & Tonometer Command Matrix"),
-            t("Every biomarker with EWMA, baseline ± SD, z-score & 7-day slope"),
-            t("Mission simulation controls: Mars delay, link blackout & event injection"),
-          ]}
-        />
-      </div>
-
-      <p className="mt-6 text-center text-xs text-slate-500">{meta?.disclaimer}</p>
     </div>
   );
 }

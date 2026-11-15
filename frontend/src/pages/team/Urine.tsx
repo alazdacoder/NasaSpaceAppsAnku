@@ -1,4 +1,5 @@
 import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { C } from "../../lib/theme";
 import { AXIS, GRID, TIP, TrendBlock } from "../../components/charts";
 import { AlertCard, Card, Empty, GroundNote, MetricCard, PageTitle, ProgressBar, SourceTag, StatusPill, Unverified } from "../../components/ui";
 import { dayLabel, dayTick, fmt, usePoll, type Alert, type Metric, type Protocol, type ViewInfo } from "../../lib/api";
@@ -12,7 +13,7 @@ interface LabData {
 
 export function ProtocolCard({ p }: { p: Protocol }) {
   const score = p.score ?? 0;
-  const color = score > 0.6 ? "#00E676" : score > 0.3 ? "#FF9100" : "#FF5252";
+  const color = score > 0.6 ? C.ok : score > 0.3 ? C.warn : C.bad;
   const rows = (p.targets[0]?.history ?? []).map((h, i) => {
     const r: Record<string, number> = { day: h.day };
     p.targets.forEach((x) => { if (x.history[i]) r[x.metric] = Math.round(x.history[i].progress * 100); });
@@ -22,7 +23,7 @@ export function ProtocolCard({ p }: { p: Protocol }) {
   const working = p.score === null ? t("Too early to tell") : p.days_since_start < 7 ? t("Building up — check again in a few days")
     : score >= 0.6 ? t("Yes — markers are moving toward target") : score >= 0.35 ? t("Partly — slower than expected") : t("No — markers are barely moving");
   return (
-    <div className="rounded-2xl border border-ink-700 bg-ink-850 p-4">
+    <div className="border-t border-ink-700 pt-3 pb-1">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2 text-xl font-bold">{p.label} <SourceTag verified={p.verified} source={p.source} /></div>
@@ -57,10 +58,10 @@ export function ProtocolCard({ p }: { p: Protocol }) {
               <CartesianGrid stroke={GRID} vertical={false} />
               <XAxis dataKey="day" tick={AXIS} tickFormatter={dayTick} />
               <YAxis tick={AXIS} domain={[0, 100]} width={40} unit="%" />
-              <ReferenceLine y={90} stroke="#00E676" strokeDasharray="4 4" />
+              <ReferenceLine y={90} stroke={C.ok} strokeDasharray="4 4" />
               <Tooltip contentStyle={TIP} labelFormatter={(d) => dayLabel(Number(d))} />
               <Line dataKey="score" name={t("Response score")} stroke={color} strokeWidth={3} dot={false} isAnimationActive={false} />
-              {p.targets.map((x, i) => <Line key={x.metric} dataKey={x.metric} name={x.label} stroke={i ? "#B388FF" : "#00E5FF"} strokeDasharray="4 3" dot={false} isAnimationActive={false} />)}
+              {p.targets.map((x, i) => <Line key={x.metric} dataKey={x.metric} name={x.label} stroke={i ? C.rest : C.accent} strokeDasharray="4 3" dot={false} isAnimationActive={false} />)}
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -93,7 +94,7 @@ export default function Urine() {
             <div className="grid gap-4 sm:grid-cols-[auto_1fr]">
               <div>
                 <div className="text-sm text-slate-400">{t("CaOx supersaturation (smoothed)")}</div>
-                <div className="text-6xl font-black tabular-nums" style={{ color: (ss.ewma ?? 0) > 2 ? "#FF5252" : (ss.ewma ?? 0) > 1.8 ? "#FF9100" : "#00E676" }}>{fmt(ss.ewma, 2)}</div>
+                <div className="text-6xl font-black tabular-nums" style={{ color: (ss.ewma ?? 0) > 2 ? C.bad : (ss.ewma ?? 0) > 1.8 ? C.warn : C.ok }}>{fmt(ss.ewma, 2)}</div>
                 <div className="text-sm text-slate-400">{t("risk threshold 2.0")} <SourceTag verified source="https://ntrs.nasa.gov/citations/20090019087" /></div>
                 <div className="mt-1 text-sm text-slate-400">{t("preflight baseline {v}", { v: fmt(ss.baseline_mean, 2) })}</div>
                 <div className="mt-2"><Unverified source={ss.estimate_note ?? undefined} /> <span className="text-xs text-slate-500">{t("estimate, not EQUIL2")}</span></div>

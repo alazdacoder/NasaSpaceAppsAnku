@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { C } from "../../lib/theme";
 import { Button, Card, Empty, PageTitle, SourceTag, cx } from "../../components/ui";
 import { api, usePoll } from "../../lib/api";
 import { t } from "../../lib/i18n";
@@ -49,11 +50,11 @@ function OsdrPanel() {
     <Card title={t("Related NASA OSDR studies (human)")}
       right={<Button kind="ghost" disabled={loading} onClick={async () => { setLoading(true); try { setFresh(await api<Osdr>("/api/osdr?refresh=true")); } finally { setLoading(false); } }}>{loading ? t("Calling…") : t("Call API now")}</Button>}>
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        <span className={cx("rounded px-2 py-0.5 font-bold uppercase", badge)}>{data.origin === "live" ? t("live API") : data.origin === "cache" ? t("cached response") : t("offline fallback")}</span>
+        <span className={cx("rounded px-2 py-0.5 font-bold", badge)}>{data.origin === "live" ? t("live API") : data.origin === "cache" ? t("cached response") : t("offline fallback")}</span>
         <span className="text-slate-400">{t("fetched {d}", { d: data.fetched_at })}</span>
         {data.error && <span className="text-warn">{t("Live call failed ({e}); showing cached copy.", { e: data.error })}</span>}
       </div>
-      <div className="mt-1 break-all font-mono text-xs text-slate-500">{data.query_url}</div>
+      <div className="mt-1 break-all tabular-nums text-xs text-slate-500">{data.query_url}</div>
       <div className="mt-3 flex flex-wrap gap-2">
         {topics.map((x) => (
           <button key={x} onClick={() => setTopic(x)} className={cx("min-h-[40px] rounded-lg px-3 text-sm font-semibold", topic === x ? "bg-accent text-ink-950" : "bg-ink-800")}>{x === "All" ? t("All") : x}</button>
@@ -61,7 +62,7 @@ function OsdrPanel() {
       </div>
       <ul className="mt-3 max-h-[520px] space-y-2 overflow-y-auto pr-1">
         {list.slice(0, 60).map((s) => (
-          <li key={s.accession} className="rounded-xl bg-ink-850 p-3">
+          <li key={s.accession} className="border-t border-ink-700 pt-3 pb-1">
             <a href={s.url} target="_blank" rel="noreferrer" className="font-semibold text-accent hover:underline">{s.accession}: {s.title}</a>
             <div className="mt-1 text-sm text-slate-400">{s.description.slice(0, 220)}{s.description.length > 220 ? "…" : ""}</div>
             {s.topics.length > 0 && <div className="mt-1 text-xs text-slate-500">{s.topics.join(" · ")}</div>}
@@ -130,8 +131,8 @@ export default function Sources() {
                 {data.thresholds.map((x, i) => (
                   <tr key={i} className="border-t border-ink-800">
                     <td className="py-1.5 pr-2">{x.label}{phaseWords(x.phases)}</td>
-                    <td className="pr-2 font-mono">{x.rule} {x.unit}</td>
-                    <td className="pr-2" style={{ color: x.level === "red" ? "#FF5252" : "#FF9100" }}>{levelWord(x.level)}</td>
+                    <td className="pr-2 tabular-nums">{x.rule} {x.unit}</td>
+                    <td className="pr-2" style={{ color: x.level === "red" ? C.bad : C.warn }}>{levelWord(x.level)}</td>
                     <td><SourceTag verified={x.verified} source={x.source} /></td>
                   </tr>
                 ))}
@@ -142,10 +143,10 @@ export default function Sources() {
         <Card title={t("Cross-source rules")}>
           <ul className="max-h-96 space-y-3 overflow-y-auto">
             {data.cross_rules.map((r) => (
-              <li key={r.id} className="rounded-xl bg-ink-850 p-3">
+              <li key={r.id} className="border-t border-ink-700 pt-3 pb-1">
                 <div className="flex items-center justify-between gap-2 font-semibold">{r.title}{phaseWords(r.phases)} <SourceTag verified={r.verified} source={r.source} /></div>
-                <div className="mt-1 font-mono text-sm text-slate-300">{r.when.map((c) => `${c.metric}.${c.field} ${c.op} ${c.value}`).join(t("  AND  "))}</div>
-                <div className="text-sm" style={{ color: r.level === "red" ? "#FF5252" : "#FF9100" }}>→ {levelWord(r.level)}</div>
+                <div className="mt-1 tabular-nums text-sm text-slate-300">{r.when.map((c) => `${c.metric}.${c.field} ${c.op} ${c.value}`).join(t("  AND  "))}</div>
+                <div className="text-sm" style={{ color: r.level === "red" ? C.bad : C.warn }}>{levelWord(r.level)}</div>
               </li>
             ))}
           </ul>
@@ -155,7 +156,7 @@ export default function Sources() {
       <Card title={t("Recommendation list (fixed)")}>
         <ul className="space-y-2">
           {data.recommendations.map((r) => (
-            <li key={r.id} className="flex flex-wrap items-start gap-2"><span className="w-40 shrink-0 font-mono text-sm text-slate-500">{r.id}</span><span className="flex-1">{r.text}</span><SourceTag verified={r.verified} source={r.source} /></li>
+            <li key={r.id} className="flex flex-wrap items-start gap-2"><span className="w-40 shrink-0 tabular-nums text-sm text-slate-500">{r.id}</span><span className="flex-1">{r.text}</span><SourceTag verified={r.verified} source={r.source} /></li>
           ))}
         </ul>
       </Card>

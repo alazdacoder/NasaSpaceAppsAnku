@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { C } from "../../lib/theme";
 import {
   Area,
   AreaChart,
@@ -121,16 +122,16 @@ export default function CrewOcular() {
   const link = data?.link ?? ctxLink;
 
   const zoneColor =
-    oc.safety_zone === "critical" ? "#FF5252" : oc.safety_zone === "elevated" ? "#FF9100" : "#00E676";
+    oc.safety_zone === "critical" ? C.bad : oc.safety_zone === "elevated" ? C.warn : C.ok;
   const zoneLabel =
     oc.safety_zone === "critical" ? t("Critical") : oc.safety_zone === "elevated" ? t("Elevated") : t("Normal");
 
   const stabColor =
     fluid.stabilization_status === "anomaly"
-      ? "#FF5252"
+      ? C.bad
       : fluid.stabilization_status === "adapting"
-        ? "#FF9100"
-        : "#B388FF";
+        ? C.warn
+        : C.rest;
   const stabLabel =
     fluid.stabilization_status === "anomaly"
       ? t("Anomaly")
@@ -298,8 +299,8 @@ export default function CrewOcular() {
         className={cx(
           "relative overflow-hidden rounded-card border p-5 transition-all sm:p-6",
           em.failsafe_triggered || oc.safety_zone === "critical"
-            ? "border-bad/80 bg-gradient-to-r from-[#2D0F18] via-[#1E1420] to-[#181C24] shadow-glowRed"
-            : "border-accent/40 bg-gradient-to-r from-[#0F202D] via-[#151C28] to-[#1C162E] shadow-glowBlue",
+            ? "border-bad/80 bg-ink-900 shadow-glowRed"
+            : "border-accent/40 bg-ink-900 shadow-glowBlue",
         )}
       >
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -316,21 +317,18 @@ export default function CrewOcular() {
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2.5">
-                <span className="text-xs font-bold uppercase tracking-widest text-accent">
-                  {t("Emergency Ground-to-Space Protocol")}
-                </span>
                 <span
                   className={cx(
-                    "inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-xs font-extrabold uppercase tracking-wider",
+                    "inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-xs font-extrabold",
                     em.comm_link_state === "active" || em.failsafe_triggered
-                      ? "bg-bad text-ink-950 shadow-glowRed"
+                      ? "bg-badfill text-white shadow-glowRed"
                       : "bg-ok/20 text-ok border border-ok/40",
                   )}
                 >
                   <span className="h-2 w-2 rounded-full bg-current" />
                   {em.comm_link_state === "active" || em.failsafe_triggered
-                    ? t("Ground Communication Link: ACTIVE (EMERGENCY UPLINK)")
-                    : t("Ground Communication Link: ACTIVE / STANDBY")}
+                    ? t("Ground link: active (emergency uplink)")
+                    : t("Ground link: active, standby")}
                 </span>
               </div>
               <p className="mt-1 text-sm text-slate-200">
@@ -347,7 +345,7 @@ export default function CrewOcular() {
                     {t("One-way delay")}: <strong className="text-accent">{duration(link.delay_s)}</strong>
                   </span>
                   <span>
-                    {t("Fail-safe status")}: <strong className="text-ok">{t("ARMED · AUTO-SOS ENABLED")}</strong>
+                    {t("Fail-safe status")}: <strong className="text-ok">{t("Armed · auto-SOS on")}</strong>
                   </span>
                 </div>
               )}
@@ -379,11 +377,10 @@ export default function CrewOcular() {
         </div>
 
         {bannerMsg && (
-          <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-ink-950/85 px-4 py-3 text-sm font-semibold text-white">
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-ink-600 bg-ink-950/85 px-4 py-3 text-sm font-semibold text-fg">
             <span>{bannerMsg}</span>
-            <button onClick={() => setBannerMsg(null)} className="text-xs text-slate-400 hover:text-white">
-              ✕
-            </button>
+            <button onClick={() => setBannerMsg(null)} className="text-xs text-slate-400 hover:text-fg">
+              <Icon name="x" size={18} />            </button>
           </div>
         )}
 
@@ -420,7 +417,7 @@ export default function CrewOcular() {
           }
           right={
             <span
-              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-extrabold uppercase tracking-wider"
+              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-extrabold"
               style={{
                 color: zoneColor,
                 borderColor: `${zoneColor}55`,
@@ -433,8 +430,8 @@ export default function CrewOcular() {
           }
         >
           <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border border-white/[0.07] bg-ink-850 p-4">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <div className="border-t border-ink-700 pt-3 pb-1">
+              <div className="text-xs font-semibold text-slate-400">
                 {t("Live Tonometer IOP")}
               </div>
               <div className="mt-1 flex items-baseline gap-1.5">
@@ -448,12 +445,12 @@ export default function CrewOcular() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/[0.07] bg-ink-850 p-4">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <div className="border-t border-ink-700 pt-3 pb-1">
+              <div className="text-xs font-semibold text-slate-400">
                 {t("Right Eye (OD) / Left Eye (OS)")}
               </div>
               <div className="mt-1 flex items-baseline gap-1.5">
-                <span className="text-3xl font-black tabular-nums text-white">
+                <span className="text-3xl font-black tabular-nums text-fg">
                   {fmt(oc.iop_od_mmhg, 1)} / {fmt(oc.iop_os_mmhg, 1)}
                 </span>
                 <span className="text-xs text-slate-400">mmHg</span>
@@ -463,8 +460,8 @@ export default function CrewOcular() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/[0.07] bg-ink-850 p-4">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <div className="border-t border-ink-700 pt-3 pb-1">
+              <div className="text-xs font-semibold text-slate-400">
                 {t("Optic Nerve Sheath (ONSD)")}
               </div>
               <div className="mt-1 flex items-baseline gap-1.5">
@@ -480,13 +477,13 @@ export default function CrewOcular() {
           </div>
 
           {/* Color-coded Safety Zones Gauge */}
-          <div className="mt-4 rounded-2xl border border-white/[0.06] bg-ink-950/80 p-4">
+          <div className="mt-4 border-t border-ink-700 pt-3">
             <div className="mb-1.5 flex items-center justify-between text-xs font-semibold">
               <span className="text-ok">{t("Normal (< 20.5 mmHg)")}</span>
               <span className="text-warn">{t("Elevated (20.5–23.9)")}</span>
               <span className="text-bad">{t("Critical (≥ 24.0 mmHg)")}</span>
             </div>
-            <div className="relative h-3.5 w-full overflow-hidden rounded-full bg-gradient-to-r from-[#00E676] via-[#FF9100] to-[#FF5252]">
+            <div className="relative h-3.5 w-full overflow-hidden rounded-full bg-gradient-to-r from-ok via-warn to-bad">
               <div
                 className="absolute top-0 h-full w-2 -translate-x-1/2 rounded-full bg-white shadow-[0_0_10px_#fff]"
                 style={{ left: `${iopGaugePct}%` }}
@@ -494,7 +491,7 @@ export default function CrewOcular() {
             </div>
             <div className="mt-2 flex items-center justify-between text-xs text-slate-400">
               <span>10 mmHg</span>
-              <span className="font-semibold text-white">
+              <span className="font-semibold text-fg">
                 {t("Current Eye Pressure: {v} mmHg ({z})", { v: fmt(oc.iop_mmhg, 1), z: zoneLabel })}
               </span>
               <span>30 mmHg</span>
@@ -509,26 +506,26 @@ export default function CrewOcular() {
               </span>
               <span className="text-xs text-slate-400">{t("Tonometer + ICP telemetry (mmHg)")}</span>
             </div>
-            <div className="h-52 w-full rounded-2xl border border-white/[0.05] bg-ink-950/60 p-2">
+            <div className="h-52 w-full pt-2">
               <ResponsiveContainer>
                 <AreaChart data={oc.trend_24h} margin={{ top: 8, right: 10, left: -12, bottom: 0 }}>
                   <defs>
                     <linearGradient id="ocularIopGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#00E5FF" stopOpacity={0.45} />
-                      <stop offset="100%" stopColor="#00E5FF" stopOpacity={0.02} />
+                      <stop offset="0%" stopColor={C.accent} stopOpacity={0.45} />
+                      <stop offset="100%" stopColor={C.accent} stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid stroke={GRID} vertical={false} strokeDasharray="3 3" />
                   <XAxis dataKey="hour" tick={AXIS} interval={3} />
-                  <YAxis tick={AXIS} domain={[11, 27]} />
-                  <ReferenceLine y={20.5} stroke="#FF9100" strokeDasharray="4 4" />
-                  <ReferenceLine y={24.0} stroke="#FF5252" strokeDasharray="3 3" />
+                  <YAxis tick={AXIS} domain={[10, 30]} />
+                  <ReferenceLine y={20.5} stroke={C.warn} strokeDasharray="4 4" />
+                  <ReferenceLine y={24.0} stroke={C.bad} strokeDasharray="3 3" />
                   <Tooltip contentStyle={TIP} />
                   <Area
                     type="monotone"
                     dataKey="iop_mmhg"
                     name={t("IOP (mmHg)")}
-                    stroke="#00E5FF"
+                    stroke={C.accent}
                     strokeWidth={2.8}
                     fill="url(#ocularIopGrad)"
                     isAnimationActive={false}
@@ -537,7 +534,7 @@ export default function CrewOcular() {
                     type="monotone"
                     dataKey="icp_mmhg"
                     name={t("ICP (mmHg)")}
-                    stroke="#B388FF"
+                    stroke={C.rest}
                     strokeWidth={2}
                     dot={false}
                     strokeDasharray="4 3"
@@ -575,7 +572,7 @@ export default function CrewOcular() {
           }
           right={
             <span
-              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-extrabold uppercase tracking-wider"
+              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-extrabold"
               style={{
                 color: stabColor,
                 borderColor: `${stabColor}55`,
@@ -599,7 +596,7 @@ export default function CrewOcular() {
               />
             </div>
             <div className="space-y-2.5">
-              <div className="text-sm font-semibold text-white">
+              <div className="text-sm font-semibold text-fg">
                 {t("Biologic Liquid Redistribution Protection")}
               </div>
               <p className="text-xs leading-relaxed text-slate-300">
@@ -608,16 +605,16 @@ export default function CrewOcular() {
                 )}
               </p>
               <div className="grid grid-cols-2 gap-2.5 pt-1">
-                <div className="rounded-xl border border-white/[0.06] bg-ink-850 px-3 py-2">
-                  <div className="text-[11px] uppercase tracking-wider text-slate-400">
+                <div className="border-t border-ink-700 pt-2">
+                  <div className="text-[11px] text-slate-400">
                     {t("Cephalad Fluid Shift")}
                   </div>
                   <div className="text-2xl font-black tabular-nums text-telemetry">
                     {fluid.fluid_shift_ml} <span className="text-xs font-normal text-slate-400">mL</span>
                   </div>
                 </div>
-                <div className="rounded-xl border border-white/[0.06] bg-ink-850 px-3 py-2">
-                  <div className="text-[11px] uppercase tracking-wider text-slate-400">
+                <div className="border-t border-ink-700 pt-2">
+                  <div className="text-[11px] text-slate-400">
                     {t("Intracranial Pressure (ICP)")}
                   </div>
                   <div className="text-2xl font-black tabular-nums text-accent">
@@ -629,26 +626,26 @@ export default function CrewOcular() {
           </div>
 
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <div className="rounded-2xl border border-white/[0.06] bg-ink-850 p-3">
+            <div className="border-t border-ink-700 pt-3 pb-1">
               <div className="text-xs text-slate-400">{t("Microgravity +Δ IOP")}</div>
-              <div className="mt-1 text-2xl font-bold tabular-nums text-white">
+              <div className="mt-1 text-2xl font-bold tabular-nums text-fg">
                 +{fmt(fluid.iop_shift_delta_mmhg, 1)} <span className="text-xs text-slate-400">mmHg</span>
               </div>
               <div className="text-[11px] text-slate-500">{t("Above pre-flight baseline")}</div>
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-ink-850 p-3">
+            <div className="border-t border-ink-700 pt-3 pb-1">
               <div className="text-xs text-slate-400">{t("Headward Liquid Ratio")}</div>
               <div className="mt-1 text-2xl font-bold tabular-nums text-telemetry">
                 {fmt(fluid.headward_distribution_pct, 1)}%
               </div>
               <div className="mt-1">
-                <ProgressBar value={fluid.headward_distribution_pct / 100} color="#B388FF" height={6} />
+                <ProgressBar value={fluid.headward_distribution_pct / 100} color={C.rest} height={6} />
               </div>
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-ink-850 p-3 col-span-2 sm:col-span-1">
+            <div className="border-t border-ink-700 pt-3 pb-1 col-span-2 sm:col-span-1">
               <div className="text-xs text-slate-400">{t("LBNP Countermeasure")}</div>
               <div className="mt-1 text-lg font-bold text-ok">
-                {lbnpActive || fluid.lower_body_Countermeasure === "active" ? t("ACTIVE (-25 mmHg)") : t("STANDBY")}
+                {lbnpActive || fluid.lower_body_Countermeasure === "active" ? t("Active (−25 mmHg)") : t("Standby")}
               </div>
               <button
                 onClick={() => setLbnpActive((v) => !v)}
@@ -660,10 +657,10 @@ export default function CrewOcular() {
           </div>
 
           {/* Interactive Biologic Liquid Damage Prevention & Visual Check */}
-          <div className="mt-4 rounded-2xl border border-white/[0.07] bg-ink-950/70 p-4">
+          <div className="mt-4 border-t border-ink-700 pt-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <div className="text-sm font-bold text-white">
+                <div className="text-sm font-bold text-fg">
                   {t("Optic Macular & Chorioretinal Fold Self-Check (Amsler Grid)")}
                 </div>
                 <div className="text-xs text-slate-400">
@@ -680,7 +677,7 @@ export default function CrewOcular() {
                       : "bg-ink-800 text-slate-300 hover:bg-ink-700",
                   )}
                 >
-                  ✓ {t("Lines Straight (Normal)")}
+                  <Icon name="check" size={14} className="mr-1 inline align-[-2px]" />{t("Lines Straight (Normal)")}
                 </button>
                 <button
                   onClick={() => {
@@ -690,11 +687,11 @@ export default function CrewOcular() {
                   className={cx(
                     "rounded-full px-3 py-1.5 text-xs font-bold transition",
                     amslerChecked === "distorted"
-                      ? "bg-bad text-ink-950 shadow-glowRed"
+                      ? "bg-badfill text-white shadow-glowRed"
                       : "bg-ink-800 text-bad hover:bg-bad/20",
                   )}
                 >
-                  ⚠ {t("Wavy / Blurred (Alert Earth)")}
+                  <Icon name="alert" size={14} className="mr-1 inline align-[-2px]" />{t("Wavy / Blurred (Alert Earth)")}
                 </button>
               </div>
             </div>
@@ -709,13 +706,13 @@ export default function CrewOcular() {
             <>
               <div className="mb-2 flex items-baseline justify-between text-sm text-slate-400">
                 <span>
-                  {t("Current smoothed")}: <strong className="text-white">{fmt(data.metrics.iop_mmhg.ewma, 1)} mmHg</strong>
+                  {t("Current smoothed")}: <strong className="text-fg">{fmt(data.metrics.iop_mmhg.ewma, 1)} mmHg</strong>
                 </span>
                 <span>
                   {t("Baseline")}: {fmt(data.metrics.iop_mmhg.baseline_mean, 1)} mmHg
                 </span>
               </div>
-              <SimpleLine m={data.metrics.iop_mmhg} days={14} height={160} color="#00E5FF" />
+              <SimpleLine m={data.metrics.iop_mmhg} days={14} height={160} color={C.accent} />
             </>
           ) : (
             <div className="h-40">
@@ -723,9 +720,9 @@ export default function CrewOcular() {
                 <LineChart data={oc.trend_24h}>
                   <CartesianGrid stroke={GRID} vertical={false} />
                   <XAxis dataKey="hour" tick={AXIS} />
-                  <YAxis tick={AXIS} domain={[12, 26]} />
+                  <YAxis tick={AXIS} domain={[10, 30]} />
                   <Tooltip contentStyle={TIP} />
-                  <Line dataKey="iop_mmhg" stroke="#00E5FF" strokeWidth={3} dot={false} isAnimationActive={false} />
+                  <Line dataKey="iop_mmhg" stroke={C.accent} strokeWidth={3} dot={false} isAnimationActive={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -744,7 +741,7 @@ export default function CrewOcular() {
                   {t("Critical threshold")}: 2250 mL
                 </span>
               </div>
-              <SimpleLine m={data.metrics.fluid_shift_ml} days={14} height={160} color="#B388FF" />
+              <SimpleLine m={data.metrics.fluid_shift_ml} days={14} height={160} color={C.rest} />
             </>
           ) : (
             <div className="h-40">
@@ -754,7 +751,7 @@ export default function CrewOcular() {
                   <XAxis dataKey="hour" tick={AXIS} />
                   <YAxis tick={AXIS} domain={[10, 22]} />
                   <Tooltip contentStyle={TIP} />
-                  <Line dataKey="icp_mmhg" stroke="#B388FF" strokeWidth={3} dot={false} isAnimationActive={false} />
+                  <Line dataKey="icp_mmhg" stroke={C.rest} strokeWidth={3} dot={false} isAnimationActive={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -767,7 +764,7 @@ export default function CrewOcular() {
         {data?.history && data.history.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-white/[0.06] text-xs uppercase tracking-wider text-slate-400">
+              <thead className="border-b border-ink-700 text-xs text-slate-400">
                 <tr>
                   <th className="py-2">{t("Mission Time")}</th>
                   <th>{t("Type")}</th>
@@ -784,8 +781,8 @@ export default function CrewOcular() {
                   const onsdVal = isSos ? p.tonometer?.onsd_mm : p.onsd_mm;
                   const shiftVal = isSos ? p.fluid_dynamics?.fluid_shift_ml : p.fluid_shift_ml;
                   return (
-                    <tr key={h.id} className="border-b border-white/[0.04]">
-                      <td className="py-2.5 font-mono text-xs text-slate-300">{missionTOf(h.mission_t)}</td>
+                    <tr key={h.id} className="border-b border-ink-700">
+                      <td className="py-2.5 tabular-nums text-xs text-slate-300">{missionTOf(h.mission_t)}</td>
                       <td>
                         <span
                           className={cx(
@@ -793,10 +790,10 @@ export default function CrewOcular() {
                             isSos ? "bg-bad/20 text-bad" : "bg-accent/15 text-accent",
                           )}
                         >
-                          {isSos ? t("EMERGENCY SOS TO EARTH") : t("Tonometer Scan")}
+                          {isSos ? t("Emergency SOS to Earth") : t("Tonometer Scan")}
                         </span>
                       </td>
-                      <td className="font-mono font-bold text-white">{fmt(iopVal, 1)} mmHg</td>
+                      <td className="tabular-nums font-bold text-fg">{fmt(iopVal, 1)} mmHg</td>
                       <td className="text-slate-300">
                         {shiftVal ? `${fmt(shiftVal, 0)} mL` : "–"} · ONSD {fmt(onsdVal, 2)} mm
                       </td>
