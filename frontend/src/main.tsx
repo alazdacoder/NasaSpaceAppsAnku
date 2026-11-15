@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { CrewLayout, TeamLayout } from "./components/Shell";
 import { AppProvider } from "./lib/context";
 import { LangProvider } from "./lib/i18n";
@@ -30,13 +30,16 @@ import TeamVestibular from "./pages/team/Vestibular";
 import TeamVitals from "./pages/team/Vitals";
 import "./index.css";
 import { startSystemBars } from "./lib/systemBars";
+import { DEMO } from "./demo/client";
+import { DemoGate } from "./demo/DemoGate";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <LangProvider>
       <ThemeProvider>
+      <MaybeDemo>
       <AppProvider>
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "") || undefined}>
           <Routes>
             <Route index element={<Portal />} />
             <Route path="crew" element={<CrewLayout />}>
@@ -80,13 +83,19 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           </Routes>
         </BrowserRouter>
       </AppProvider>
+      </MaybeDemo>
       </ThemeProvider>
     </LangProvider>
   </React.StrictMode>,
 );
 
+/** Web demo only: wait for the in-browser backend before mounting the app. */
+function MaybeDemo({ children }: { children: React.ReactNode }) {
+  return DEMO ? <DemoGate>{children}</DemoGate> : <>{children}</>;
+}
+
 function LegacyCrew() {
-  const page = location.pathname.replace(/^\//, "");
+  const page = useLocation().pathname.replace(/^\//, "");
   return <Navigate to={["exercise", "body", "alerts"].includes(page) ? `/crew/${page}` : "/"} replace />;
 }
 

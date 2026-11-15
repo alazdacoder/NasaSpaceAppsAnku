@@ -10,7 +10,7 @@ import { StatusDot, cx } from "./ui";
 
 /** App mark: the Star of Life (frontend/public/logo.png). */
 export function Mark({ size = 26 }: { size?: number }) {
-  return <img src="/logo.png" width={size} height={size} alt="" aria-hidden className="shrink-0 select-none" draggable={false} />;
+  return <img src={`${import.meta.env.BASE_URL}logo.png`} width={size} height={size} alt="" aria-hidden className="shrink-0 select-none" draggable={false} />;
 }
 
 export function SimBadge() {

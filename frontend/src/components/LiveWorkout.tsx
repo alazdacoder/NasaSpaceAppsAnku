@@ -1,3 +1,4 @@
+import { DEMO } from "../demo/client";
 import { useEffect, useRef, useState } from "react";
 import { C } from "../lib/theme";
 import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from "recharts";
@@ -92,6 +93,7 @@ export function LiveWorkout({ crewId, view, onFinish, exercises, limits }: {
     let ws: WebSocket | null = null;
     let poll: number | undefined;
     const startPoll = () => { poll = window.setInterval(() => api<WorkoutView>(`/api/crew/${crewId}/workout`).then(setLive), 1000); };
+    if (DEMO) { startPoll(); return () => { if (poll) window.clearInterval(poll); }; }
     try {
       ws = new WebSocket(`${proto}://${location.host}/ws/crew/${crewId}/workout?lang=${getLang()}`);
       ws.onmessage = (e) => setLive(JSON.parse(e.data));

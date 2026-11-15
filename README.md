@@ -11,6 +11,14 @@ Why onboard? On a deep-space mission, a one-way message to Earth can take up to 
 
 ---
 
+## Try it in your browser
+
+**Web demo: <https://alazdacoder.github.io/NasaSpaceAppsAnku/>** (no install, no phone needed)
+
+The demo runs the same Python backend as the desktop and Android builds, inside your browser ([Pyodide](https://pyodide.org)). Your simulated mission is private to your tab and resets when you close it. The first visit downloads about 20 MB, then the browser caches it. Without an NFC reader, sign in with **No card? Sign in another way** or **Simulate a card tap**.
+
+It is rebuilt on every push to `main` by `.github/workflows/web-demo.yml`. To build it locally: `cd frontend && VITE_DEMO=1 SHMS_BASE=/NasaSpaceAppsAnku/ npm run build && python3 scripts/demo-bundle.py dist`.
+
 ## Run it
 
 ```bash

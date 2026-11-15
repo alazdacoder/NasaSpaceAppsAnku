@@ -1,3 +1,4 @@
+import { DEMO, demoFetch } from "../demo/client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getLang, t } from "./i18n";
 
@@ -139,7 +140,7 @@ export async function api<T = any>(path: string, opts: { method?: string; body?:
     headers["Content-Type"] = "text/csv";
     init.body = opts.raw;
   }
-  const r = await fetch(path, init);
+  const r = DEMO ? await demoFetch(path, init) : await fetch(path, init);
   if (!r.ok) {
     let msg = r.statusText;
     try { msg = (await r.json()).detail ?? msg; } catch { /* ignore */ }

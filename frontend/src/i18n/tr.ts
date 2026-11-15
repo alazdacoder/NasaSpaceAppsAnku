@@ -1094,4 +1094,12 @@ export const TR: Record<string, string> = {
   "Ground link: blackout": "Yer bağlantısı: kesinti",
   "Ground link: active": "Yer bağlantısı: etkin",
   "SOS": "SOS",
+  // --- web demo ---
+  "Loading Python in your browser": "Tarayıcında Python yükleniyor",
+  "Loading the health engine": "Sağlık motoru yükleniyor",
+  "Starting your simulated mission": "Simüle görevin başlatılıyor",
+  "Web demo · simulated data": "Web demosu · simüle veri",
+  "The demo could not start in this browser.": "Demo bu tarayıcıda başlatılamadı.",
+  "Try again": "Tekrar dene",
+  "Everything runs on your device: your mission is private and resets when you close the tab. The first visit downloads about 20 MB.": "Her şey senin cihazında çalışır: görevin sana özeldir ve sekmeyi kapatınca sıfırlanır. İlk ziyarette yaklaşık 20 MB indirilir.",
 };

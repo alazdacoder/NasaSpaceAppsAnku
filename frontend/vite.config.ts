@@ -2,6 +2,8 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
+  // The web demo (GitHub Pages) lives under /<repo>/; every other build is served from /.
+  base: process.env.SHMS_BASE || "/",
   plugins: [react()],
   server: {
     port: 5173,
@@ -11,4 +13,5 @@ export default defineConfig({
     },
   },
   build: { chunkSizeWarningLimit: 1200 },
+  worker: { format: "es" },
 });
