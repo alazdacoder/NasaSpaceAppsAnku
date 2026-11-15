@@ -1054,7 +1054,6 @@ export const TR: Record<string, string> = {
   "Unknown card": "Tanınmayan kart",
   "Ready to read a card": "Kart okumaya hazır",
   "NFC is turned off. Turn it on in the phone's settings.": "NFC kapalı. Telefonun ayarlarından aç.",
-  "This device has no card reader. Sign in below, or simulate a tap.": "Bu cihazda kart okuyucu yok. Aşağıdan giriş yap ya da okutmayı simüle et.",
   "Mission day {d}": "Görev günü {d}",
   "Back on Earth": "Dünya'ya dönüldü",
   "No card?": "Kartın yok mu?",
@@ -1102,4 +1101,8 @@ export const TR: Record<string, string> = {
   "The demo could not start in this browser.": "Demo bu tarayıcıda başlatılamadı.",
   "Try again": "Tekrar dene",
   "Everything runs on your device: your mission is private and resets when you close the tab. The first visit downloads about 20 MB.": "Her şey senin cihazında çalışır: görevin sana özeldir ve sekmeyi kapatınca sıfırlanır. İlk ziyarette yaklaşık 20 MB indirilir.",
+  // --- sign-in without a reader ---
+  "Who is signing in?": "Kim giriş yapıyor?",
+  "This device has no card reader. Pick your name to open your health space.": "Bu cihazda kart okuyucu yok. Sağlık alanını açmak için adını seç.",
+  "No card reader on this device": "Bu cihazda kart okuyucu yok",
 };

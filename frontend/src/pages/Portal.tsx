@@ -91,19 +91,24 @@ export default function Portal() {
       : phase.target.kind === "crew" ? t("Welcome, Astronaut {n}", { n: phase.target.n }) : t("Welcome, lab team")
     : "";
 
+  // Computers (and the web demo) have no card reader: signing in by name is the main way in.
+  const noReader = reader === "none" && phase.kind === "standby";
+
   const title = phase.kind === "ok" ? welcome
     : phase.kind === "unknown" ? t("This card is not on the crew list")
+    : noReader ? t("Who is signing in?")
     : t("Hold your crew card to the back of the device");
   const sub = phase.kind === "ok"
     ? phase.target.kind === "crew" ? t("Opening your health space…") : t("Opening the lab team view…")
     : phase.kind === "unknown" ? t("Card {id}. Try another card, or sign in below.", { id: phase.id })
+    : noReader ? t("This device has no card reader. Pick your name to open your health space.")
     : t("SHMS reads the card and opens your own health space.");
 
   const status = phase.kind === "ok" ? t("Card confirmed")
     : phase.kind === "unknown" ? t("Unknown card")
     : reader === "ready" ? t("Ready to read a card")
     : reader === "off" ? t("NFC is turned off. Turn it on in the phone's settings.")
-    : t("This device has no card reader. Sign in below, or simulate a tap.");
+    : t("No card reader on this device");
 
   const day = clock ? (clock.phase === "inflight" ? t("Mission day {d}", { d: clock.today }) : clock.phase === "preflight" ? t("Before launch") : t("Back on Earth")) : "";
 
@@ -136,7 +141,7 @@ export default function Portal() {
 
         <div className="absolute left-1/2 top-[150px] -translate-x-1/2 -translate-y-1/2">
           <div className="relative flex h-[230px] w-[230px] items-center justify-center">
-            {phase.kind === "standby" && reader !== "off" && (
+            {phase.kind === "standby" && reader === "ready" && (
               <>
                 <span aria-hidden className="read-wave absolute inset-0 rounded-full border-2 border-limb" />
                 <span aria-hidden className="read-wave d2 absolute inset-0 rounded-full border-2 border-limb" />
@@ -154,12 +159,28 @@ export default function Portal() {
           {status}
         </p>
 
-        {/* Manual sign-in: one quiet button; the choices open in a sheet. */}
+        {/* No reader: signing in by name is the way in, so it leads, right under the card. */}
+        {noReader && (
+          <div className="absolute inset-x-0 top-[336px] z-10 flex flex-col items-center gap-3 px-4 sm:flex-row sm:justify-center">
+            <button onClick={() => { setSimOpen(false); setMenuOpen(true); }} aria-haspopup="dialog" aria-expanded={menuOpen}
+              className="inline-flex h-14 w-full max-w-xs items-center justify-center gap-2.5 rounded-full bg-white px-7 text-lg font-bold text-[#0E2A47] shadow-lift transition hover:brightness-95 active:scale-[0.97] sm:w-auto">
+              <Icon name="user" size={20} />{t("Sign in without a card")}
+            </button>
+            <button onClick={() => { setSimOpen(true); setMenuOpen(true); }} aria-haspopup="dialog"
+              className="inline-flex h-12 w-full max-w-xs items-center justify-center gap-2 rounded-full border border-white/40 px-6 font-semibold text-white transition-colors hover:bg-white/10 sm:w-auto">
+              <Icon name="nfc" size={18} />{t("Simulate a card tap")}
+            </button>
+          </div>
+        )}
+
+        {/* With a reader: manual sign-in stays one quiet button; the choices open in a sheet. */}
         <div className="absolute inset-x-0 bottom-5 z-10 flex flex-col items-center gap-3 px-4 text-sm text-[#BFD6EC]">
-          <button onClick={() => setMenuOpen(true)} aria-haspopup="dialog" aria-expanded={menuOpen}
-            className="inline-flex h-10 items-center gap-2 rounded-full border border-white/25 px-4 font-semibold text-white transition-colors hover:bg-white/10">
-            <Icon name="user" size={16} />{t("No card? Sign in another way")}
-          </button>
+          {!noReader && (
+            <button onClick={() => setMenuOpen(true)} aria-haspopup="dialog" aria-expanded={menuOpen}
+              className="inline-flex h-10 items-center gap-2 rounded-full border border-white/25 px-4 font-semibold text-white transition-colors hover:bg-white/10">
+              <Icon name="user" size={16} />{t("No card? Sign in another way")}
+            </button>
+          )}
           <p className="max-w-2xl text-center text-xs leading-snug text-[#BFD6EC]">{t("Simulated data")} · {meta?.disclaimer}</p>
         </div>
       </div>
