@@ -28,6 +28,7 @@ import TeamUrine from "./pages/team/Urine";
 import TeamVestibular from "./pages/team/Vestibular";
 import TeamVitals from "./pages/team/Vitals";
 import "./index.css";
+import { startSystemBars } from "./lib/systemBars";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -86,3 +87,5 @@ function LegacyCrew() {
   const page = location.pathname.replace(/^\//, "");
   return <Navigate to={["exercise", "body", "alerts"].includes(page) ? `/crew/${page}` : "/"} replace />;
 }
+
+startSystemBars();

@@ -2,14 +2,19 @@ package org.spaceapps.crewhealthhub;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -55,6 +60,11 @@ public class MainActivity extends Activity implements NfcAdapter.ReaderCallback 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= 28) {
+            // draw into the camera cutout too, so no black band appears beside it
+            getWindow().getAttributes().layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+        }
         web = new WebView(this);
         web.setBackgroundColor(0xFFF4F7FA);
         setContentView(web);
@@ -136,6 +146,33 @@ public class MainActivity extends Activity implements NfcAdapter.ReaderCallback 
             if (nfc == null) return "none";
             return nfc.isEnabled() ? "ready" : "off";
         }
+
+        /** The page reports the colours at its top and bottom edge; the system bars follow. */
+        @JavascriptInterface
+        public void setBars(String top, String bottom) {
+            final int t, b;
+            try { t = Color.parseColor(top); b = Color.parseColor(bottom); } catch (Exception e) { return; }
+            runOnUiThread(() -> applyBars(t, b));
+        }
+    }
+
+    private static boolean isLight(int c) {
+        double l = 0.2126 * Color.red(c) + 0.7152 * Color.green(c) + 0.0722 * Color.blue(c);
+        return l > 150;
+    }
+
+    private void applyBars(int top, int bottom) {
+        Window w = getWindow();
+        w.setStatusBarColor(top);
+        w.setNavigationBarColor(bottom);
+        View d = w.getDecorView();
+        int flags = d.getSystemUiVisibility();
+        flags = isLight(top) ? flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR : flags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        if (Build.VERSION.SDK_INT >= 26) {
+            flags = isLight(bottom) ? flags | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : flags & ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        }
+        d.setSystemUiVisibility(flags);
+        if (Build.VERSION.SDK_INT >= 28) w.setNavigationBarDividerColor(bottom);
     }
 
     @Override

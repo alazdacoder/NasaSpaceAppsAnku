@@ -8,7 +8,7 @@
  */
 declare global {
   interface Window {
-    SHMSNative?: { nfcState?: () => string };
+    SHMSNative?: { nfcState?: () => string; setBars?: (top: string, bottom: string) => void };
     SHMS_onNfcTag?: (id: string) => void;
   }
 }

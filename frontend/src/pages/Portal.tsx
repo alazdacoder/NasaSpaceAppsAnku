@@ -6,7 +6,7 @@ import { cx } from "../components/ui";
 import { CARDS, UNKNOWN_DEMO_CARD, lookupCard, normalizeCardId, teamMembers, type CardTarget } from "../lib/cards";
 import { crewLabel, useApp } from "../lib/context";
 import { LangSwitch, t } from "../lib/i18n";
-import { ThemeSwitch } from "../lib/theme";
+import { ThemeSwitch, useTheme } from "../lib/theme";
 import { onCardTap, readerState, type ReaderState } from "../lib/nfc";
 
 type Phase = { kind: "standby" } | { kind: "ok"; target: CardTarget } | { kind: "unknown"; id: string };
@@ -43,6 +43,7 @@ function CrewCard({ phase }: { phase: Phase }) {
 
 export default function Portal() {
   const { clock, meta, setCrewId, setUser } = useApp();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>({ kind: "standby" });
   const [reader, setReader] = useState<ReaderState>(() => readerState());
@@ -107,7 +108,7 @@ export default function Portal() {
   const day = clock ? (clock.phase === "inflight" ? t("Mission day {d}", { d: clock.today }) : clock.phase === "preflight" ? t("Before launch") : t("Back on Earth")) : "";
 
   return (
-    <div className="relative flex min-h-[100svh] flex-col overflow-hidden login-sky">
+    <div className="relative flex min-h-[100svh] flex-col overflow-hidden login-sky" data-bar-top={theme === "dark" ? "#040b16" : "#ffffff"} data-bar-bottom="#0e2a47">
       <header className="relative z-10 flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-4 sm:px-8 sm:py-5">
         <span className="flex items-center gap-2.5 text-fg">
           <Mark size={30} />
