@@ -8,21 +8,9 @@ import { ThemeSwitch } from "../lib/theme";
 import { Icon } from "./Icon";
 import { StatusDot, cx } from "./ui";
 
-/** App mark: the Star of Life (six-armed blue cross with the staff and serpent). */
+/** App mark: the Star of Life (frontend/public/logo.png). */
 export function Mark({ size = 26 }: { size?: number }) {
-  const arm = "M46,23h16v62h-16z";
-  return (
-    <svg width={size} height={size} viewBox="0 0 108 108" aria-hidden className="shrink-0">
-      <g fill="#1F5CAD">
-        <path d={arm} />
-        <path d={arm} transform="rotate(60 54 54)" />
-        <path d={arm} transform="rotate(120 54 54)" />
-      </g>
-      <rect x="52.4" y="29" width="3.2" height="51" rx="1.6" fill="#FFFFFF" />
-      <path d="M59,36c-7,-2.5 -9,4.5 -3,7s6.5,5.5 0,8.5s-6.5,6 0,8.5s4.5,5 -1.5,6.5" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
-      <circle cx="59.5" cy="35.5" r="2.6" fill="#FFFFFF" />
-    </svg>
-  );
+  return <img src="/logo.png" width={size} height={size} alt="" aria-hidden className="shrink-0 select-none" draggable={false} />;
 }
 
 export function SimBadge() {
