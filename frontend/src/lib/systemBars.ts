@@ -31,15 +31,16 @@ function groundHex(): string {
 let last = "";
 
 function sync() {
-  const set = window.SHMSNative?.setBars;
-  if (!set) return;
+  const bridge = window.SHMSNative;
+  if (!bridge?.setBars) return;
   const x = Math.round(window.innerWidth / 2);
   const top = solidBg(document.elementFromPoint(x, 1), "top") ?? groundHex();
   const bottom = solidBg(document.elementFromPoint(x, window.innerHeight - 1), "bottom") ?? groundHex();
   const key = `${top}|${bottom}`;
   if (key === last) return;
   last = key;
-  try { set(top, bottom); } catch { /* app without the bridge */ }
+  // Call it on the bridge object: Android rejects a Java bridge method taken off its object.
+  try { bridge.setBars(top, bottom); } catch { last = ""; }
 }
 
 /** Start following the page (route changes, theme switches, scrolling). */
