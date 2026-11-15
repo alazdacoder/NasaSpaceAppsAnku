@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { api, setLandingDay, usePoll, type Clock, type LinkStatus } from "./api";
+import { crewHolder } from "./cards";
 import { t, useLang } from "./i18n";
 
 export interface Meta {
@@ -18,6 +19,15 @@ interface Ctx {
   clock: Clock | null;
   link: LinkStatus | null;
   refreshClock: () => void;
+  /** Who signed in (card or manual); null on the card reader screen. */
+  user: SignedIn | null;
+  setUser: (u: SignedIn | null) => void;
+}
+
+export interface SignedIn { name: string; role?: string; side: "crew" | "team" }
+
+function readUser(): SignedIn | null {
+  try { const v = localStorage.getItem("shms-user"); return v ? JSON.parse(v) : null; } catch { return null; }
 }
 
 const AppCtx = createContext<Ctx | null>(null);
@@ -27,6 +37,8 @@ function readCrew(): string {
 }
 
 export function crewLabel(id: string, idx?: number): string {
+  const holder = crewHolder(id);
+  if (holder) return holder;
   const n = idx !== undefined ? idx + 1 : Number(String(id).replace(/\D+/g, "")) || 1;
   return t("Astronaut {n}", { n });
 }
@@ -34,6 +46,11 @@ export function crewLabel(id: string, idx?: number): string {
 export function AppProvider({ children }: { children: ReactNode }) {
   const [meta, setMeta] = useState<Meta | null>(null);
   const [crewId, setCrew] = useState<string>(readCrew);
+  const [user, setUserState] = useState<SignedIn | null>(readUser);
+  const setUser = (u: SignedIn | null) => {
+    setUserState(u);
+    try { if (u) localStorage.setItem("shms-user", JSON.stringify(u)); else localStorage.removeItem("shms-user"); } catch { /* ignore */ }
+  };
   const { lang } = useLang();
   const { data, refresh } = usePoll<Clock & { link: LinkStatus }>("/api/clock", 1000);
 
@@ -57,6 +74,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [lang]);
 
   useEffect(() => {
+    document.title = `${t("SHMS")} — ${t("Space Health Management System")}`;
+  }, [lang]);
+
+  useEffect(() => {
     if (data?.landing_day) setLandingDay(data.landing_day);
   }, [data?.landing_day]);
 
@@ -66,7 +87,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AppCtx.Provider value={{ meta, crewId, setCrewId, clock: data, link: data?.link ?? null, refreshClock: refresh }}>
+    <AppCtx.Provider value={{ meta, crewId, setCrewId, clock: data, link: data?.link ?? null, refreshClock: refresh, user, setUser }}>
       {children}
     </AppCtx.Provider>
   );

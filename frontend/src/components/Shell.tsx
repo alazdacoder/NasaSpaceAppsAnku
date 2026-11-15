@@ -27,17 +27,47 @@ export function SimBadge() {
   );
 }
 
-export function LinkPill() {
+/** Short, steady-width delay text for the pill ("<1 s", "45 s", "12 min", "2 h"). */
+function shortDelay(sec: number | null | undefined): string {
+  if (sec === null || sec === undefined || !isFinite(sec)) return "–";
+  if (sec < 1) return t("<1 s");
+  if (sec < 90) return t("{n} s", { n: Math.round(sec) });
+  if (sec < 5400) return t("{n} min", { n: Math.round(sec / 60) });
+  return t("{n} h", { n: Math.round(sec / 3600) });
+}
+
+/**
+ * Ground link status. Every part sits in a fixed-width slot, so the pill keeps one size
+ * while the simulated link changes (delay, packets in transit, how old the ground copy is)
+ * and nothing next to it moves. The full details are in the tooltip.
+ */
+export function LinkPill({ showAge = false }: { showAge?: boolean }) {
   const { link } = useApp();
-  if (!link) return null;
-  const level: Level = link.blackout ? "red" : link.in_flight > 0 && link.delay_s > 5 ? "amber" : "green";
+  if (!link) return <span className="inline-block h-[34px] w-[150px] shrink-0" aria-hidden />;
+  const age = link.ground_data_age_s ?? 0;
+  const stale = showAge && link.ground_data_age_s !== null && age > 30;
+  const level: Level = link.blackout ? "red" : stale || (link.in_flight > 0 && link.delay_s > 5) ? "amber" : "green";
+  const pkts = link.queued + link.in_flight;
+  const tip = [
+    t("Ground link (store-and-forward). The app never waits for it."),
+    `${link.profile_label}: ${link.blackout ? t("blackout") : duration(link.delay_s)}`,
+    pkts > 0 ? t("{n} pkt", { n: pkts }) : "",
+    showAge && link.ground_data_age_s !== null ? t("Ground data {a} old", { a: duration(age) }) : "",
+  ].filter(Boolean).join("\n");
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-ink-700 bg-ink-900 px-3 py-1 text-sm" title={t("Ground link (store-and-forward). The app never waits for it.")}>
+    <span title={tip} aria-label={tip}
+      className={cx("inline-flex h-[34px] shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-3 text-sm tabular-nums",
+        stale ? "border-warn/40 bg-warnsoft" : "border-ink-700 bg-ink-900")}>
       <StatusDot level={level} size={10} />
       <span className="text-fg sm:hidden">{t("Ground link")}</span>
-      <span className="hidden text-fg sm:inline">{link.profile_label.split(" (")[0]}</span>
-      <span className="text-slate-400">{link.blackout ? t("blackout") : duration(link.delay_s)}</span>
-      {link.queued + link.in_flight > 0 && <span className="text-slate-400">· {t("{n} pkt", { n: link.queued + link.in_flight })}</span>}
+      <span className="hidden max-w-[7rem] truncate text-fg sm:inline">{link.profile_label.split(" (")[0]}</span>
+      <span className="w-[3.75rem] text-right text-slate-400">{link.blackout ? t("blackout") : shortDelay(link.delay_s)}</span>
+      <span className={cx("hidden w-[3.25rem] text-slate-400 sm:inline", pkts > 0 ? "" : "invisible")}>{t("{n} pkt", { n: Math.min(pkts, 99) })}</span>
+      {showAge && (
+        <span className={cx("hidden w-[5.5rem] truncate font-semibold text-warn lg:inline", stale ? "" : "invisible")}>
+          {t("data {a}", { a: shortDelay(age) })}
+        </span>
+      )}
     </span>
   );
 }
@@ -54,23 +84,17 @@ export function PhaseChip() {
   return <span className="hidden rounded-full bg-ink-850 px-3 py-1 text-sm text-slate-300 lg:inline">{t("Landing in {n} days", { n: clock.days_to_landing ?? 0 })}</span>;
 }
 
-export function CrewSwitcher() {
+/** Lab team: which astronaut the detail pages show. A plain dropdown of names. */
+export function CrewPicker() {
   const { meta, crewId, setCrewId } = useApp();
   return (
-    <div role="radiogroup" aria-label={t("Crew member (demo switcher)")} className="flex items-center gap-0.5 rounded-full border border-ink-700 bg-ink-900 p-1 pl-3">
-      <span className="mr-1 hidden text-sm font-semibold text-slate-400 min-[400px]:inline sm:inline">{t("Astronaut")}</span>
-      {meta?.crew.map((c, i) => {
-        const active = c.id === crewId;
-        return (
-          <button key={c.id} role="radio" aria-checked={active} aria-label={c.name} onClick={() => setCrewId(c.id)}
-            className={cx("h-[36px] min-w-[36px] rounded-full text-sm font-bold tabular-nums transition-colors",
-              active ? "bg-fg text-ink-950" : "text-slate-400 hover:bg-ink-850 hover:text-fg")}
-            title={`${c.name} — ${c.role}`}>
-            {i + 1}
-          </button>
-        );
-      })}
-    </div>
+    <label className="flex h-[44px] items-center gap-2 rounded-full border border-ink-700 bg-ink-900 pl-4 pr-2 text-sm">
+      <span className="hidden text-slate-400 lg:inline">{t("Viewing")}</span>
+      <select value={crewId} onChange={(e) => setCrewId(e.target.value)} aria-label={t("Astronaut shown on this page")}
+        className="h-9 cursor-pointer rounded-full bg-transparent pr-1 font-semibold text-fg focus:outline-none">
+        {meta?.crew.map((c) => <option key={c.id} value={c.id} className="bg-ink-900 text-fg">{c.name}</option>)}
+      </select>
+    </label>
   );
 }
 
@@ -162,13 +186,12 @@ export function CrewLayout() {
       <header className="top-0 z-30 bg-ink-900/95 sm:sticky">
         <div className="flex items-center gap-x-3 gap-y-2 px-4 py-2.5 sm:flex-wrap sm:px-6">
           <Link to="/crew" className="flex items-center gap-2.5 text-lg font-extrabold tracking-tight text-fg">
-            <Mark /> <span className="hidden sm:inline">SHMS</span> <span className="hidden text-sm font-normal text-slate-400 2xl:inline">{t("Space Health Management System")}</span>
+            <Mark /> <span className="hidden sm:inline">{t("SHMS")}</span> <span className="hidden text-sm font-normal text-slate-400 2xl:inline">{t("Space Health Management System")}</span>
           </Link>
           <span className="hidden sm:inline-flex"><SimBadge /></span>
           <span className="hidden rounded-full bg-ink-850 px-3 py-1 text-sm font-semibold tabular-nums text-fg sm:inline" title={t("Mission clock (simulated, fast)")}>{missionTime(clock)}</span>
           <PhaseChip />
           <div className="ml-auto flex items-center gap-1.5 sm:flex-wrap sm:gap-2">
-            <div className="hidden sm:block"><CrewSwitcher /></div>
             <Link to="/crew/alerts" aria-label={t("{n} alerts", { n: nAlerts })}
               className={cx("flex min-h-[44px] items-center gap-2 rounded-full border px-3 font-semibold transition-colors sm:px-4",
                 urgent ? "border-bad/40 bg-badsoft text-bad" : nAlerts ? "border-warn/40 bg-warnsoft text-warn" : "border-ink-700 bg-ink-900 text-slate-300")}>
@@ -180,7 +203,7 @@ export function CrewLayout() {
             <SignOut />
           </div>
         </div>
-        <div className="flex items-center justify-between gap-2 px-4 pb-2 sm:hidden"><SimBadge /><CrewSwitcher /></div>
+        <div className="flex items-center gap-2 px-4 pb-2 sm:hidden"><SimBadge /></div>
         <LimbLine />
       </header>
       <div className="flex flex-1">
@@ -196,7 +219,7 @@ export function CrewLayout() {
 
 /** Lab-team (ground) portal: every detail, from the link-delayed ground copy. */
 export function TeamLayout() {
-  const { meta, clock, link } = useApp();
+  const { meta, clock, user } = useApp();
   useCardTapSwitch();
   const loc = useLocation();
   const nav: NavItem[] = [
@@ -220,17 +243,17 @@ export function TeamLayout() {
       <header className="top-0 z-30 bg-ink-900/95 sm:sticky">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5 sm:px-6">
           <Link to="/team" className="flex items-center gap-2.5 text-lg font-extrabold tracking-tight text-fg">
-            <Mark /> SHMS
+            <Mark /> {t("SHMS")}
             <span className="rounded-full bg-rest/10 px-2.5 py-0.5 text-xs font-bold text-rest">{t("Lab team · Ground")}</span>
+            {user?.side === "team" && (
+              <span className="hidden text-sm font-semibold text-slate-300 md:inline">{user.name}{user.role ? ` · ${t(user.role)}` : ""}</span>
+            )}
           </Link>
           <SimBadge />
           <span className="hidden rounded-full bg-ink-850 px-3 py-1 text-sm font-semibold tabular-nums text-fg sm:inline" title={t("Onboard mission clock")}>{t("Onboard")} {missionTime(clock)}</span>
-          <LinkPill />
-          {link && link.ground_data_age_s !== null && (link.ground_data_age_s ?? 0) > 30 && (
-            <span className="rounded-full border border-warn/35 bg-warnsoft px-3 py-1 text-sm font-semibold text-warn">{t("Ground data {a} old", { a: duration(link.ground_data_age_s) })}</span>
-          )}
+          <LinkPill showAge />
           <div className="ml-auto flex flex-wrap items-center gap-2">
-            {showCrew && <CrewSwitcher />}
+            {showCrew && <CrewPicker />}
             <LangSwitch />
             <ThemeSwitch />
             <SignOut />

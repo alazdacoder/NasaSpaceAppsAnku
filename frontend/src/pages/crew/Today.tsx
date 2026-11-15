@@ -21,7 +21,7 @@ import {
   type OcularTelemetry,
   type Task,
 } from "../../lib/api";
-import { useApp } from "../../lib/context";
+import { useApp, useCrewName } from "../../lib/context";
 import { t, tn } from "../../lib/i18n";
 
 interface Readiness {
@@ -361,6 +361,7 @@ function SleepBars({ nights, normal }: { nights: { day: number; value: number }[
 
 export default function Today() {
   const { crewId, clock } = useApp();
+  const crewName = useCrewName();
   const { data, refresh } = usePoll<TodayData>(`/api/crew/${crewId}/today`, 2500);
   const [busy, setBusy] = useState<string | null>(null);
   const [scanning, setScanning] = useState(false);
@@ -537,7 +538,7 @@ export default function Today() {
       <div className="flex flex-wrap items-center justify-between gap-3 px-1">
         <div>
           <h1 className="text-[28px] font-extrabold tracking-[-0.02em] text-fg sm:text-[34px]">
-            {greet}, <span className="text-accent">{data.crew.name}</span>
+            {greet}, <span className="text-accent">{crewName}</span>
           </h1>
           <p className="text-sm text-slate-400">
             {data.crew.role} · {missionTime(clock)}

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Icon } from "../components/Icon";
 import { LinkPill, Mark } from "../components/Shell";
 import { cx } from "../components/ui";
-import { CARDS, UNKNOWN_DEMO_CARD, lookupCard, normalizeCardId, type CardTarget } from "../lib/cards";
-import { useApp } from "../lib/context";
+import { CARDS, UNKNOWN_DEMO_CARD, lookupCard, normalizeCardId, teamMembers, type CardTarget } from "../lib/cards";
+import { crewLabel, useApp } from "../lib/context";
 import { LangSwitch, t } from "../lib/i18n";
 import { ThemeSwitch } from "../lib/theme";
 import { onCardTap, readerState, type ReaderState } from "../lib/nfc";
@@ -42,18 +42,21 @@ function CrewCard({ phase }: { phase: Phase }) {
 }
 
 export default function Portal() {
-  const { clock, meta, setCrewId } = useApp();
+  const { clock, meta, setCrewId, setUser } = useApp();
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>({ kind: "standby" });
   const [reader, setReader] = useState<ReaderState>(() => readerState());
+  const [menuOpen, setMenuOpen] = useState(false);
   const [simOpen, setSimOpen] = useState(false);
   const timer = useRef<number>();
 
   const open = (target: CardTarget) => {
     if (target.kind === "crew") {
       setCrewId(target.crewId);
+      setUser({ name: target.holder ?? crewLabel(target.crewId), side: "crew" });
       navigate("/crew");
     } else {
+      setUser({ name: target.holder ?? t("Lab team"), role: target.role, side: "team" });
       navigate("/team");
     }
   };
@@ -77,7 +80,9 @@ export default function Portal() {
   useEffect(() => {
     // The phone's NFC switch can change while the app is open.
     const id = window.setInterval(() => setReader(readerState()), 2000);
-    return () => { window.clearInterval(id); window.clearTimeout(timer.current); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setMenuOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => { window.clearInterval(id); window.clearTimeout(timer.current); window.removeEventListener("keydown", onKey); };
   }, []);
 
   const welcome = phase.kind === "ok"
@@ -104,9 +109,12 @@ export default function Portal() {
   return (
     <div className="relative flex min-h-[100svh] flex-col overflow-hidden login-sky">
       <header className="relative z-10 flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-4 sm:px-8 sm:py-5">
-        <span className="flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-fg">
-          <Mark size={30} /> SHMS
-          <span className="hidden text-sm font-medium text-slate-400 md:inline">{t("Space Health Management System")}</span>
+        <span className="flex items-center gap-2.5 text-fg">
+          <Mark size={30} />
+          <span className="flex flex-col leading-tight sm:flex-row sm:items-baseline sm:gap-2.5">
+            <span className="text-xl font-extrabold tracking-tight">{t("SHMS")}</span>
+            <span className="text-xs font-medium text-slate-400 sm:text-sm">{t("Space Health Management System")}</span>
+          </span>
         </span>
         <div className="ml-auto flex flex-wrap items-center gap-2 text-sm">
           {day && <span className="hidden font-semibold text-slate-300 sm:inline">{day}</span>}
@@ -145,50 +153,77 @@ export default function Portal() {
           {status}
         </p>
 
-        {/* Manual sign-in: present, quiet. */}
+        {/* Manual sign-in: one quiet button; the choices open in a sheet. */}
         <div className="absolute inset-x-0 bottom-5 z-10 flex flex-col items-center gap-3 px-4 text-sm text-[#BFD6EC]">
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2">
-            <span>{t("No card?")}</span>
-            <span className="text-[#BFD6EC]">{t("Astronaut")}</span>
-            {(meta?.crew ?? []).map((c, i) => (
-              <button key={c.id} onClick={() => open({ kind: "crew", crewId: c.id, n: i + 1 })} aria-label={c.name}
-                className="h-9 min-w-[36px] rounded-full border border-white/25 px-2 font-semibold tabular-nums text-white transition-colors hover:bg-white/10">
-                {i + 1}
+          <button onClick={() => setMenuOpen(true)} aria-haspopup="dialog" aria-expanded={menuOpen}
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-white/25 px-4 font-semibold text-white transition-colors hover:bg-white/10">
+            <Icon name="user" size={16} />{t("No card? Sign in another way")}
+          </button>
+          <p className="max-w-2xl text-center text-xs leading-snug text-[#BFD6EC]">{t("Simulated data")} · {meta?.disclaimer}</p>
+        </div>
+      </div>
+      {menuOpen && (
+        <div className="fixed inset-0 z-40 flex items-end justify-center bg-[#06121F]/50 sm:items-center" onClick={() => setMenuOpen(false)}>
+          <div role="dialog" aria-modal="true" aria-label={t("Sign in without a card")} onClick={(e) => e.stopPropagation()}
+            className="max-h-[85svh] w-full max-w-md overflow-y-auto rounded-t-card border border-ink-700 bg-ink-900 p-5 text-fg shadow-lift sm:rounded-card">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-lg font-bold">{t("Sign in without a card")}</h2>
+              <button onClick={() => setMenuOpen(false)} aria-label={t("Close")}
+                className="flex h-10 w-10 items-center justify-center rounded-full text-slate-400 hover:bg-ink-850 hover:text-fg">
+                <Icon name="x" size={18} />
               </button>
-            ))}
-            <span aria-hidden className="mx-1 hidden text-[#7F9BB8] sm:inline">·</span>
-            <button onClick={() => open({ kind: "team" })}
-              className="h-9 rounded-full border border-white/25 px-3 font-semibold text-white transition-colors hover:bg-white/10">
-              {t("Lab team")}
-            </button>
-          </div>
+            </div>
 
-          <div className="relative">
+            <h3 className="mt-4 text-sm font-semibold text-slate-400">{t("Astronauts")}</h3>
+            <ul className="mt-1 divide-y divide-ink-700 border-y border-ink-700">
+              {(meta?.crew ?? []).map((c, i) => (
+                <li key={c.id}>
+                  <button onClick={() => open({ kind: "crew", crewId: c.id, n: i + 1 })}
+                    className="flex min-h-[52px] w-full items-center justify-between gap-3 px-1 text-left hover:bg-ink-850">
+                    <span className="font-semibold">{c.name}</span>
+                    <span className="flex items-center gap-1 text-sm text-slate-400">{c.role}<Icon name="chevron" size={16} /></span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            <h3 className="mt-5 text-sm font-semibold text-slate-400">{t("Lab team")}</h3>
+            <ul className="mt-1 divide-y divide-ink-700 border-y border-ink-700">
+              {teamMembers().map((m) => (
+                <li key={m.holder}>
+                  <button onClick={() => open({ kind: "team", holder: m.holder, role: m.role })}
+                    className="flex min-h-[52px] w-full items-center justify-between gap-3 px-1 text-left hover:bg-ink-850">
+                    <span className="font-semibold">{m.holder}</span>
+                    <span className="flex items-center gap-1 text-sm text-slate-400">{m.role ? t(m.role) : t("Scientist")}<Icon name="chevron" size={16} /></span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+
             <button onClick={() => setSimOpen((v) => !v)} aria-expanded={simOpen}
-              className="inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold text-[#BFD6EC] underline decoration-white/30 underline-offset-4 hover:text-white">
-              <Icon name="nfc" size={14} />{t("Simulate a card tap")}
+              className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+              <Icon name="nfc" size={16} />{t("Simulate a card tap")}
             </button>
             {simOpen && (
-              <div className="absolute bottom-10 left-1/2 max-h-[60vh] w-[340px] max-w-[calc(100vw-32px)] -translate-x-1/2 overflow-y-auto rounded-tile border border-ink-700 bg-ink-900 p-2 text-left text-fg shadow-lift">
-                <p className="px-2 pb-1.5 pt-1 text-xs text-slate-400">{t("Demo cards on this device. Pick one to tap it.")}</p>
+              <div className="mt-2">
+                <p className="pb-1.5 text-xs text-slate-400">{t("Demo cards on this device. Pick one to tap it.")}</p>
                 {[...Object.keys(CARDS), UNKNOWN_DEMO_CARD].map((id) => {
                   const target = CARDS[id];
                   const role = !target ? t("not on the list") : target.kind === "crew" ? t("Astronaut {n}", { n: target.n }) : t("Lab team");
                   const who = target?.holder ? `${target.holder} · ${role}` : role;
                   return (
-                    <button key={id} onClick={() => { setSimOpen(false); handleTag(id); }}
+                    <button key={id} onClick={() => { setSimOpen(false); setMenuOpen(false); handleTag(id); }}
                       className="flex w-full items-center justify-between gap-3 rounded-xl px-2 py-1.5 text-left hover:bg-ink-850">
                       <span className="font-mono text-[13px]">{id}</span>
-                      <span className={cx("text-xs", target ? "text-slate-400" : "text-warn")}>{who}</span>
+                      <span className={cx("text-right text-xs", target ? "text-slate-400" : "text-warn")}>{who}</span>
                     </button>
                   );
                 })}
               </div>
             )}
           </div>
-          <p className="max-w-2xl text-center text-xs leading-snug text-[#BFD6EC]">{t("Simulated data")} · {meta?.disclaimer}</p>
         </div>
-      </div>
+      )}
     </div>
   );
 }
