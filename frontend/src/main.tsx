@@ -14,6 +14,7 @@ import CrewFood from "./pages/crew/Food";
 import CrewMind from "./pages/crew/Mind";
 import CrewOcular from "./pages/crew/Ocular";
 import CrewReturn from "./pages/crew/Return";
+import CrewTasks from "./pages/crew/Tasks";
 import CrewToday from "./pages/crew/Today";
 import TeamDevices from "./pages/team/Devices";
 import TeamEnvironment from "./pages/team/Environment";
@@ -47,6 +48,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="food" element={<CrewFood />} />
               <Route path="mind" element={<CrewMind />} />
               <Route path="return" element={<CrewReturn />} />
+              <Route path="tasks" element={<CrewTasks />} />
               <Route path="alerts" element={<AlertsPage side="crew" />} />
               <Route path="*" element={<Navigate to="/crew" replace />} />
             </Route>
