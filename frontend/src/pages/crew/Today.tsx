@@ -2,7 +2,6 @@ import { useState, type ReactNode } from "react";
 import { C } from "../../lib/theme";
 import { Link, useNavigate } from "react-router-dom";
 import { Icon, type IconName } from "../../components/Icon";
-import { ConcentricRings } from "../../components/Ring";
 import { Button, Empty, ProgressBar, StatusPill, Unverified, cx } from "../../components/ui";
 import {
   api,
@@ -265,13 +264,13 @@ function Tile({ to, icon, color, label, wide, children }: {
         wide && "col-span-2"
       )}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 min-[400px]:gap-2">
         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full" style={{ background: c.soft, color: c.solid }}>
           <Icon name={icon} size={16} />
         </span>
-        <span className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-300">{label}</span>
+        <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-slate-300 min-[400px]:text-sm">{label}</span>
       </div>
-      <div className="mt-auto pt-3">{children}</div>
+      <div className="pt-4">{children}</div>
     </Link>
   );
 }
@@ -369,7 +368,6 @@ export default function Today() {
   const wellbeingScore = Math.round(data.mind?.wellbeing ?? 82);
   const energyScore = Math.max(38, Math.min(99, Math.round(sleepScore * 0.35 + fluid.stabilization_pct * 0.35 + wellbeingScore * 0.3)));
 
-  const hrBars = [-10, -6, -2, 3, 8, 4, -3, 2, 0].map((d) => Math.max(8, Math.min(100, 50 + d * 2.2)));
 
   const stressVal = data.mind?.stress ?? 2.2;
   const stressHigh = stressVal >= 3.5;
@@ -378,7 +376,7 @@ export default function Today() {
   const sosSent = ep.failsafe_triggered;
 
   return (
-    <div className="mx-auto max-w-5xl space-y-4 pb-6">
+    <div className="mx-auto flex max-w-5xl flex-col gap-4 pb-6">
       <div className="flex flex-wrap items-end justify-between gap-3 px-1">
         <div className="min-w-0">
           <h1 className="text-[26px] font-extrabold tracking-[-0.02em] text-fg sm:text-[32px]">
@@ -388,7 +386,7 @@ export default function Today() {
             {data.crew.role} · {missionTime(clock)}
           </p>
         </div>
-        <StatusPill level={data.overall} />
+        {!top && <StatusPill level={data.overall} />}
       </div>
 
       {/* Alert: the one thing that should not hide inside a tile. */}
@@ -433,14 +431,7 @@ export default function Today() {
         </Tile>
 
         <Tile to="/crew/body" icon="heart" color="bad" label={t("Heart rate")}>
-          <div className="flex items-end justify-between gap-2">
-            <Big value={fmt(L.hr, 0)} unit={t("bpm")} />
-            <div className="flex h-8 items-end gap-[3px]" aria-hidden>
-              {hrBars.map((h, i) => (
-                <span key={i} className="w-[3px] rounded-full bg-bad" style={{ height: `${h}%`, opacity: i === hrBars.length - 1 ? 1 : 0.45 }} />
-              ))}
-            </div>
-          </div>
+          <Big value={fmt(L.hr, 0)} unit={t("bpm")} />
           <Sub>{B.hr ? t("your normal {v}", { v: fmt(B.hr, 0) }) : t("Live Bio-Monitor")}</Sub>
         </Tile>
 
@@ -450,19 +441,7 @@ export default function Today() {
         </Tile>
 
         <Tile to="/crew/exercise" icon="exercise" color="accent" label={t("Daily activity")}>
-          <div className="flex items-end justify-between gap-2">
-            <Big value={fmt(burned, 0)} unit="kcal" />
-            <ConcentricRings
-              size={36}
-              stroke={5}
-              gap={2}
-              label={t("Daily activity concentric rings")}
-              rings={[
-                { value: burned, max: Math.max(1, expectedKcal), color: C.ok },
-                { value: doneN, max: Math.max(1, total), color: C.accent },
-              ]}
-            />
-          </div>
+          <Big value={fmt(burned, 0)} unit="kcal" />
           <Sub>{t("of {n} kcal expected", { n: fmt(expectedKcal, 0) })}</Sub>
         </Tile>
 
@@ -520,7 +499,7 @@ export default function Today() {
       {/* Emergency: always one tap away, kept small until it is needed. */}
       <div
         className={cx(
-          "flex items-center gap-3 rounded-tile border p-3 pl-4",
+          "mt-2 flex items-center gap-3 rounded-tile border p-3 pl-4",
           sosSent ? "border-bad/60 bg-badsoft" : "border-ink-700 bg-ink-900"
         )}
       >
