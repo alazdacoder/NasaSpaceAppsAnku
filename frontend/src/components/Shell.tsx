@@ -70,10 +70,17 @@ export function PhaseChip() {
   const { clock } = useApp();
   if (!clock) return null;
   if (clock.phase === "postflight") {
-    return <span className="rounded-full bg-rest/10 px-3 py-1 text-sm font-semibold text-rest">{t("Back on Earth · {r}", { r: dayLabel(clock.today) })}</span>;
+    // On a phone the row is tight: show just the day (R+20), the full label from sm up.
+    const full = t("Back on Earth · {r}", { r: dayLabel(clock.today) });
+    return (
+      <span title={full} className="whitespace-nowrap rounded-full max-[379px]:hidden bg-rest/10 px-3 py-1 text-sm font-semibold tabular-nums text-rest">
+        <span className="sm:hidden">{dayLabel(clock.today)}</span>
+        <span className="hidden sm:inline">{full}</span>
+      </span>
+    );
   }
   if (clock.phase === "preflight") {
-    return <span className="rounded-full bg-ink-850 px-3 py-1 text-sm font-semibold text-slate-300">{t("Before launch")}</span>;
+    return <span className="whitespace-nowrap rounded-full bg-ink-850 px-3 py-1 text-sm font-semibold text-slate-300">{t("Before launch")}</span>;
   }
   return <span className="hidden rounded-full bg-ink-850 px-3 py-1 text-sm text-slate-300 lg:inline">{t("Landing in {n} days", { n: clock.days_to_landing ?? 0 })}</span>;
 }
@@ -178,7 +185,7 @@ export function CrewLayout() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="top-0 z-30 bg-ink-900/95 sm:sticky">
-        <div className="flex items-center gap-x-3 gap-y-2 px-4 py-2.5 sm:flex-wrap sm:px-6">
+        <div className="flex items-center gap-x-2 gap-y-2 px-4 py-2.5 sm:flex-wrap sm:gap-x-3 sm:px-6">
           <Link to="/crew" className="flex items-center gap-2.5 text-lg font-extrabold tracking-tight text-fg">
             <Mark /> <span className="hidden sm:inline">{t("SHMS")}</span> <span className="hidden text-sm font-normal text-slate-400 2xl:inline">{t("Space Health Management System")}</span>
           </Link>
