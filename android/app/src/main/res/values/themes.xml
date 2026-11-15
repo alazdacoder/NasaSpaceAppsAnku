@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ink">#FFF4F7FA</color>
-    <color name="icon_bg">#FFFFFFFF</color>
+    <color name="icon_bg">#FF000000</color>
     <color name="accent">#FF2F7FD8</color>
     <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/ink</item>
